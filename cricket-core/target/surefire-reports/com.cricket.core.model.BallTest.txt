@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.cricket.core.model.BallTest
+-------------------------------------------------------------------------------
+Tests run: 39, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.004 s - in com.cricket.core.model.BallTest

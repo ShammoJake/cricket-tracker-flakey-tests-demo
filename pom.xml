@@ -1,0 +1,123 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.cricket</groupId>
+  <artifactId>cricket-tracker</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+
+  <name>Cricket Match Tracker</name>
+  <description>
+    Ball-by-ball cricket match tracking service. Demo subject for flaky-test and
+    concurrency-analysis research artifacts (TSVD4J, FlakeSync, FlakyLens, RankF).
+  </description>
+
+  <properties>
+    <!-- Single knob for the whole build. Artifacts that instrument bytecode (TSVD4J,
+         FlakeSync) are sensitive to this; keep source syntax Java-8-compatible so
+         dropping to 8 stays a one-line change. -->
+    <java.version>11</java.version>
+    <maven.compiler.source>${java.version}</maven.compiler.source>
+    <maven.compiler.target>${java.version}</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+    <!-- JUnit 4 + Surefire 2.x deliberately: TSVD4J's test listener is a JUnit 4
+         RunListener, and the iDFlakies-lineage tooling RankF builds on targets this
+         Surefire generation. -->
+    <junit.version>4.13.2</junit.version>
+    <surefire.version>2.22.2</surefire.version>
+  </properties>
+
+  <modules>
+    <module>cricket-core</module>
+    <module>cricket-live</module>
+    <module>cricket-stats</module>
+    <module>cricket-api</module>
+  </modules>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>${junit.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.cricket</groupId>
+        <artifactId>cricket-core</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.cricket</groupId>
+        <artifactId>cricket-live</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.cricket</groupId>
+        <artifactId>cricket-stats</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <!-- Test-jar so downstream modules can reuse the shared Fixtures. -->
+      <dependency>
+        <groupId>com.cricket</groupId>
+        <artifactId>cricket-core</artifactId>
+        <version>${project.version}</version>
+        <type>test-jar</type>
+        <scope>test</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>${surefire.version}</version>
+          <configuration>
+            <!-- Do not fork per test: order-dependent tests need to share a JVM so
+                 static state actually leaks between them. -->
+            <forkCount>1</forkCount>
+            <reuseForks>true</reuseForks>
+            <!-- Pin the order so "the original order" is the same on every machine.
+                 The order-dependent tests are written to pass in this one. -->
+            <runOrder>alphabetical</runOrder>
+            <trimStackTrace>false</trimStackTrace>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
+  <profiles>
+    <!-- Reduced target for TSVD4J: it injects a 100ms delay at every tracked access,
+         so running the whole suite under it would blow past a practical timeout. -->
+    <profile>
+      <id>tsvd4j</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <!-- Every test that puts two threads onto the same state. Keep this in
+                   step with the classes that actually start threads, directly or
+                   through SeriesBoard and the ingest pipeline. -->
+              <includes>
+                <include>**/concurrent/**/*Test.java</include>
+                <include>**/*ConcurrencyTest.java</include>
+                <include>**/*IngestTest.java</include>
+                <include>**/adversarial/ConcurrentSubscriberTest.java</include>
+                <include>**/uc/UnorderedStandingsTest.java</include>
+              </includes>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>

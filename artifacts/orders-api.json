@@ -1,0 +1,1026 @@
+{
+  "module": "cricket-api",
+  "seed": 11,
+  "originalOrder": [
+    "com.cricket.api.CricketApiTest",
+    "com.cricket.api.HttpServerTest",
+    "com.cricket.api.MatchApiIngestTest",
+    "com.cricket.api.RateLimiterTest",
+    "com.cricket.od.ArchiveFreshnessTest",
+    "com.cricket.od.CommentaryFormatTest",
+    "com.cricket.od.DeliveryRulesTest",
+    "com.cricket.od.ExperimentalFormatTest",
+    "com.cricket.od.LiveMatchQueryTest",
+    "com.cricket.od.MatchArchiveTest",
+    "com.cricket.od.PlayerImportTest",
+    "com.cricket.od.RegionalBroadcastTest",
+    "com.cricket.od.RosterLookupTest",
+    "com.cricket.od.SeriesSetupTest",
+    "com.cricket.od.TournamentTeardownTest"
+  ],
+  "runs": [
+    {
+      "label": "original",
+      "classOrder": [
+        "com.cricket.api.CricketApiTest",
+        "com.cricket.api.HttpServerTest",
+        "com.cricket.api.MatchApiIngestTest",
+        "com.cricket.api.RateLimiterTest",
+        "com.cricket.od.ArchiveFreshnessTest",
+        "com.cricket.od.CommentaryFormatTest",
+        "com.cricket.od.DeliveryRulesTest",
+        "com.cricket.od.ExperimentalFormatTest",
+        "com.cricket.od.LiveMatchQueryTest",
+        "com.cricket.od.MatchArchiveTest",
+        "com.cricket.od.PlayerImportTest",
+        "com.cricket.od.RegionalBroadcastTest",
+        "com.cricket.od.RosterLookupTest",
+        "com.cricket.od.SeriesSetupTest",
+        "com.cricket.od.TournamentTeardownTest"
+      ],
+      "total": 154,
+      "failed": 0,
+      "failures": [],
+      "orderDependentFailures": []
+    },
+    {
+      "label": "shuffle-1",
+      "classOrder": [
+        "com.cricket.od.PlayerImportTest",
+        "com.cricket.od.CommentaryFormatTest",
+        "com.cricket.api.CricketApiTest",
+        "com.cricket.api.HttpServerTest",
+        "com.cricket.od.MatchArchiveTest",
+        "com.cricket.od.ArchiveFreshnessTest",
+        "com.cricket.od.DeliveryRulesTest",
+        "com.cricket.api.MatchApiIngestTest",
+        "com.cricket.api.RateLimiterTest",
+        "com.cricket.od.RosterLookupTest",
+        "com.cricket.od.RegionalBroadcastTest",
+        "com.cricket.od.TournamentTeardownTest",
+        "com.cricket.od.LiveMatchQueryTest",
+        "com.cricket.od.SeriesSetupTest",
+        "com.cricket.od.ExperimentalFormatTest"
+      ],
+      "total": 154,
+      "failed": 4,
+      "failures": [
+        "com.cricket.od.ArchiveFreshnessTest#theExportDirectoryStartsClean",
+        "com.cricket.od.RosterLookupTest#bothSquadsAreKnownToTheDirectory",
+        "com.cricket.od.RosterLookupTest#searchingByNameFragmentIsCaseInsensitive",
+        "com.cricket.od.RosterLookupTest#theOpenerResolvesByShortName"
+      ],
+      "orderDependentFailures": [
+        "com.cricket.od.ArchiveFreshnessTest#theExportDirectoryStartsClean",
+        "com.cricket.od.RosterLookupTest#bothSquadsAreKnownToTheDirectory",
+        "com.cricket.od.RosterLookupTest#searchingByNameFragmentIsCaseInsensitive",
+        "com.cricket.od.RosterLookupTest#theOpenerResolvesByShortName"
+      ]
+    },
+    {
+      "label": "shuffle-2",
+      "classOrder": [
+        "com.cricket.api.RateLimiterTest",
+        "com.cricket.od.MatchArchiveTest",
+        "com.cricket.od.SeriesSetupTest",
+        "com.cricket.od.RosterLookupTest",
+        "com.cricket.od.TournamentTeardownTest",
+        "com.cricket.od.RegionalBroadcastTest",
+        "com.cricket.od.CommentaryFormatTest",
+        "com.cricket.od.ExperimentalFormatTest",
+        "com.cricket.od.DeliveryRulesTest",
+        "com.cricket.api.CricketApiTest",
+        "com.cricket.od.PlayerImportTest",
+        "com.cricket.od.LiveMatchQueryTest",
+        "com.cricket.api.HttpServerTest",
+        "com.cricket.api.MatchApiIngestTest",
+        "com.cricket.od.ArchiveFreshnessTest"
+      ],
+      "total": 154,
+      "failed": 9,
+      "failures": [
+        "com.cricket.od.CommentaryFormatTest#scoresUseThePointDecimalSeparator",
+        "com.cricket.od.CommentaryFormatTest#theDefaultScorecardFormatIsFull",
+        "com.cricket.od.CommentaryFormatTest#theRequiredRateIsRunsOverRemainingOvers",
+        "com.cricket.od.DeliveryRulesTest#aWideCostsTheBowlingSideOneRun",
+        "com.cricket.od.DeliveryRulesTest#anOverIsSixLegalDeliveries",
+        "com.cricket.od.DeliveryRulesTest#theShippedConditionsAreInEffect",
+        "com.cricket.od.RosterLookupTest#bothSquadsAreKnownToTheDirectory",
+        "com.cricket.od.RosterLookupTest#searchingByNameFragmentIsCaseInsensitive",
+        "com.cricket.od.RosterLookupTest#theOpenerResolvesByShortName"
+      ],
+      "orderDependentFailures": [
+        "com.cricket.od.CommentaryFormatTest#scoresUseThePointDecimalSeparator",
+        "com.cricket.od.CommentaryFormatTest#theDefaultScorecardFormatIsFull",
+        "com.cricket.od.CommentaryFormatTest#theRequiredRateIsRunsOverRemainingOvers",
+        "com.cricket.od.DeliveryRulesTest#aWideCostsTheBowlingSideOneRun",
+        "com.cricket.od.DeliveryRulesTest#anOverIsSixLegalDeliveries",
+        "com.cricket.od.DeliveryRulesTest#theShippedConditionsAreInEffect",
+        "com.cricket.od.RosterLookupTest#bothSquadsAreKnownToTheDirectory",
+        "com.cricket.od.RosterLookupTest#searchingByNameFragmentIsCaseInsensitive",
+        "com.cricket.od.RosterLookupTest#theOpenerResolvesByShortName"
+      ]
+    },
+    {
+      "label": "shuffle-3",
+      "classOrder": [
+        "com.cricket.od.RosterLookupTest",
+        "com.cricket.od.ExperimentalFormatTest",
+        "com.cricket.od.ArchiveFreshnessTest",
+        "com.cricket.od.CommentaryFormatTest",
+        "com.cricket.api.MatchApiIngestTest",
+        "com.cricket.od.TournamentTeardownTest",
+        "com.cricket.od.DeliveryRulesTest",
+        "com.cricket.od.PlayerImportTest",
+        "com.cricket.od.MatchArchiveTest",
+        "com.cricket.api.RateLimiterTest",
+        "com.cricket.od.RegionalBroadcastTest",
+        "com.cricket.api.CricketApiTest",
+        "com.cricket.api.HttpServerTest",
+        "com.cricket.od.LiveMatchQueryTest",
+        "com.cricket.od.SeriesSetupTest"
+      ],
+      "total": 154,
+      "failed": 3,
+      "failures": [
+        "com.cricket.od.RosterLookupTest#bothSquadsAreKnownToTheDirectory",
+        "com.cricket.od.RosterLookupTest#searchingByNameFragmentIsCaseInsensitive",
+        "com.cricket.od.RosterLookupTest#theOpenerResolvesByShortName"
+      ],
+      "orderDependentFailures": [
+        "com.cricket.od.RosterLookupTest#bothSquadsAreKnownToTheDirectory",
+        "com.cricket.od.RosterLookupTest#searchingByNameFragmentIsCaseInsensitive",
+        "com.cricket.od.RosterLookupTest#theOpenerResolvesByShortName"
+      ]
+    },
+    {
+      "label": "shuffle-4",
+      "classOrder": [
+        "com.cricket.od.RegionalBroadcastTest",
+        "com.cricket.od.TournamentTeardownTest",
+        "com.cricket.od.DeliveryRulesTest",
+        "com.cricket.od.MatchArchiveTest",
+        "com.cricket.od.SeriesSetupTest",
+        "com.cricket.api.MatchApiIngestTest",
+        "com.cricket.od.CommentaryFormatTest",
+        "com.cricket.od.RosterLookupTest",
+        "com.cricket.api.HttpServerTest",
+        "com.cricket.api.CricketApiTest",
+        "com.cricket.od.ExperimentalFormatTest",
+        "com.cricket.od.ArchiveFreshnessTest",
+        "com.cricket.od.PlayerImportTest",
+        "com.cricket.api.RateLimiterTest",
+        "com.cricket.od.LiveMatchQueryTest"
+      ],
+      "total": 154,
+      "failed": 4,
+      "failures": [
+        "com.cricket.od.ArchiveFreshnessTest#theExportDirectoryStartsClean",
+        "com.cricket.od.RosterLookupTest#bothSquadsAreKnownToTheDirectory",
+        "com.cricket.od.RosterLookupTest#searchingByNameFragmentIsCaseInsensitive",
+        "com.cricket.od.RosterLookupTest#theOpenerResolvesByShortName"
+      ],
+      "orderDependentFailures": [
+        "com.cricket.od.ArchiveFreshnessTest#theExportDirectoryStartsClean",
+        "com.cricket.od.RosterLookupTest#bothSquadsAreKnownToTheDirectory",
+        "com.cricket.od.RosterLookupTest#searchingByNameFragmentIsCaseInsensitive",
+        "com.cricket.od.RosterLookupTest#theOpenerResolvesByShortName"
+      ]
+    },
+    {
+      "label": "shuffle-5",
+      "classOrder": [
+        "com.cricket.od.ExperimentalFormatTest",
+        "com.cricket.od.PlayerImportTest",
+        "com.cricket.od.TournamentTeardownTest",
+        "com.cricket.od.DeliveryRulesTest",
+        "com.cricket.api.MatchApiIngestTest",
+        "com.cricket.od.MatchArchiveTest",
+        "com.cricket.od.SeriesSetupTest",
+        "com.cricket.od.RegionalBroadcastTest",
+        "com.cricket.api.HttpServerTest",
+        "com.cricket.api.CricketApiTest",
+        "com.cricket.od.ArchiveFreshnessTest",
+        "com.cricket.od.LiveMatchQueryTest",
+        "com.cricket.api.RateLimiterTest",
+        "com.cricket.od.RosterLookupTest",
+        "com.cricket.od.CommentaryFormatTest"
+      ],
+      "total": 154,
+      "failed": 7,
+      "failures": [
+        "com.cricket.od.ArchiveFreshnessTest#theExportDirectoryStartsClean",
+        "com.cricket.od.CommentaryFormatTest#scoresUseThePointDecimalSeparator",
+        "com.cricket.od.CommentaryFormatTest#theDefaultScorecardFormatIsFull",
+        "com.cricket.od.CommentaryFormatTest#theRequiredRateIsRunsOverRemainingOvers",
+        "com.cricket.od.RosterLookupTest#bothSquadsAreKnownToTheDirectory",
+        "com.cricket.od.RosterLookupTest#searchingByNameFragmentIsCaseInsensitive",
+        "com.cricket.od.RosterLookupTest#theOpenerResolvesByShortName"
+      ],
+      "orderDependentFailures": [
+        "com.cricket.od.ArchiveFreshnessTest#theExportDirectoryStartsClean",
+        "com.cricket.od.CommentaryFormatTest#scoresUseThePointDecimalSeparator",
+        "com.cricket.od.CommentaryFormatTest#theDefaultScorecardFormatIsFull",
+        "com.cricket.od.CommentaryFormatTest#theRequiredRateIsRunsOverRemainingOvers",
+        "com.cricket.od.RosterLookupTest#bothSquadsAreKnownToTheDirectory",
+        "com.cricket.od.RosterLookupTest#searchingByNameFragmentIsCaseInsensitive",
+        "com.cricket.od.RosterLookupTest#theOpenerResolvesByShortName"
+      ]
+    },
+    {
+      "label": "shuffle-6",
+      "classOrder": [
+        "com.cricket.api.HttpServerTest",
+        "com.cricket.od.ArchiveFreshnessTest",
+        "com.cricket.api.MatchApiIngestTest",
+        "com.cricket.od.MatchArchiveTest",
+        "com.cricket.od.LiveMatchQueryTest",
+        "com.cricket.od.TournamentTeardownTest",
+        "com.cricket.od.CommentaryFormatTest",
+        "com.cricket.od.DeliveryRulesTest",
+        "com.cricket.od.ExperimentalFormatTest",
+        "com.cricket.od.RosterLookupTest",
+        "com.cricket.od.RegionalBroadcastTest",
+        "com.cricket.api.RateLimiterTest",
+        "com.cricket.api.CricketApiTest",
+        "com.cricket.od.PlayerImportTest",
+        "com.cricket.od.SeriesSetupTest"
+      ],
+      "total": 154,
+      "failed": 3,
+      "failures": [
+        "com.cricket.od.RosterLookupTest#bothSquadsAreKnownToTheDirectory",
+        "com.cricket.od.RosterLookupTest#searchingByNameFragmentIsCaseInsensitive",
+        "com.cricket.od.RosterLookupTest#theOpenerResolvesByShortName"
+      ],
+      "orderDependentFailures": [
+        "com.cricket.od.RosterLookupTest#bothSquadsAreKnownToTheDirectory",
+        "com.cricket.od.RosterLookupTest#searchingByNameFragmentIsCaseInsensitive",
+        "com.cricket.od.RosterLookupTest#theOpenerResolvesByShortName"
+      ]
+    },
+    {
+      "label": "shuffle-7",
+      "classOrder": [
+        "com.cricket.od.DeliveryRulesTest",
+        "com.cricket.od.LiveMatchQueryTest",
+        "com.cricket.api.MatchApiIngestTest",
+        "com.cricket.od.MatchArchiveTest",
+        "com.cricket.od.SeriesSetupTest",
+        "com.cricket.od.ExperimentalFormatTest",
+        "com.cricket.api.RateLimiterTest",
+        "com.cricket.api.CricketApiTest",
+        "com.cricket.od.RegionalBroadcastTest",
+        "com.cricket.od.TournamentTeardownTest",
+        "com.cricket.api.HttpServerTest",
+        "com.cricket.od.CommentaryFormatTest",
+        "com.cricket.od.ArchiveFreshnessTest",
+        "com.cricket.od.PlayerImportTest",
+        "com.cricket.od.RosterLookupTest"
+      ],
+      "total": 154,
+      "failed": 0,
+      "failures": [],
+      "orderDependentFailures": []
+    },
+    {
+      "label": "shuffle-8",
+      "classOrder": [
+        "com.cricket.od.SeriesSetupTest",
+        "com.cricket.od.DeliveryRulesTest",
+        "com.cricket.od.PlayerImportTest",
+        "com.cricket.od.MatchArchiveTest",
+        "com.cricket.od.CommentaryFormatTest",
+        "com.cricket.api.HttpServerTest",
+        "com.cricket.od.ArchiveFreshnessTest",
+        "com.cricket.od.RegionalBroadcastTest",
+        "com.cricket.api.RateLimiterTest",
+        "com.cricket.od.LiveMatchQueryTest",
+        "com.cricket.api.MatchApiIngestTest",
+        "com.cricket.od.RosterLookupTest",
+        "com.cricket.od.ExperimentalFormatTest",
+        "com.cricket.od.TournamentTeardownTest",
+        "com.cricket.api.CricketApiTest"
+      ],
+      "total": 154,
+      "failed": 4,
+      "failures": [
+        "com.cricket.od.ArchiveFreshnessTest#theExportDirectoryStartsClean",
+        "com.cricket.od.RosterLookupTest#bothSquadsAreKnownToTheDirectory",
+        "com.cricket.od.RosterLookupTest#searchingByNameFragmentIsCaseInsensitive",
+        "com.cricket.od.RosterLookupTest#theOpenerResolvesByShortName"
+      ],
+      "orderDependentFailures": [
+        "com.cricket.od.ArchiveFreshnessTest#theExportDirectoryStartsClean",
+        "com.cricket.od.RosterLookupTest#bothSquadsAreKnownToTheDirectory",
+        "com.cricket.od.RosterLookupTest#searchingByNameFragmentIsCaseInsensitive",
+        "com.cricket.od.RosterLookupTest#theOpenerResolvesByShortName"
+      ]
+    },
+    {
+      "label": "shuffle-9",
+      "classOrder": [
+        "com.cricket.od.CommentaryFormatTest",
+        "com.cricket.api.MatchApiIngestTest",
+        "com.cricket.od.LiveMatchQueryTest",
+        "com.cricket.od.ExperimentalFormatTest",
+        "com.cricket.od.RegionalBroadcastTest",
+        "com.cricket.od.RosterLookupTest",
+        "com.cricket.od.TournamentTeardownTest",
+        "com.cricket.od.PlayerImportTest",
+        "com.cricket.od.MatchArchiveTest",
+        "com.cricket.od.ArchiveFreshnessTest",
+        "com.cricket.api.CricketApiTest",
+        "com.cricket.api.RateLimiterTest",
+        "com.cricket.od.SeriesSetupTest",
+        "com.cricket.od.DeliveryRulesTest",
+        "com.cricket.api.HttpServerTest"
+      ],
+      "total": 154,
+      "failed": 4,
+      "failures": [
+        "com.cricket.od.ArchiveFreshnessTest#theExportDirectoryStartsClean",
+        "com.cricket.od.RosterLookupTest#bothSquadsAreKnownToTheDirectory",
+        "com.cricket.od.RosterLookupTest#searchingByNameFragmentIsCaseInsensitive",
+        "com.cricket.od.RosterLookupTest#theOpenerResolvesByShortName"
+      ],
+      "orderDependentFailures": [
+        "com.cricket.od.ArchiveFreshnessTest#theExportDirectoryStartsClean",
+        "com.cricket.od.RosterLookupTest#bothSquadsAreKnownToTheDirectory",
+        "com.cricket.od.RosterLookupTest#searchingByNameFragmentIsCaseInsensitive",
+        "com.cricket.od.RosterLookupTest#theOpenerResolvesByShortName"
+      ]
+    },
+    {
+      "label": "shuffle-10",
+      "classOrder": [
+        "com.cricket.od.TournamentTeardownTest",
+        "com.cricket.od.LiveMatchQueryTest",
+        "com.cricket.api.MatchApiIngestTest",
+        "com.cricket.api.HttpServerTest",
+        "com.cricket.od.PlayerImportTest",
+        "com.cricket.od.SeriesSetupTest",
+        "com.cricket.od.RegionalBroadcastTest",
+        "com.cricket.od.DeliveryRulesTest",
+        "com.cricket.od.RosterLookupTest",
+        "com.cricket.od.CommentaryFormatTest",
+        "com.cricket.od.MatchArchiveTest",
+        "com.cricket.api.CricketApiTest",
+        "com.cricket.od.ArchiveFreshnessTest",
+        "com.cricket.od.ExperimentalFormatTest",
+        "com.cricket.api.RateLimiterTest"
+      ],
+      "total": 154,
+      "failed": 4,
+      "failures": [
+        "com.cricket.od.ArchiveFreshnessTest#theExportDirectoryStartsClean",
+        "com.cricket.od.CommentaryFormatTest#scoresUseThePointDecimalSeparator",
+        "com.cricket.od.CommentaryFormatTest#theDefaultScorecardFormatIsFull",
+        "com.cricket.od.CommentaryFormatTest#theRequiredRateIsRunsOverRemainingOvers"
+      ],
+      "orderDependentFailures": [
+        "com.cricket.od.ArchiveFreshnessTest#theExportDirectoryStartsClean",
+        "com.cricket.od.CommentaryFormatTest#scoresUseThePointDecimalSeparator",
+        "com.cricket.od.CommentaryFormatTest#theDefaultScorecardFormatIsFull",
+        "com.cricket.od.CommentaryFormatTest#theRequiredRateIsRunsOverRemainingOvers"
+      ]
+    },
+    {
+      "label": "shuffle-11",
+      "classOrder": [
+        "com.cricket.od.RegionalBroadcastTest",
+        "com.cricket.od.LiveMatchQueryTest",
+        "com.cricket.od.TournamentTeardownTest",
+        "com.cricket.api.RateLimiterTest",
+        "com.cricket.api.HttpServerTest",
+        "com.cricket.od.ArchiveFreshnessTest",
+        "com.cricket.od.DeliveryRulesTest",
+        "com.cricket.od.PlayerImportTest",
+        "com.cricket.api.MatchApiIngestTest",
+        "com.cricket.od.ExperimentalFormatTest",
+        "com.cricket.od.SeriesSetupTest",
+        "com.cricket.od.RosterLookupTest",
+        "com.cricket.od.CommentaryFormatTest",
+        "com.cricket.od.MatchArchiveTest",
+        "com.cricket.api.CricketApiTest"
+      ],
+      "total": 154,
+      "failed": 3,
+      "failures": [
+        "com.cricket.od.RosterLookupTest#bothSquadsAreKnownToTheDirectory",
+        "com.cricket.od.RosterLookupTest#searchingByNameFragmentIsCaseInsensitive",
+        "com.cricket.od.RosterLookupTest#theOpenerResolvesByShortName"
+      ],
+      "orderDependentFailures": [
+        "com.cricket.od.RosterLookupTest#bothSquadsAreKnownToTheDirectory",
+        "com.cricket.od.RosterLookupTest#searchingByNameFragmentIsCaseInsensitive",
+        "com.cricket.od.RosterLookupTest#theOpenerResolvesByShortName"
+      ]
+    },
+    {
+      "label": "shuffle-12",
+      "classOrder": [
+        "com.cricket.od.RosterLookupTest",
+        "com.cricket.od.TournamentTeardownTest",
+        "com.cricket.api.HttpServerTest",
+        "com.cricket.api.CricketApiTest",
+        "com.cricket.od.DeliveryRulesTest",
+        "com.cricket.od.ExperimentalFormatTest",
+        "com.cricket.od.CommentaryFormatTest",
+        "com.cricket.od.PlayerImportTest",
+        "com.cricket.od.LiveMatchQueryTest",
+        "com.cricket.api.MatchApiIngestTest",
+        "com.cricket.od.RegionalBroadcastTest",
+        "com.cricket.od.SeriesSetupTest",
+        "com.cricket.od.MatchArchiveTest",
+        "com.cricket.api.RateLimiterTest",
+        "com.cricket.od.ArchiveFreshnessTest"
+      ],
+      "total": 154,
+      "failed": 4,
+      "failures": [
+        "com.cricket.od.ArchiveFreshnessTest#theExportDirectoryStartsClean",
+        "com.cricket.od.RosterLookupTest#bothSquadsAreKnownToTheDirectory",
+        "com.cricket.od.RosterLookupTest#searchingByNameFragmentIsCaseInsensitive",
+        "com.cricket.od.RosterLookupTest#theOpenerResolvesByShortName"
+      ],
+      "orderDependentFailures": [
+        "com.cricket.od.ArchiveFreshnessTest#theExportDirectoryStartsClean",
+        "com.cricket.od.RosterLookupTest#bothSquadsAreKnownToTheDirectory",
+        "com.cricket.od.RosterLookupTest#searchingByNameFragmentIsCaseInsensitive",
+        "com.cricket.od.RosterLookupTest#theOpenerResolvesByShortName"
+      ]
+    },
+    {
+      "label": "shuffle-13",
+      "classOrder": [
+        "com.cricket.od.SeriesSetupTest",
+        "com.cricket.od.RosterLookupTest",
+        "com.cricket.od.CommentaryFormatTest",
+        "com.cricket.api.MatchApiIngestTest",
+        "com.cricket.od.RegionalBroadcastTest",
+        "com.cricket.od.ExperimentalFormatTest",
+        "com.cricket.od.MatchArchiveTest",
+        "com.cricket.od.PlayerImportTest",
+        "com.cricket.od.DeliveryRulesTest",
+        "com.cricket.api.RateLimiterTest",
+        "com.cricket.od.ArchiveFreshnessTest",
+        "com.cricket.od.LiveMatchQueryTest",
+        "com.cricket.api.CricketApiTest",
+        "com.cricket.od.TournamentTeardownTest",
+        "com.cricket.api.HttpServerTest"
+      ],
+      "total": 154,
+      "failed": 7,
+      "failures": [
+        "com.cricket.od.ArchiveFreshnessTest#theExportDirectoryStartsClean",
+        "com.cricket.od.DeliveryRulesTest#aWideCostsTheBowlingSideOneRun",
+        "com.cricket.od.DeliveryRulesTest#anOverIsSixLegalDeliveries",
+        "com.cricket.od.DeliveryRulesTest#theShippedConditionsAreInEffect",
+        "com.cricket.od.RosterLookupTest#bothSquadsAreKnownToTheDirectory",
+        "com.cricket.od.RosterLookupTest#searchingByNameFragmentIsCaseInsensitive",
+        "com.cricket.od.RosterLookupTest#theOpenerResolvesByShortName"
+      ],
+      "orderDependentFailures": [
+        "com.cricket.od.ArchiveFreshnessTest#theExportDirectoryStartsClean",
+        "com.cricket.od.DeliveryRulesTest#aWideCostsTheBowlingSideOneRun",
+        "com.cricket.od.DeliveryRulesTest#anOverIsSixLegalDeliveries",
+        "com.cricket.od.DeliveryRulesTest#theShippedConditionsAreInEffect",
+        "com.cricket.od.RosterLookupTest#bothSquadsAreKnownToTheDirectory",
+        "com.cricket.od.RosterLookupTest#searchingByNameFragmentIsCaseInsensitive",
+        "com.cricket.od.RosterLookupTest#theOpenerResolvesByShortName"
+      ]
+    },
+    {
+      "label": "shuffle-14",
+      "classOrder": [
+        "com.cricket.od.DeliveryRulesTest",
+        "com.cricket.od.ArchiveFreshnessTest",
+        "com.cricket.od.PlayerImportTest",
+        "com.cricket.api.CricketApiTest",
+        "com.cricket.od.CommentaryFormatTest",
+        "com.cricket.od.MatchArchiveTest",
+        "com.cricket.od.SeriesSetupTest",
+        "com.cricket.od.RosterLookupTest",
+        "com.cricket.od.LiveMatchQueryTest",
+        "com.cricket.od.ExperimentalFormatTest",
+        "com.cricket.api.RateLimiterTest",
+        "com.cricket.api.MatchApiIngestTest",
+        "com.cricket.api.HttpServerTest",
+        "com.cricket.od.RegionalBroadcastTest",
+        "com.cricket.od.TournamentTeardownTest"
+      ],
+      "total": 154,
+      "failed": 5,
+      "failures": [
+        "com.cricket.od.LiveMatchQueryTest#onlyMatchesInProgressAreLive",
+        "com.cricket.od.LiveMatchQueryTest#theDirectoryStartsEmpty",
+        "com.cricket.od.RosterLookupTest#bothSquadsAreKnownToTheDirectory",
+        "com.cricket.od.RosterLookupTest#searchingByNameFragmentIsCaseInsensitive",
+        "com.cricket.od.RosterLookupTest#theOpenerResolvesByShortName"
+      ],
+      "orderDependentFailures": [
+        "com.cricket.od.LiveMatchQueryTest#onlyMatchesInProgressAreLive",
+        "com.cricket.od.LiveMatchQueryTest#theDirectoryStartsEmpty",
+        "com.cricket.od.RosterLookupTest#bothSquadsAreKnownToTheDirectory",
+        "com.cricket.od.RosterLookupTest#searchingByNameFragmentIsCaseInsensitive",
+        "com.cricket.od.RosterLookupTest#theOpenerResolvesByShortName"
+      ]
+    },
+    {
+      "label": "shuffle-15",
+      "classOrder": [
+        "com.cricket.od.MatchArchiveTest",
+        "com.cricket.od.RosterLookupTest",
+        "com.cricket.od.SeriesSetupTest",
+        "com.cricket.od.PlayerImportTest",
+        "com.cricket.api.HttpServerTest",
+        "com.cricket.od.TournamentTeardownTest",
+        "com.cricket.od.LiveMatchQueryTest",
+        "com.cricket.od.CommentaryFormatTest",
+        "com.cricket.od.ArchiveFreshnessTest",
+        "com.cricket.api.MatchApiIngestTest",
+        "com.cricket.od.RegionalBroadcastTest",
+        "com.cricket.api.CricketApiTest",
+        "com.cricket.api.RateLimiterTest",
+        "com.cricket.od.ExperimentalFormatTest",
+        "com.cricket.od.DeliveryRulesTest"
+      ],
+      "total": 154,
+      "failed": 6,
+      "failures": [
+        "com.cricket.od.DeliveryRulesTest#aWideCostsTheBowlingSideOneRun",
+        "com.cricket.od.DeliveryRulesTest#anOverIsSixLegalDeliveries",
+        "com.cricket.od.DeliveryRulesTest#theShippedConditionsAreInEffect",
+        "com.cricket.od.RosterLookupTest#bothSquadsAreKnownToTheDirectory",
+        "com.cricket.od.RosterLookupTest#searchingByNameFragmentIsCaseInsensitive",
+        "com.cricket.od.RosterLookupTest#theOpenerResolvesByShortName"
+      ],
+      "orderDependentFailures": [
+        "com.cricket.od.DeliveryRulesTest#aWideCostsTheBowlingSideOneRun",
+        "com.cricket.od.DeliveryRulesTest#anOverIsSixLegalDeliveries",
+        "com.cricket.od.DeliveryRulesTest#theShippedConditionsAreInEffect",
+        "com.cricket.od.RosterLookupTest#bothSquadsAreKnownToTheDirectory",
+        "com.cricket.od.RosterLookupTest#searchingByNameFragmentIsCaseInsensitive",
+        "com.cricket.od.RosterLookupTest#theOpenerResolvesByShortName"
+      ]
+    },
+    {
+      "label": "shuffle-16",
+      "classOrder": [
+        "com.cricket.api.HttpServerTest",
+        "com.cricket.od.RosterLookupTest",
+        "com.cricket.od.DeliveryRulesTest",
+        "com.cricket.od.ArchiveFreshnessTest",
+        "com.cricket.od.RegionalBroadcastTest",
+        "com.cricket.api.RateLimiterTest",
+        "com.cricket.od.SeriesSetupTest",
+        "com.cricket.api.CricketApiTest",
+        "com.cricket.api.MatchApiIngestTest",
+        "com.cricket.od.MatchArchiveTest",
+        "com.cricket.od.LiveMatchQueryTest",
+        "com.cricket.od.PlayerImportTest",
+        "com.cricket.od.CommentaryFormatTest",
+        "com.cricket.od.ExperimentalFormatTest",
+        "com.cricket.od.TournamentTeardownTest"
+      ],
+      "total": 154,
+      "failed": 6,
+      "failures": [
+        "com.cricket.od.CommentaryFormatTest#scoresUseThePointDecimalSeparator",
+        "com.cricket.od.CommentaryFormatTest#theDefaultScorecardFormatIsFull",
+        "com.cricket.od.CommentaryFormatTest#theRequiredRateIsRunsOverRemainingOvers",
+        "com.cricket.od.RosterLookupTest#bothSquadsAreKnownToTheDirectory",
+        "com.cricket.od.RosterLookupTest#searchingByNameFragmentIsCaseInsensitive",
+        "com.cricket.od.RosterLookupTest#theOpenerResolvesByShortName"
+      ],
+      "orderDependentFailures": [
+        "com.cricket.od.CommentaryFormatTest#scoresUseThePointDecimalSeparator",
+        "com.cricket.od.CommentaryFormatTest#theDefaultScorecardFormatIsFull",
+        "com.cricket.od.CommentaryFormatTest#theRequiredRateIsRunsOverRemainingOvers",
+        "com.cricket.od.RosterLookupTest#bothSquadsAreKnownToTheDirectory",
+        "com.cricket.od.RosterLookupTest#searchingByNameFragmentIsCaseInsensitive",
+        "com.cricket.od.RosterLookupTest#theOpenerResolvesByShortName"
+      ]
+    },
+    {
+      "label": "shuffle-17",
+      "classOrder": [
+        "com.cricket.od.SeriesSetupTest",
+        "com.cricket.od.LiveMatchQueryTest",
+        "com.cricket.od.TournamentTeardownTest",
+        "com.cricket.od.RegionalBroadcastTest",
+        "com.cricket.api.RateLimiterTest",
+        "com.cricket.od.DeliveryRulesTest",
+        "com.cricket.api.CricketApiTest",
+        "com.cricket.api.MatchApiIngestTest",
+        "com.cricket.od.CommentaryFormatTest",
+        "com.cricket.od.ArchiveFreshnessTest",
+        "com.cricket.od.RosterLookupTest",
+        "com.cricket.od.ExperimentalFormatTest",
+        "com.cricket.api.HttpServerTest",
+        "com.cricket.od.PlayerImportTest",
+        "com.cricket.od.MatchArchiveTest"
+      ],
+      "total": 154,
+      "failed": 8,
+      "failures": [
+        "com.cricket.od.CommentaryFormatTest#scoresUseThePointDecimalSeparator",
+        "com.cricket.od.CommentaryFormatTest#theDefaultScorecardFormatIsFull",
+        "com.cricket.od.CommentaryFormatTest#theRequiredRateIsRunsOverRemainingOvers",
+        "com.cricket.od.LiveMatchQueryTest#onlyMatchesInProgressAreLive",
+        "com.cricket.od.LiveMatchQueryTest#theDirectoryStartsEmpty",
+        "com.cricket.od.RosterLookupTest#bothSquadsAreKnownToTheDirectory",
+        "com.cricket.od.RosterLookupTest#searchingByNameFragmentIsCaseInsensitive",
+        "com.cricket.od.RosterLookupTest#theOpenerResolvesByShortName"
+      ],
+      "orderDependentFailures": [
+        "com.cricket.od.CommentaryFormatTest#scoresUseThePointDecimalSeparator",
+        "com.cricket.od.CommentaryFormatTest#theDefaultScorecardFormatIsFull",
+        "com.cricket.od.CommentaryFormatTest#theRequiredRateIsRunsOverRemainingOvers",
+        "com.cricket.od.LiveMatchQueryTest#onlyMatchesInProgressAreLive",
+        "com.cricket.od.LiveMatchQueryTest#theDirectoryStartsEmpty",
+        "com.cricket.od.RosterLookupTest#bothSquadsAreKnownToTheDirectory",
+        "com.cricket.od.RosterLookupTest#searchingByNameFragmentIsCaseInsensitive",
+        "com.cricket.od.RosterLookupTest#theOpenerResolvesByShortName"
+      ]
+    },
+    {
+      "label": "shuffle-18",
+      "classOrder": [
+        "com.cricket.od.PlayerImportTest",
+        "com.cricket.od.ExperimentalFormatTest",
+        "com.cricket.od.ArchiveFreshnessTest",
+        "com.cricket.od.DeliveryRulesTest",
+        "com.cricket.api.CricketApiTest",
+        "com.cricket.api.RateLimiterTest",
+        "com.cricket.od.LiveMatchQueryTest",
+        "com.cricket.api.HttpServerTest",
+        "com.cricket.od.MatchArchiveTest",
+        "com.cricket.od.CommentaryFormatTest",
+        "com.cricket.api.MatchApiIngestTest",
+        "com.cricket.od.RosterLookupTest",
+        "com.cricket.od.SeriesSetupTest",
+        "com.cricket.od.RegionalBroadcastTest",
+        "com.cricket.od.TournamentTeardownTest"
+      ],
+      "total": 154,
+      "failed": 6,
+      "failures": [
+        "com.cricket.od.DeliveryRulesTest#aWideCostsTheBowlingSideOneRun",
+        "com.cricket.od.DeliveryRulesTest#anOverIsSixLegalDeliveries",
+        "com.cricket.od.DeliveryRulesTest#theShippedConditionsAreInEffect",
+        "com.cricket.od.RosterLookupTest#bothSquadsAreKnownToTheDirectory",
+        "com.cricket.od.RosterLookupTest#searchingByNameFragmentIsCaseInsensitive",
+        "com.cricket.od.RosterLookupTest#theOpenerResolvesByShortName"
+      ],
+      "orderDependentFailures": [
+        "com.cricket.od.DeliveryRulesTest#aWideCostsTheBowlingSideOneRun",
+        "com.cricket.od.DeliveryRulesTest#anOverIsSixLegalDeliveries",
+        "com.cricket.od.DeliveryRulesTest#theShippedConditionsAreInEffect",
+        "com.cricket.od.RosterLookupTest#bothSquadsAreKnownToTheDirectory",
+        "com.cricket.od.RosterLookupTest#searchingByNameFragmentIsCaseInsensitive",
+        "com.cricket.od.RosterLookupTest#theOpenerResolvesByShortName"
+      ]
+    },
+    {
+      "label": "shuffle-19",
+      "classOrder": [
+        "com.cricket.od.ArchiveFreshnessTest",
+        "com.cricket.api.RateLimiterTest",
+        "com.cricket.od.ExperimentalFormatTest",
+        "com.cricket.api.MatchApiIngestTest",
+        "com.cricket.od.CommentaryFormatTest",
+        "com.cricket.od.RosterLookupTest",
+        "com.cricket.od.LiveMatchQueryTest",
+        "com.cricket.api.HttpServerTest",
+        "com.cricket.od.SeriesSetupTest",
+        "com.cricket.od.RegionalBroadcastTest",
+        "com.cricket.od.DeliveryRulesTest",
+        "com.cricket.od.PlayerImportTest",
+        "com.cricket.od.TournamentTeardownTest",
+        "com.cricket.api.CricketApiTest",
+        "com.cricket.od.MatchArchiveTest"
+      ],
+      "total": 154,
+      "failed": 3,
+      "failures": [
+        "com.cricket.od.RosterLookupTest#bothSquadsAreKnownToTheDirectory",
+        "com.cricket.od.RosterLookupTest#searchingByNameFragmentIsCaseInsensitive",
+        "com.cricket.od.RosterLookupTest#theOpenerResolvesByShortName"
+      ],
+      "orderDependentFailures": [
+        "com.cricket.od.RosterLookupTest#bothSquadsAreKnownToTheDirectory",
+        "com.cricket.od.RosterLookupTest#searchingByNameFragmentIsCaseInsensitive",
+        "com.cricket.od.RosterLookupTest#theOpenerResolvesByShortName"
+      ]
+    },
+    {
+      "label": "shuffle-20",
+      "classOrder": [
+        "com.cricket.od.LiveMatchQueryTest",
+        "com.cricket.od.CommentaryFormatTest",
+        "com.cricket.api.RateLimiterTest",
+        "com.cricket.api.MatchApiIngestTest",
+        "com.cricket.api.CricketApiTest",
+        "com.cricket.od.TournamentTeardownTest",
+        "com.cricket.od.ArchiveFreshnessTest",
+        "com.cricket.api.HttpServerTest",
+        "com.cricket.od.RosterLookupTest",
+        "com.cricket.od.PlayerImportTest",
+        "com.cricket.od.ExperimentalFormatTest",
+        "com.cricket.od.MatchArchiveTest",
+        "com.cricket.od.SeriesSetupTest",
+        "com.cricket.od.RegionalBroadcastTest",
+        "com.cricket.od.DeliveryRulesTest"
+      ],
+      "total": 154,
+      "failed": 6,
+      "failures": [
+        "com.cricket.od.DeliveryRulesTest#aWideCostsTheBowlingSideOneRun",
+        "com.cricket.od.DeliveryRulesTest#anOverIsSixLegalDeliveries",
+        "com.cricket.od.DeliveryRulesTest#theShippedConditionsAreInEffect",
+        "com.cricket.od.RosterLookupTest#bothSquadsAreKnownToTheDirectory",
+        "com.cricket.od.RosterLookupTest#searchingByNameFragmentIsCaseInsensitive",
+        "com.cricket.od.RosterLookupTest#theOpenerResolvesByShortName"
+      ],
+      "orderDependentFailures": [
+        "com.cricket.od.DeliveryRulesTest#aWideCostsTheBowlingSideOneRun",
+        "com.cricket.od.DeliveryRulesTest#anOverIsSixLegalDeliveries",
+        "com.cricket.od.DeliveryRulesTest#theShippedConditionsAreInEffect",
+        "com.cricket.od.RosterLookupTest#bothSquadsAreKnownToTheDirectory",
+        "com.cricket.od.RosterLookupTest#searchingByNameFragmentIsCaseInsensitive",
+        "com.cricket.od.RosterLookupTest#theOpenerResolvesByShortName"
+      ]
+    },
+    {
+      "label": "shuffle-21",
+      "classOrder": [
+        "com.cricket.od.RosterLookupTest",
+        "com.cricket.od.DeliveryRulesTest",
+        "com.cricket.od.LiveMatchQueryTest",
+        "com.cricket.od.PlayerImportTest",
+        "com.cricket.od.CommentaryFormatTest",
+        "com.cricket.api.MatchApiIngestTest",
+        "com.cricket.od.SeriesSetupTest",
+        "com.cricket.od.ArchiveFreshnessTest",
+        "com.cricket.od.MatchArchiveTest",
+        "com.cricket.od.TournamentTeardownTest",
+        "com.cricket.api.HttpServerTest",
+        "com.cricket.od.RegionalBroadcastTest",
+        "com.cricket.api.RateLimiterTest",
+        "com.cricket.api.CricketApiTest",
+        "com.cricket.od.ExperimentalFormatTest"
+      ],
+      "total": 154,
+      "failed": 3,
+      "failures": [
+        "com.cricket.od.RosterLookupTest#bothSquadsAreKnownToTheDirectory",
+        "com.cricket.od.RosterLookupTest#searchingByNameFragmentIsCaseInsensitive",
+        "com.cricket.od.RosterLookupTest#theOpenerResolvesByShortName"
+      ],
+      "orderDependentFailures": [
+        "com.cricket.od.RosterLookupTest#bothSquadsAreKnownToTheDirectory",
+        "com.cricket.od.RosterLookupTest#searchingByNameFragmentIsCaseInsensitive",
+        "com.cricket.od.RosterLookupTest#theOpenerResolvesByShortName"
+      ]
+    },
+    {
+      "label": "shuffle-22",
+      "classOrder": [
+        "com.cricket.api.CricketApiTest",
+        "com.cricket.od.RegionalBroadcastTest",
+        "com.cricket.od.ArchiveFreshnessTest",
+        "com.cricket.api.HttpServerTest",
+        "com.cricket.od.DeliveryRulesTest",
+        "com.cricket.od.TournamentTeardownTest",
+        "com.cricket.od.SeriesSetupTest",
+        "com.cricket.api.RateLimiterTest",
+        "com.cricket.od.MatchArchiveTest",
+        "com.cricket.od.ExperimentalFormatTest",
+        "com.cricket.od.PlayerImportTest",
+        "com.cricket.od.CommentaryFormatTest",
+        "com.cricket.od.RosterLookupTest",
+        "com.cricket.api.MatchApiIngestTest",
+        "com.cricket.od.LiveMatchQueryTest"
+      ],
+      "total": 154,
+      "failed": 0,
+      "failures": [],
+      "orderDependentFailures": []
+    },
+    {
+      "label": "shuffle-23",
+      "classOrder": [
+        "com.cricket.api.MatchApiIngestTest",
+        "com.cricket.api.CricketApiTest",
+        "com.cricket.od.ArchiveFreshnessTest",
+        "com.cricket.od.LiveMatchQueryTest",
+        "com.cricket.od.ExperimentalFormatTest",
+        "com.cricket.od.MatchArchiveTest",
+        "com.cricket.api.HttpServerTest",
+        "com.cricket.od.CommentaryFormatTest",
+        "com.cricket.od.PlayerImportTest",
+        "com.cricket.od.DeliveryRulesTest",
+        "com.cricket.od.RegionalBroadcastTest",
+        "com.cricket.api.RateLimiterTest",
+        "com.cricket.od.SeriesSetupTest",
+        "com.cricket.od.TournamentTeardownTest",
+        "com.cricket.od.RosterLookupTest"
+      ],
+      "total": 154,
+      "failed": 3,
+      "failures": [
+        "com.cricket.od.RosterLookupTest#bothSquadsAreKnownToTheDirectory",
+        "com.cricket.od.RosterLookupTest#searchingByNameFragmentIsCaseInsensitive",
+        "com.cricket.od.RosterLookupTest#theOpenerResolvesByShortName"
+      ],
+      "orderDependentFailures": [
+        "com.cricket.od.RosterLookupTest#bothSquadsAreKnownToTheDirectory",
+        "com.cricket.od.RosterLookupTest#searchingByNameFragmentIsCaseInsensitive",
+        "com.cricket.od.RosterLookupTest#theOpenerResolvesByShortName"
+      ]
+    },
+    {
+      "label": "shuffle-24",
+      "classOrder": [
+        "com.cricket.api.CricketApiTest",
+        "com.cricket.od.DeliveryRulesTest",
+        "com.cricket.od.TournamentTeardownTest",
+        "com.cricket.od.LiveMatchQueryTest",
+        "com.cricket.od.CommentaryFormatTest",
+        "com.cricket.api.RateLimiterTest",
+        "com.cricket.od.PlayerImportTest",
+        "com.cricket.od.RosterLookupTest",
+        "com.cricket.od.MatchArchiveTest",
+        "com.cricket.od.ExperimentalFormatTest",
+        "com.cricket.od.SeriesSetupTest",
+        "com.cricket.api.MatchApiIngestTest",
+        "com.cricket.od.ArchiveFreshnessTest",
+        "com.cricket.api.HttpServerTest",
+        "com.cricket.od.RegionalBroadcastTest"
+      ],
+      "total": 154,
+      "failed": 1,
+      "failures": [
+        "com.cricket.od.ArchiveFreshnessTest#theExportDirectoryStartsClean"
+      ],
+      "orderDependentFailures": [
+        "com.cricket.od.ArchiveFreshnessTest#theExportDirectoryStartsClean"
+      ]
+    },
+    {
+      "label": "shuffle-25",
+      "classOrder": [
+        "com.cricket.od.PlayerImportTest",
+        "com.cricket.od.RosterLookupTest",
+        "com.cricket.api.RateLimiterTest",
+        "com.cricket.api.MatchApiIngestTest",
+        "com.cricket.od.LiveMatchQueryTest",
+        "com.cricket.od.TournamentTeardownTest",
+        "com.cricket.od.DeliveryRulesTest",
+        "com.cricket.od.ArchiveFreshnessTest",
+        "com.cricket.api.CricketApiTest",
+        "com.cricket.api.HttpServerTest",
+        "com.cricket.od.CommentaryFormatTest",
+        "com.cricket.od.ExperimentalFormatTest",
+        "com.cricket.od.MatchArchiveTest",
+        "com.cricket.od.SeriesSetupTest",
+        "com.cricket.od.RegionalBroadcastTest"
+      ],
+      "total": 154,
+      "failed": 0,
+      "failures": [],
+      "orderDependentFailures": []
+    }
+  ],
+  "orderDependent": {
+    "com.cricket.od.ArchiveFreshnessTest#theExportDirectoryStartsClean": [
+      "shuffle-1",
+      "shuffle-4",
+      "shuffle-5",
+      "shuffle-8",
+      "shuffle-9",
+      "shuffle-10",
+      "shuffle-12",
+      "shuffle-13",
+      "shuffle-24"
+    ],
+    "com.cricket.od.CommentaryFormatTest#scoresUseThePointDecimalSeparator": [
+      "shuffle-2",
+      "shuffle-5",
+      "shuffle-10",
+      "shuffle-16",
+      "shuffle-17"
+    ],
+    "com.cricket.od.CommentaryFormatTest#theDefaultScorecardFormatIsFull": [
+      "shuffle-2",
+      "shuffle-5",
+      "shuffle-10",
+      "shuffle-16",
+      "shuffle-17"
+    ],
+    "com.cricket.od.CommentaryFormatTest#theRequiredRateIsRunsOverRemainingOvers": [
+      "shuffle-2",
+      "shuffle-5",
+      "shuffle-10",
+      "shuffle-16",
+      "shuffle-17"
+    ],
+    "com.cricket.od.DeliveryRulesTest#aWideCostsTheBowlingSideOneRun": [
+      "shuffle-2",
+      "shuffle-13",
+      "shuffle-15",
+      "shuffle-18",
+      "shuffle-20"
+    ],
+    "com.cricket.od.DeliveryRulesTest#anOverIsSixLegalDeliveries": [
+      "shuffle-2",
+      "shuffle-13",
+      "shuffle-15",
+      "shuffle-18",
+      "shuffle-20"
+    ],
+    "com.cricket.od.DeliveryRulesTest#theShippedConditionsAreInEffect": [
+      "shuffle-2",
+      "shuffle-13",
+      "shuffle-15",
+      "shuffle-18",
+      "shuffle-20"
+    ],
+    "com.cricket.od.LiveMatchQueryTest#onlyMatchesInProgressAreLive": [
+      "shuffle-14",
+      "shuffle-17"
+    ],
+    "com.cricket.od.LiveMatchQueryTest#theDirectoryStartsEmpty": [
+      "shuffle-14",
+      "shuffle-17"
+    ],
+    "com.cricket.od.RosterLookupTest#bothSquadsAreKnownToTheDirectory": [
+      "shuffle-1",
+      "shuffle-2",
+      "shuffle-3",
+      "shuffle-4",
+      "shuffle-5",
+      "shuffle-6",
+      "shuffle-8",
+      "shuffle-9",
+      "shuffle-11",
+      "shuffle-12",
+      "shuffle-13",
+      "shuffle-14",
+      "shuffle-15",
+      "shuffle-16",
+      "shuffle-17",
+      "shuffle-18",
+      "shuffle-19",
+      "shuffle-20",
+      "shuffle-21",
+      "shuffle-23"
+    ],
+    "com.cricket.od.RosterLookupTest#searchingByNameFragmentIsCaseInsensitive": [
+      "shuffle-1",
+      "shuffle-2",
+      "shuffle-3",
+      "shuffle-4",
+      "shuffle-5",
+      "shuffle-6",
+      "shuffle-8",
+      "shuffle-9",
+      "shuffle-11",
+      "shuffle-12",
+      "shuffle-13",
+      "shuffle-14",
+      "shuffle-15",
+      "shuffle-16",
+      "shuffle-17",
+      "shuffle-18",
+      "shuffle-19",
+      "shuffle-20",
+      "shuffle-21",
+      "shuffle-23"
+    ],
+    "com.cricket.od.RosterLookupTest#theOpenerResolvesByShortName": [
+      "shuffle-1",
+      "shuffle-2",
+      "shuffle-3",
+      "shuffle-4",
+      "shuffle-5",
+      "shuffle-6",
+      "shuffle-8",
+      "shuffle-9",
+      "shuffle-11",
+      "shuffle-12",
+      "shuffle-13",
+      "shuffle-14",
+      "shuffle-15",
+      "shuffle-16",
+      "shuffle-17",
+      "shuffle-18",
+      "shuffle-19",
+      "shuffle-20",
+      "shuffle-21",
+      "shuffle-23"
+    ]
+  }
+}

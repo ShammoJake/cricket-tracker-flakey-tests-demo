@@ -1,0 +1,676 @@
+{
+  "schemaVersion": 1,
+  "project": "cricket-tracker",
+  "description": "Ground truth for the flaky-test research artifacts. Categories follow FlakeBench (Rahman, Dutta, Shi - OOPSLA 2025): async, concurrency, time, uc, od, non-flaky.",
+  "measurement": {
+    "harness": "tools/rerun.py",
+    "method": "fresh JVM per run via org.junit.runner.JUnitCore, class-level granularity",
+    "runsPerTest": 50,
+    "machine": "Windows 11, Temurin 11.0.32, 4-core",
+    "note": "Failure rates are machine- and load-dependent and drift between sessions. The invariant that matters is that each labelled test has been observed to both pass and fail on the same code.",
+    "orderHarness": "tools/gen_orders.py",
+    "orderRuns": 25,
+    "originalOrder": "Surefire runOrder is pinned to alphabetical in the root pom. Every OD test is written to pass in that order: each victim's class sorts ahead of its polluter, and the state-setter sorts ahead of its brittle.",
+    "odNote": "OD failure counts are out of 25 shuffled class orders (seed 11), not out of repeated runs of one order. Unlike the async and concurrency rates these are deterministic given the order: each has been confirmed by an explicit two-class probe showing the victim passes alone and fails directly after its polluter.",
+    "ucNote": "Unordered-collection order is only nondeterministic here because the standings are allocated across threads. Measured directly with tools/HashOrderProbe: a HashMap keyed by player id iterates identically on every JVM run, since String hash codes are fixed by the language, and even an identity-hashed HashSet is stable when it is filled on one thread. Spreading the allocation over a worker per venue is what moves it, with the contents still complete.",
+    "timeNote": "Timing budgets were set from tools/TimingProbe rather than chosen: export costs a mean of 0.5-0.9ms with an 8-11ms tail, render 0.03ms. Budgets sit inside that band, which is what makes the assertions flaky rather than always-passing or always-failing."
+  },
+  "phasesComplete": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "tests": [
+    {
+      "fqn": "com.cricket.live.LiveScoreIngestTest#scorecardReflectsAllBallsAfterIngest",
+      "module": "cricket-live",
+      "category": "async",
+      "odRole": null,
+      "adversarial": false,
+      "observedFailures": 8,
+      "observedRuns": 50,
+      "flakesync": {
+        "criticalPoint": "com/cricket/live/ScorecardUpdater.java:onBall - final statement",
+        "barrierPoint": "LiveScoreIngestTest.java - before the assertEquals",
+        "expectedRepairable": true,
+        "note": "Primary FlakeSync target. Mirrors Figure 1 of the ICSE'24 paper: submit async work, sleep a fixed time, assert on shared state."
+      }
+    },
+    {
+      "fqn": "com.cricket.live.LiveScoreIngestTest#theInningsTotalIsVisibleAfterIngest",
+      "module": "cricket-live",
+      "category": "async",
+      "adversarial": false,
+      "observedFailures": 8,
+      "observedRuns": 50
+    },
+    {
+      "fqn": "com.cricket.live.LiveScoreIngestTest#thePartnershipIsVisibleAfterIngest",
+      "module": "cricket-live",
+      "category": "async",
+      "adversarial": false,
+      "observedFailures": 14,
+      "observedRuns": 50
+    },
+    {
+      "fqn": "com.cricket.live.LiveScoreIngestTest#commentaryCoversTheWholeInnings",
+      "module": "cricket-live",
+      "category": "async",
+      "adversarial": false,
+      "observedFailures": 22,
+      "observedRuns": 50
+    },
+    {
+      "fqn": "com.cricket.live.BroadcastLatencyTest#everyBattingMilestoneIsNoticed",
+      "module": "cricket-live",
+      "category": "async",
+      "adversarial": false,
+      "observedFailures": 1,
+      "observedRuns": 50,
+      "flakesync": {
+        "criticalPoint": "com/cricket/live/MilestoneDetector.java:onBall - milestone append",
+        "expectedRepairable": true,
+        "note": "Exercises FlakeSync's multi-execution threshold path: the critical point must run many times (once per milestone) before the barrier may proceed, so a single-execution barrier is not sufficient."
+      }
+    },
+    {
+      "fqn": "com.cricket.live.BroadcastLatencyTest#subscriberReceivesEveryDelivery",
+      "module": "cricket-live",
+      "category": "async",
+      "adversarial": false,
+      "observedFailures": 11,
+      "observedRuns": 50
+    },
+    {
+      "fqn": "com.cricket.live.BroadcastLatencyTest#theTranscriptCoversTheWholeInnings",
+      "module": "cricket-live",
+      "category": "async",
+      "adversarial": false,
+      "observedFailures": 43,
+      "observedRuns": 50
+    },
+    {
+      "fqn": "com.cricket.live.BroadcastLatencyTest#aWicketNoticeReachesSubscribers",
+      "module": "cricket-live",
+      "category": "async",
+      "adversarial": false,
+      "observedFailures": 0,
+      "observedRuns": 50,
+      "note": "Passed 50/50 in isolation but failed in the full Maven suite, where the JVM is shared with ~700 other tests. Flaky only under suite conditions."
+    },
+    {
+      "fqn": "com.cricket.live.ScorecardSnapshotTest#theSnapshotReachesTheFinalDelivery",
+      "module": "cricket-live",
+      "category": "async",
+      "adversarial": false,
+      "observedFailures": 5,
+      "observedRuns": 50
+    },
+    {
+      "fqn": "com.cricket.live.ScorecardSnapshotTest#theSnapshotCountsEveryBoundary",
+      "module": "cricket-live",
+      "category": "async",
+      "adversarial": false,
+      "observedFailures": 13,
+      "observedRuns": 50
+    },
+    {
+      "fqn": "com.cricket.api.MatchApiIngestTest#theOverCountIsCurrentOnTheScorecard",
+      "module": "cricket-api",
+      "category": "async",
+      "adversarial": false,
+      "observedFailures": 1,
+      "observedRuns": 50
+    },
+    {
+      "fqn": "com.cricket.concurrent.ConcurrentBallIngestTest#parallelIngestRecordsEveryLegalBall",
+      "module": "cricket-live",
+      "category": "concurrency",
+      "adversarial": false,
+      "observedFailures": 7,
+      "observedRuns": 50,
+      "tsvd4j": {
+        "expectedConflictingPair": "ScoreCard.legalBalls read/write from several ingest threads"
+      }
+    },
+    {
+      "fqn": "com.cricket.concurrent.ConcurrentBallIngestTest#parallelIngestKeepsRunTotalConsistent",
+      "module": "cricket-live",
+      "category": "concurrency",
+      "adversarial": false,
+      "observedFailures": 15,
+      "observedRuns": 50,
+      "tsvd4j": {
+        "expectedConflictingPair": "ScoreCard.totalRuns read-modify-write from several ingest threads"
+      }
+    },
+    {
+      "fqn": "com.cricket.concurrent.ConcurrentBallIngestTest#everySubmittedDeliveryReachesTheInnings",
+      "module": "cricket-live",
+      "category": "concurrency",
+      "adversarial": false,
+      "observedFailures": 31,
+      "observedRuns": 50,
+      "tsvd4j": {
+        "expectedConflictingPair": "Innings.balls ArrayList.add from several ingest threads"
+      }
+    },
+    {
+      "fqn": "com.cricket.concurrent.ConcurrentBallIngestTest#theBatterIsCreditedWithEveryRun",
+      "module": "cricket-live",
+      "category": "concurrency",
+      "adversarial": false,
+      "observedFailures": 0,
+      "observedRuns": 50,
+      "note": "Passed 50/50 in isolation but failed in the full Maven suite. BattingLine.runs is the same read-modify-write shape as ScoreCard.totalRuns."
+    },
+    {
+      "fqn": "com.cricket.concurrent.SharedStateRaceTest#concurrentRegistrationsAreAllVisible",
+      "module": "cricket-live",
+      "category": "concurrency",
+      "adversarial": false,
+      "observedFailures": 43,
+      "observedRuns": 50,
+      "tsvd4j": {
+        "expectedConflictingPair": "MatchRegistry.matches HashMap.put from several threads"
+      }
+    },
+    {
+      "fqn": "com.cricket.concurrent.SharedStateRaceTest#theRegistrationCounterMatchesTheRegistrations",
+      "module": "cricket-live",
+      "category": "concurrency",
+      "adversarial": false,
+      "observedFailures": 32,
+      "observedRuns": 50,
+      "tsvd4j": {
+        "expectedConflictingPair": "MatchRegistry.registrations field increment from several threads"
+      }
+    },
+    {
+      "fqn": "com.cricket.concurrent.SharedStateRaceTest#everySubscriberIsRetainedOnTheFeed",
+      "module": "cricket-live",
+      "category": "concurrency",
+      "adversarial": false,
+      "observedFailures": 46,
+      "observedRuns": 50,
+      "tsvd4j": {
+        "expectedConflictingPair": "LiveFeedBroadcaster.subscribers HashSet.add from several threads"
+      }
+    },
+    {
+      "fqn": "com.cricket.od.LiveMatchQueryTest#theDirectoryStartsEmpty",
+      "module": "cricket-api",
+      "category": "od",
+      "odRole": "victim",
+      "adversarial": false,
+      "observedFailures": 2,
+      "observedRuns": 25,
+      "rankf": {
+        "channel": "A",
+        "polluter": "com.cricket.od.SeriesSetupTest",
+        "cleaner": "com.cricket.od.TournamentTeardownTest",
+        "note": "A: MatchRegistry, a static singleton over a bare HashMap. The polluter leaves the tour's fixtures registered, including one in progress."
+      }
+    },
+    {
+      "fqn": "com.cricket.od.LiveMatchQueryTest#onlyMatchesInProgressAreLive",
+      "module": "cricket-api",
+      "category": "od",
+      "odRole": "victim",
+      "adversarial": false,
+      "observedFailures": 2,
+      "observedRuns": 25,
+      "rankf": {
+        "channel": "A",
+        "polluter": "com.cricket.od.SeriesSetupTest",
+        "cleaner": "com.cricket.od.TournamentTeardownTest",
+        "note": "A: MatchRegistry, a static singleton over a bare HashMap. The polluter leaves the tour's fixtures registered, including one in progress."
+      }
+    },
+    {
+      "fqn": "com.cricket.od.DeliveryRulesTest#theShippedConditionsAreInEffect",
+      "module": "cricket-api",
+      "category": "od",
+      "odRole": "victim",
+      "adversarial": false,
+      "observedFailures": 5,
+      "observedRuns": 25,
+      "rankf": {
+        "channel": "B",
+        "polluter": "com.cricket.od.ExperimentalFormatTest",
+        "cleaner": "com.cricket.od.TournamentTeardownTest",
+        "note": "B: ScoringRules, static mutable playing conditions. The polluter loads the eight-ball-over trial conditions in @BeforeClass and never restores them."
+      }
+    },
+    {
+      "fqn": "com.cricket.od.DeliveryRulesTest#anOverIsSixLegalDeliveries",
+      "module": "cricket-api",
+      "category": "od",
+      "odRole": "victim",
+      "adversarial": false,
+      "observedFailures": 5,
+      "observedRuns": 25,
+      "rankf": {
+        "channel": "B",
+        "polluter": "com.cricket.od.ExperimentalFormatTest",
+        "cleaner": "com.cricket.od.TournamentTeardownTest",
+        "note": "B: ScoringRules, static mutable playing conditions. The polluter loads the eight-ball-over trial conditions in @BeforeClass and never restores them."
+      }
+    },
+    {
+      "fqn": "com.cricket.od.DeliveryRulesTest#aWideCostsTheBowlingSideOneRun",
+      "module": "cricket-api",
+      "category": "od",
+      "odRole": "victim",
+      "adversarial": false,
+      "observedFailures": 5,
+      "observedRuns": 25,
+      "rankf": {
+        "channel": "B",
+        "polluter": "com.cricket.od.ExperimentalFormatTest",
+        "cleaner": "com.cricket.od.TournamentTeardownTest",
+        "note": "B: ScoringRules, static mutable playing conditions. The polluter loads the eight-ball-over trial conditions in @BeforeClass and never restores them."
+      }
+    },
+    {
+      "fqn": "com.cricket.od.RosterLookupTest#theOpenerResolvesByShortName",
+      "module": "cricket-api",
+      "category": "od",
+      "odRole": "brittle",
+      "adversarial": false,
+      "observedFailures": 20,
+      "observedRuns": 25,
+      "rankf": {
+        "channel": "C",
+        "stateSetter": "com.cricket.od.PlayerImportTest",
+        "note": "C: PlayerDirectory, a lazily populated static cache. The brittle reads short names the state-setter imported; with no import ahead of it there is nothing to resolve."
+      }
+    },
+    {
+      "fqn": "com.cricket.od.RosterLookupTest#bothSquadsAreKnownToTheDirectory",
+      "module": "cricket-api",
+      "category": "od",
+      "odRole": "brittle",
+      "adversarial": false,
+      "observedFailures": 20,
+      "observedRuns": 25,
+      "rankf": {
+        "channel": "C",
+        "stateSetter": "com.cricket.od.PlayerImportTest",
+        "note": "C: PlayerDirectory, a lazily populated static cache. The brittle reads short names the state-setter imported; with no import ahead of it there is nothing to resolve."
+      }
+    },
+    {
+      "fqn": "com.cricket.od.RosterLookupTest#searchingByNameFragmentIsCaseInsensitive",
+      "module": "cricket-api",
+      "category": "od",
+      "odRole": "brittle",
+      "adversarial": false,
+      "observedFailures": 20,
+      "observedRuns": 25,
+      "rankf": {
+        "channel": "C",
+        "stateSetter": "com.cricket.od.PlayerImportTest",
+        "note": "C: PlayerDirectory, a lazily populated static cache. The brittle reads short names the state-setter imported; with no import ahead of it there is nothing to resolve."
+      }
+    },
+    {
+      "fqn": "com.cricket.od.ArchiveFreshnessTest#theExportDirectoryStartsClean",
+      "module": "cricket-api",
+      "category": "od",
+      "odRole": "victim",
+      "adversarial": false,
+      "observedFailures": 9,
+      "observedRuns": 25,
+      "rankf": {
+        "channel": "D",
+        "polluter": "com.cricket.od.MatchArchiveTest",
+        "cleaner": "com.cricket.od.TournamentTeardownTest",
+        "note": "D: the shared export directory on disk. Survives the JVM, so the harness clears it between orders to keep the channel in-run rather than cross-run."
+      }
+    },
+    {
+      "fqn": "com.cricket.od.CommentaryFormatTest#scoresUseThePointDecimalSeparator",
+      "module": "cricket-api",
+      "category": "od",
+      "odRole": "victim",
+      "adversarial": false,
+      "observedFailures": 5,
+      "observedRuns": 25,
+      "rankf": {
+        "channel": "E",
+        "polluter": "com.cricket.od.RegionalBroadcastTest",
+        "cleaner": "com.cricket.od.TournamentTeardownTest",
+        "note": "E: JVM-global presentation state -- Locale.getDefault() and the cricket.scoreboard.style system property, both set in @BeforeClass and left set."
+      }
+    },
+    {
+      "fqn": "com.cricket.od.CommentaryFormatTest#theDefaultScorecardFormatIsFull",
+      "module": "cricket-api",
+      "category": "od",
+      "odRole": "victim",
+      "adversarial": false,
+      "observedFailures": 5,
+      "observedRuns": 25,
+      "rankf": {
+        "channel": "E",
+        "polluter": "com.cricket.od.RegionalBroadcastTest",
+        "cleaner": "com.cricket.od.TournamentTeardownTest",
+        "note": "E: JVM-global presentation state -- Locale.getDefault() and the cricket.scoreboard.style system property, both set in @BeforeClass and left set."
+      }
+    },
+    {
+      "fqn": "com.cricket.od.CommentaryFormatTest#theRequiredRateIsRunsOverRemainingOvers",
+      "module": "cricket-api",
+      "category": "od",
+      "odRole": "victim",
+      "adversarial": false,
+      "observedFailures": 5,
+      "observedRuns": 25,
+      "rankf": {
+        "channel": "E",
+        "polluter": "com.cricket.od.RegionalBroadcastTest",
+        "cleaner": "com.cricket.od.TournamentTeardownTest",
+        "note": "E: JVM-global presentation state -- Locale.getDefault() and the cricket.scoreboard.style system property, both set in @BeforeClass and left set."
+      }
+    },
+    {
+      "fqn": "com.cricket.time.MatchTimingTest#theArchiveIsWrittenInsideTheBudget",
+      "module": "cricket-stats",
+      "category": "time",
+      "odRole": null,
+      "adversarial": false,
+      "observedFailures": 11,
+      "observedRuns": 40,
+      "flakesync": {
+        "expectedRepairable": false,
+        "note": "Deliberate negative control. The ICSE'24 paper states FlakeSync cannot repair 'exact timing' tests: the assertion is on elapsed wall-clock time, so no barrier makes it deterministic. A repair reported here would be a false positive."
+      }
+    },
+    {
+      "fqn": "com.cricket.time.MatchTimingTest#theOverlayKeepsUpWithTheDeliveries",
+      "module": "cricket-stats",
+      "category": "time",
+      "odRole": null,
+      "adversarial": false,
+      "observedFailures": 1,
+      "observedRuns": 40,
+      "flakesync": {
+        "expectedRepairable": false,
+        "note": "Second exact-timing assertion; same negative control shape."
+      }
+    },
+    {
+      "fqn": "com.cricket.time.MatchTimingTest#everyWicketIsKeptOnTheTimeline",
+      "module": "cricket-stats",
+      "category": "time",
+      "odRole": null,
+      "adversarial": false,
+      "observedFailures": 1,
+      "observedRuns": 40,
+      "note": "MatchTimeline keys entries by System.currentTimeMillis(). Two notes inside one clock tick collide and one is lost. The clock granularity measured on this machine varied between 3ms and 12ms across runs."
+    },
+    {
+      "fqn": "com.cricket.uc.UnorderedStandingsTest#theOpeningVenueHeadsTheTable",
+      "module": "cricket-stats",
+      "category": "uc",
+      "odRole": null,
+      "adversarial": false,
+      "observedFailures": 20,
+      "observedRuns": 30
+    },
+    {
+      "fqn": "com.cricket.uc.UnorderedStandingsTest#theRunnerUpIsSecondOnTheTable",
+      "module": "cricket-stats",
+      "category": "uc",
+      "odRole": null,
+      "adversarial": false,
+      "observedFailures": 11,
+      "observedRuns": 30
+    },
+    {
+      "fqn": "com.cricket.uc.UnorderedStandingsTest#theOpeningBowlerHeadsTheWicketTable",
+      "module": "cricket-stats",
+      "category": "uc",
+      "odRole": null,
+      "adversarial": false,
+      "observedFailures": 14,
+      "observedRuns": 30
+    },
+    {
+      "fqn": "com.cricket.uc.UnorderedStandingsTest#theBoardPresentsTheOpenersInSquadOrder",
+      "module": "cricket-stats",
+      "category": "uc",
+      "odRole": null,
+      "adversarial": false,
+      "observedFailures": 17,
+      "observedRuns": 30
+    },
+    {
+      "fqn": "com.cricket.adversarial.ScoreboardReadingTest#everyBoundaryIsOnTheScoreboard",
+      "module": "cricket-live",
+      "category": "async",
+      "odRole": null,
+      "adversarial": true,
+      "observedFailures": 34,
+      "observedRuns": 40
+    },
+    {
+      "fqn": "com.cricket.adversarial.ScoreboardReadingTest#theScoreboardCountsEveryDeliveryBowled",
+      "module": "cricket-live",
+      "category": "async",
+      "odRole": null,
+      "adversarial": true,
+      "observedFailures": 33,
+      "observedRuns": 40
+    },
+    {
+      "fqn": "com.cricket.adversarial.ScoreboardReadingTest#theTranscriptRunsToTheEndOfTheInnings",
+      "module": "cricket-live",
+      "category": "async",
+      "odRole": null,
+      "adversarial": true,
+      "observedFailures": 38,
+      "observedRuns": 40
+    },
+    {
+      "fqn": "com.cricket.adversarial.IntervalReportTest#everyBattingMilestoneWasPassed",
+      "module": "cricket-live",
+      "category": "async",
+      "odRole": null,
+      "adversarial": true,
+      "observedFailures": 5,
+      "observedRuns": 40
+    },
+    {
+      "fqn": "com.cricket.adversarial.IntervalReportTest#theRunningTotalReachedTheClosingScore",
+      "module": "cricket-live",
+      "category": "async",
+      "odRole": null,
+      "adversarial": true,
+      "observedFailures": 36,
+      "observedRuns": 40
+    },
+    {
+      "fqn": "com.cricket.adversarial.CloseOfPlayTest#theClosingTotalIsOnTheBoard",
+      "module": "cricket-live",
+      "category": "async",
+      "odRole": null,
+      "adversarial": true,
+      "observedFailures": 13,
+      "observedRuns": 40
+    },
+    {
+      "fqn": "com.cricket.adversarial.CloseOfPlayTest#theBoardShowsEveryDeliveryOfTheInnings",
+      "module": "cricket-live",
+      "category": "async",
+      "odRole": null,
+      "adversarial": true,
+      "observedFailures": 19,
+      "observedRuns": 40
+    },
+    {
+      "fqn": "com.cricket.adversarial.CloseOfPlayTest#theLastBallOfTheDayIsOnTheFeed",
+      "module": "cricket-live",
+      "category": "async",
+      "odRole": null,
+      "adversarial": true,
+      "observedFailures": 36,
+      "observedRuns": 40
+    }
+  ],
+  "controls": [
+    {
+      "fqn": "com.cricket.live.LiveScoreIngestTest#pipelineDrainsWhenProperlyAwaited",
+      "category": "non-flaky",
+      "note": "Same work as the async flaky tests but synchronises with awaitIdle instead of sleeping. Must never fail."
+    },
+    {
+      "fqn": "com.cricket.live.BroadcastLatencyTest#everySubscriberSeesTheSameCountWhenAwaited",
+      "category": "non-flaky"
+    },
+    {
+      "fqn": "com.cricket.live.ScorecardSnapshotTest#theSnapshotIsCompleteWhenProperlyAwaited",
+      "category": "non-flaky"
+    },
+    {
+      "fqn": "com.cricket.api.MatchApiIngestTest#theScorecardIsCompleteWhenProperlyAwaited",
+      "category": "non-flaky"
+    },
+    {
+      "fqn": "com.cricket.api.RequestMetrics",
+      "category": "tsvd4j-control",
+      "note": "Correctly built on AtomicLong and ConcurrentHashMap. TSVD4J should report no conflicting pair here; if it does, that is a false positive."
+    },
+    {
+      "fqn": "com.cricket.core.model.Match.dirty",
+      "category": "tsvd4j-control",
+      "note": "Two threads write the same constant true to this field. The TSVD4J paper names this shape as a known false-positive source."
+    },
+    {
+      "fqn": "com.cricket.adversarial.ConcurrentSubscriberTest#everySubscriberOnTheFeedReceivesTheInnings",
+      "category": "non-flaky",
+      "adversarial": true,
+      "note": "Token-heavy decoy: 8 concurrency tokens in the body, 40/40 passes."
+    },
+    {
+      "fqn": "com.cricket.adversarial.ConcurrentSubscriberTest#theTranscriptTalliesTheSameFromEveryThread",
+      "category": "non-flaky",
+      "adversarial": true,
+      "note": "Token-heavy decoy: 8 concurrency tokens in the body, 40/40 passes."
+    },
+    {
+      "fqn": "com.cricket.adversarial.ConcurrentSubscriberTest#theAtomicDeliveryCountMatchesTheInnings",
+      "category": "non-flaky",
+      "adversarial": true,
+      "note": "Token-heavy decoy: contains Thread.sleep, but only after awaitIdle has already returned, so it cannot affect the outcome."
+    },
+    {
+      "fqn": "com.cricket.adversarial.ConcurrentSubscriberTest#theScorecardIsSettledOnceTheQueueHasDrained",
+      "category": "non-flaky",
+      "adversarial": true,
+      "note": "Token-heavy decoy: sleep after an explicit drain. 40/40 passes."
+    },
+    {
+      "fqn": "com.cricket.adversarial.ScoreboardReadingTest#theScoreboardIsCompleteOnceTheScorersHaveCaughtUp",
+      "category": "non-flaky",
+      "note": "Token-free control: drains instead of pausing."
+    },
+    {
+      "fqn": "com.cricket.adversarial.IntervalReportTest#theClosingFiguresAreFinalOnceTheScorersHaveCaughtUp",
+      "category": "non-flaky",
+      "note": "Token-free control: drains instead of pausing."
+    },
+    {
+      "fqn": "com.cricket.adversarial.CloseOfPlayTest#theBoardIsFinalOnceTheScorersHaveSignedOff",
+      "category": "non-flaky",
+      "note": "Token-free control: drains instead of pausing."
+    }
+  ],
+  "odTriples": [
+    {
+      "channel": "A",
+      "state": "com.cricket.core.registry.MatchRegistry (static HashMap singleton)",
+      "polluter": "com.cricket.od.SeriesSetupTest",
+      "cleaner": "com.cricket.od.TournamentTeardownTest",
+      "victims": [
+        "com.cricket.od.LiveMatchQueryTest#theDirectoryStartsEmpty",
+        "com.cricket.od.LiveMatchQueryTest#onlyMatchesInProgressAreLive"
+      ]
+    },
+    {
+      "channel": "B",
+      "state": "com.cricket.core.engine.ScoringRules (static mutable config)",
+      "polluter": "com.cricket.od.ExperimentalFormatTest",
+      "cleaner": "com.cricket.od.TournamentTeardownTest",
+      "victims": [
+        "com.cricket.od.DeliveryRulesTest#theShippedConditionsAreInEffect",
+        "com.cricket.od.DeliveryRulesTest#anOverIsSixLegalDeliveries",
+        "com.cricket.od.DeliveryRulesTest#aWideCostsTheBowlingSideOneRun"
+      ]
+    },
+    {
+      "channel": "C",
+      "state": "com.cricket.core.registry.PlayerDirectory (lazy static cache)",
+      "stateSetter": "com.cricket.od.PlayerImportTest",
+      "cleaner": "com.cricket.od.TournamentTeardownTest",
+      "brittles": [
+        "com.cricket.od.RosterLookupTest#theOpenerResolvesByShortName",
+        "com.cricket.od.RosterLookupTest#bothSquadsAreKnownToTheDirectory",
+        "com.cricket.od.RosterLookupTest#searchingByNameFragmentIsCaseInsensitive"
+      ]
+    },
+    {
+      "channel": "D",
+      "state": "the shared export directory (target/exports on disk)",
+      "polluter": "com.cricket.od.MatchArchiveTest",
+      "cleaner": "com.cricket.od.TournamentTeardownTest",
+      "victims": [
+        "com.cricket.od.ArchiveFreshnessTest#theExportDirectoryStartsClean"
+      ]
+    },
+    {
+      "channel": "E",
+      "state": "Locale.getDefault() and the cricket.scoreboard.style system property",
+      "polluter": "com.cricket.od.RegionalBroadcastTest",
+      "cleaner": "com.cricket.od.TournamentTeardownTest",
+      "victims": [
+        "com.cricket.od.CommentaryFormatTest#scoresUseThePointDecimalSeparator",
+        "com.cricket.od.CommentaryFormatTest#theDefaultScorecardFormatIsFull",
+        "com.cricket.od.CommentaryFormatTest#theRequiredRateIsRunsOverRemainingOvers"
+      ]
+    }
+  ],
+  "odRelevant": {
+    "note": "The tests RankF should rank highly as OD-relevant for the victims and brittles above. Everything else in cricket-api is a distractor.",
+    "polluters": [
+      "com.cricket.od.SeriesSetupTest",
+      "com.cricket.od.ExperimentalFormatTest",
+      "com.cricket.od.MatchArchiveTest",
+      "com.cricket.od.RegionalBroadcastTest"
+    ],
+    "stateSetters": [
+      "com.cricket.od.PlayerImportTest"
+    ],
+    "cleaners": [
+      "com.cricket.od.TournamentTeardownTest"
+    ],
+    "candidatePoolSize": 154
+  },
+  "adversarial": {
+    "hypothesis": "FlakyLens (OOPSLA'25) reports that its classifiers key on surface tokens rather than semantics, losing up to 18.37pp F1 under perturbation. These two groups test that directly on unperturbed, naturally written tests.",
+    "flakyWithoutTokens": {
+      "count": 8,
+      "note": "Genuinely async-flaky. Every wait is behind a domain-named helper on the MatchDay fixture -- day.drinks(), day.tea() -- so the method body contains none of sleep, Thread, await, latch, concurrent, Executor, timeout, Duration, Atomic or millis. Verified by token scan.",
+      "expectedFailure": "classified non-flaky"
+    },
+    "nonFlakyWithTokens": {
+      "count": 4,
+      "note": "Deterministic: every assertion follows an explicit awaitIdle, and every shared structure is a concurrent one. Bodies carry 4 to 8 flakiness tokens each. 40/40 passes.",
+      "expectedFailure": "classified flaky (async wait or concurrency)"
+    },
+    "tokenScan": "verified with tools/extract_tests.py plus the token list in the report"
+  }
+}
