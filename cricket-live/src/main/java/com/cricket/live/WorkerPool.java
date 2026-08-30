@@ -16,7 +16,12 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public final class WorkerPool extends ThreadPoolExecutor {
 
+
     /** Deliberately not lambdas: bytecode tooling reads named classes more reliably. */
+    private static volatile int numExecutions;
+
+    public static void resetExecutions() { numExecutions = 0; }
+    public static int getExecutedStatus() { return numExecutions; }
     private static final class PoolThreadFactory implements ThreadFactory {
         private final String prefix;
         private final AtomicInteger counter = new AtomicInteger();
@@ -63,6 +68,7 @@ public final class WorkerPool extends ThreadPoolExecutor {
         }
         hasExecuted = true;
         super.beforeExecute(t, r);
+    numExecutions++;
     }
 
     @Override
