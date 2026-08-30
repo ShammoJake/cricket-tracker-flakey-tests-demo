@@ -3,15 +3,15 @@
   "commentsStripped": true,
   "ratio": null,
   "counts": {
-    "non-flaky": 752,
-    "async": 19,
+    "non-flaky": 751,
+    "async": 20,
     "concurrency": 7,
     "time": 3,
     "uc": 4,
     "od": 12
   },
   "total": 797,
-  "flaky": 45,
+  "flaky": 46,
   "tests": [
     {
       "fqn": "com.cricket.core.engine.BallValidatorTest#aPlainDeliveryIsValid",
@@ -7416,7 +7416,7 @@
       "class": "com.cricket.live.LiveScoreIngestTest",
       "method": "scorecardReflectsAllBallsAfterIngest",
       "signature": "public void scorecardReflectsAllBallsAfterIngest() throws InterruptedException",
-      "body": "pipeline.submitAll(MATCH, innings, inningsOfSingles(DELIVERIES));\nThread.sleep(SETTLE_MILLIS);\nassertEquals(DELIVERIES, updater.snapshot(MATCH).getRuns());",
+      "body": "com.cricket.live.WorkerPool.resetExecutions();\npipeline.submitAll(MATCH, innings, inningsOfSingles(DELIVERIES));\nThread.sleep(ISOLATED_SETTLE_MILLIS);\nwhile (com.cricket.live.WorkerPool.getExecutedStatus() < DELIVERIES) {\n    Thread.yield();\n}\nassertEquals(DELIVERIES, updater.snapshot(MATCH).getRuns());",
       "file": "cricket-live/src/test/java/com/cricket/live/LiveScoreIngestTest.java",
       "category": "async",
       "odRole": null,
@@ -7431,10 +7431,10 @@
       "signature": "public void everyDeliveryIsAppliedAfterIngest() throws InterruptedException",
       "body": "pipeline.submitAll(MATCH, innings, inningsOfSingles(DELIVERIES));\nThread.sleep(SETTLE_MILLIS - 1L);\nassertEquals(DELIVERIES, updater.appliedCount());",
       "file": "cricket-live/src/test/java/com/cricket/live/LiveScoreIngestTest.java",
-      "category": "non-flaky",
+      "category": "async",
       "odRole": null,
       "adversarial": false,
-      "flaky": false
+      "flaky": true
     },
     {
       "fqn": "com.cricket.live.LiveScoreIngestTest#theInningsTotalIsVisibleAfterIngest",

@@ -29,14 +29,36 @@
       "category": "async",
       "odRole": null,
       "adversarial": false,
-      "observedFailures": 8,
+      "observedFailures": 0,
       "observedRuns": 50,
       "flakesync": {
         "criticalPoint": "com/cricket/live/ScorecardUpdater.java:onBall - final statement",
         "barrierPoint": "LiveScoreIngestTest.java - before the assertEquals",
         "expectedRepairable": true,
-        "note": "Primary FlakeSync target. Mirrors Figure 1 of the ICSE'24 paper: submit async work, sleep a fixed time, assert on shared state."
-      }
+        "note": "Primary FlakeSync target. Mirrors Figure 1 of the ICSE'24 paper: submit async work, sleep a fixed time, assert on shared state.",
+        "observedRootMethod": "com/cricket/live/WorkerPool.beforeExecute",
+        "observedCriticalPoints": [
+          "com/cricket/live/WorkerPool#59-62",
+          "com/cricket/live/WorkerPool#64-65"
+        ],
+        "observedBarrierPoints": [
+          {
+            "criticalPoint": "com/cricket/live/WorkerPool#59-62",
+            "barrier": "com.cricket.live.LiveScoreIngestTest#101",
+            "threshold": 2
+          },
+          {
+            "criticalPoint": "com/cricket/live/WorkerPool#64-65",
+            "barrier": "com.cricket.live.LiveScoreIngestTest#105",
+            "threshold": 240
+          }
+        ],
+        "observedResult": "Repairable, confirmed by applying the patch. The barrier location matches ground truth (LiveScoreIngestTest#105, immediately before the assertEquals). The critical point does not: FlakeSync converged on WorkerPool.beforeExecute, the pool-wide dispatch hook, rather than the expected ScorecardUpdater.onBall. deltadebug minimized 53 locations to WorkerPool#59, a choke point that starves every task, and critsearch explored outward from there. The repair is correct and the barrier threshold, once fixed, is exactly the delivery count.",
+        "patchApplied": true,
+        "patchThresholdBug": "The emitted patch was broken as generated and had to be corrected by one constant. barrierpointsearch measured a threshold of 240 - 120 warmup tasks from primePipeline() plus 120 from the test - but the patch inserts WorkerPool.resetExecutions() at the start of the test method, after @Before has already run the warmup. Only the test's own 120 tasks can therefore ever be counted, so the barrier 'while (getExecutedStatus() < 240) Thread.yield()' spins forever. Confirmed with jstack: main parked in Thread.yield() at the barrier line, still spinning after 180s. Threshold corrected 240 -> DELIVERIES (120); the test then passed 10/10 in isolation and 50/50 under rerun.py."
+      },
+      "settleConstant": "Uses its own ISOLATED_SETTLE_MILLIS = 100 rather than the SETTLE_MILLIS = 3 shared by the other LiveScoreIngestTest methods. FlakeSync always invokes a single test method, which leaves the pipeline far colder than the suite (tools/Calibrate: ~30ms first ingest, ~5ms second, warm band 1.3-2.5ms), so at 3ms the delay-0 baseline failed 5/5 in isolation and every injected delay would have looked equally guilty. Calibrated to the smallest value giving a clean baseline under the plugin instrumentation. See Running_FlakeSync.md.",
+      "flakinessNote": "Repaired: FlakeSync's generated barrier has been applied, so the test now blocks until all 120 ingest tasks have run instead of sleeping a fixed time. 0 failures in 50 runs. It was 8/50 with SETTLE_MILLIS and 0/50 with ISOLATED_SETTLE_MILLIS before the barrier. No longer an async-wait flaky test: it synchronises on a real condition, which is the repair the ICSE-24 paper is about."
     },
     {
       "fqn": "com.cricket.live.LiveScoreIngestTest#theInningsTotalIsVisibleAfterIngest",
@@ -61,6 +83,15 @@
       "adversarial": false,
       "observedFailures": 22,
       "observedRuns": 50
+    },
+    {
+      "fqn": "com.cricket.live.LiveScoreIngestTest#everyDeliveryIsAppliedAfterIngest",
+      "module": "cricket-live",
+      "category": "async",
+      "adversarial": false,
+      "observedFailures": 43,
+      "observedRuns": 50,
+      "note": "Sleeps SETTLE_MILLIS - 1 (2ms) and asserts on ScorecardUpdater.appliedCount(), the same async-wait shape as its siblings. Was absent from this file until it turned up at 43/50 in a rerun.py measurement; the omission was a labelling gap, not a deliberate exclusion. It has the tightest wait of the five sleeping methods in the class, which is why it fails most often."
     },
     {
       "fqn": "com.cricket.live.BroadcastLatencyTest#everyBattingMilestoneIsNoticed",
