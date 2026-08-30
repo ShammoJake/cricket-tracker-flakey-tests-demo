@@ -1,0 +1,60 @@
+﻿joined 797 rows; method-name mismatches: 0
+
+overall accuracy: 26/797 = 0.033
+
+=== confusion matrix (rows = truth, cols = prediction) ===
+truth \ pred                   0       1       2       3       4       5    total
+0 async wait                  12       0       0       0       8       0       20
+1 concurrency                  4       3       0       0       0       0        7
+2 time                         0       0       2       0       1       0        3
+3 unordered collections        0       0       0       0       4       0        4
+4 order dependency             0       0       2       1       9       0       12
+5 non-flaky                   66       6      49      89     541       0      751
+
+=== what the model called the 751 non-flaky tests ===
+  order dependency          541  ( 72.0%)
+  unordered collections      89  ( 11.9%)
+  async wait                 66  (  8.8%)
+  time                       49  (  6.5%)
+  concurrency                 6  (  0.8%)
+
+=== the adversarial package ===
+The point of these two groups: does the classifier follow surface tokens
+rather than behaviour?
+
+-- 8 genuinely flaky, no flakiness vocabulary (truth = 0 async wait)
+   designed failure: predicted 5 non-flaky
+   -> CloseOfPlayTest#theBoardShowsEveryDeliveryOfTheInnings     pred=4 order dependency
+   -> CloseOfPlayTest#theClosingTotalIsOnTheBoard                pred=4 order dependency
+   -> CloseOfPlayTest#theLastBallOfTheDayIsOnTheFeed             pred=4 order dependency
+   -> IntervalReportTest#everyBattingMilestoneWasPassed          pred=4 order dependency
+   -> IntervalReportTest#theRunningTotalReachedTheClosingScore   pred=4 order dependency
+   -> ScoreboardReadingTest#everyBoundaryIsOnTheScoreboard       pred=4 order dependency
+   -> ScoreboardReadingTest#theScoreboardCountsEveryDeliveryBowled pred=4 order dependency
+   -> ScoreboardReadingTest#theTranscriptRunsToTheEndOfTheInnings pred=4 order dependency
+   correct: 0/8;  called non-flaky: 0/8
+
+-- 4 deterministic decoys stuffed with 4-8 flakiness tokens (truth = 5 non-flaky)
+   designed failure: predicted 0 async wait or 1 concurrency
+   -> ConcurrentSubscriberTest#everySubscriberOnTheFeedReceivesTheInnings pred=1 concurrency
+   -> ConcurrentSubscriberTest#theAtomicDeliveryCountMatchesTheInnings pred=1 concurrency
+   -> ConcurrentSubscriberTest#theScorecardIsSettledOnceTheQueueHasDrained pred=0 async wait
+   -> ConcurrentSubscriberTest#theTranscriptTalliesTheSameFromEveryThread pred=1 concurrency
+
+   baseline -- ordinary non-flaky tests predicted async/concurrency: 68/747 = 9.1%
+   decoys    -- token-stuffed non-flaky predicted async/concurrency: 4/4 = 100.0%
+   (a gap here is token-keying; no gap means the decoys are no worse than any
+    other non-flaky test on this codebase)
+
+=== per-package accuracy ===
+  com.cricket.adversarial             0/21      0.0%
+  com.cricket.api                     1/92      1.1%
+  com.cricket.concurrent              3/7      42.9%
+  com.cricket.core                    0/505     0.0%
+  com.cricket.live                   11/45     24.4%
+  com.cricket.od                      9/62     14.5%
+  com.cricket.stats                   0/50      0.0%
+  com.cricket.time                    2/7      28.6%
+  com.cricket.uc                      0/8       0.0%
+
+wrote D:\New folder\Demo\flakylens-results\cricket-tracker-fold1\joined-predictions.csv

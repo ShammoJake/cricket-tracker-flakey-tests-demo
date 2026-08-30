@@ -105,8 +105,8 @@ def main():
                   "".join("%8d" % c for c in counts) + "%9d" % total)
     print()
 
-    print("=== what the model called the 752 non-flaky tests ===")
     nf = [r for r in joined if r["truth"] == 5]
+    print("=== what the model called the %d non-flaky tests ===" % len(nf))
     spread = collections.Counter(r["pred"] for r in nf)
     for code, count in spread.most_common():
         print("  %-24s %4d  (%5.1f%%)" % (CLASS_NAMES[code], count, 100.0 * count / len(nf)))

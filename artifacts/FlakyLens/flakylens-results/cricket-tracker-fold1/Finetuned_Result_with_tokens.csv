@@ -1,0 +1,4605 @@
+project_group,test_code,Prediction,Ground_Truth,Token_List
+1,"@Test
+public void aPlainDeliveryIsValid() {
+    assertTrue(validator.validate(legal().build()).isValid());
+}",4,5,
+1,"@Test
+public void aNullBallIsRejected() {
+    assertFalse(validator.validate(null).isValid());
+}",4,5,
+1,"@Test
+public void aNullBallReportsAReason() {
+    assertNotNull(validator.validate(null).firstError());
+}",4,5,
+1,"@Test
+public void aNegativeOverIsRejected() {
+    assertFalse(validator.validate(legal().over(-1).build()).isValid());
+}",4,5,
+1,"@Test
+public void ballZeroOfAnOverIsRejected() {
+    assertFalse(validator.validate(legal().ballInOver(0).build()).isValid());
+}",4,5,
+1,"@Test
+public void aSeventhDeliveryIsAllowedAfterAWide() {
+    assertTrue(validator.validate(legal().ballInOver(7).build()).isValid());
+}",4,5,
+1,"@Test
+public void anEighthDeliveryIsRejected() {
+    assertFalse(validator.validate(legal().ballInOver(8).build()).isValid());
+}",4,5,
+1,"@Test
+public void negativeRunsOffBatAreRejected() {
+    assertFalse(validator.validate(legal().runsOffBat(-1).build()).isValid());
+}",4,5,
+1,"@Test
+public void sixRunsOffBatAreAllowed() {
+    assertTrue(validator.validate(legal().runsOffBat(6).build()).isValid());
+}",4,5,
+1,"@Test
+public void sevenRunsOffBatAreRejected() {
+    assertFalse(validator.validate(legal().runsOffBat(7).build()).isValid());
+}",4,5,
+1,"@Test
+public void theSameBatterAtBothEndsIsRejected() {
+    Ball ball = Ball.builder().over(0).ballInOver(1)
+            .bowler(""AUS8"").striker(""IND1"").nonStriker(""IND1"").build();
+    assertTrue(validator.validate(ball).hasError(""different players""));
+}",4,5,
+1,"@Test
+public void aBowlerFacingHisOwnDeliveryIsRejected() {
+    Ball ball = Ball.builder().over(0).ballInOver(1)
+            .bowler(""IND1"").striker(""IND1"").nonStriker(""IND2"").build();
+    assertFalse(validator.validate(ball).isValid());
+}",4,5,
+1,"@Test
+public void runsOffTheBatFromAWideAreRejected() {
+    Ball ball = legal().extra(ExtraType.WIDE, 0).runsOffBat(2).build();
+    assertTrue(validator.validate(ball).hasError(""off the bat from a wide""));
+}",4,5,
+1,"@Test
+public void aPlainWideIsValid() {
+    assertTrue(validator.validate(legal().extra(ExtraType.WIDE, 0).build()).isValid());
+}",4,5,
+1,"@Test
+public void aWideWithExtraRunsIsValid() {
+    assertTrue(validator.validate(legal().extra(ExtraType.WIDE, 4).build()).isValid());
+}",4,5,
+1,"@Test
+public void byesCombinedWithRunsOffTheBatAreRejected() {
+    Ball ball = legal().extra(ExtraType.BYE, 2).runsOffBat(1).build();
+    assertFalse(validator.validate(ball).isValid());
+}",4,5,
+1,"@Test
+public void legByesCombinedWithRunsOffTheBatAreRejected() {
+    Ball ball = legal().extra(ExtraType.LEG_BYE, 1).runsOffBat(1).build();
+    assertFalse(validator.validate(ball).isValid());
+}",4,5,
+1,"@Test
+public void aNoBallHitForRunsIsValid() {
+    assertTrue(validator.validate(legal().extra(ExtraType.NO_BALL, 0).runsOffBat(6).build()).isValid());
+}",4,5,
+1,"@Test
+public void aPenaltyWithoutRunsIsRejected() {
+    assertFalse(validator.validate(legal().extra(ExtraType.PENALTY, 0).build()).isValid());
+}",4,5,
+1,"@Test
+public void aPenaltyWithRunsIsValid() {
+    assertTrue(validator.validate(legal().extra(ExtraType.PENALTY, 5).build()).isValid());
+}",4,5,
+1,"@Test
+public void beingBowledOffAWideIsRejected() {
+    Ball ball = legal().extra(ExtraType.WIDE, 0)
+            .wicket(WicketEvent.of(Dismissal.BOWLED, ""IND1"")).build();
+    assertTrue(validator.validate(ball).hasError(""illegal delivery""));
+}",4,5,
+1,"@Test
+public void beingStumpedOffAWideIsAllowed() {
+    Ball ball = legal().extra(ExtraType.WIDE, 0)
+            .wicket(new WicketEvent(Dismissal.STUMPED, ""IND1"", ""AUS5"")).build();
+    assertTrue(validator.validate(ball).isValid());
+}",4,5,
+1,"@Test
+public void beingRunOutOffANoBallIsAllowed() {
+    Ball ball = legal().extra(ExtraType.NO_BALL, 0)
+            .wicket(new WicketEvent(Dismissal.RUN_OUT, ""IND1"", ""AUS5"")).build();
+    assertTrue(validator.validate(ball).isValid());
+}",4,5,
+1,"@Test
+public void dismissingABatterWhoIsNotAtTheCreaseIsRejected() {
+    Ball ball = legal().wicket(WicketEvent.of(Dismissal.BOWLED, ""IND7"")).build();
+    assertTrue(validator.validate(ball).hasError(""not at the crease""));
+}",4,5,
+1,"@Test
+public void theNonStrikerCannotBeBowled() {
+    Ball ball = legal().wicket(WicketEvent.of(Dismissal.BOWLED, ""IND2"")).build();
+    assertTrue(validator.validate(ball).hasError(""must dismiss the striker""));
+}",4,5,
+1,"@Test
+public void theNonStrikerCanBeRunOut() {
+    Ball ball = legal().wicket(new WicketEvent(Dismissal.RUN_OUT, ""IND2"", ""AUS5"")).build();
+    assertTrue(validator.validate(ball).isValid());
+}",4,5,
+1,"@Test
+public void runsOffTheBatOnACatchAreRejected() {
+    Ball ball = legal().runsOffBat(2)
+            .wicket(new WicketEvent(Dismissal.CAUGHT, ""IND1"", ""AUS5"")).build();
+    assertTrue(validator.validate(ball).hasError(""credited on a catch""));
+}",4,5,
+1,"@Test
+public void aCleanCatchIsValid() {
+    Ball ball = legal().wicket(new WicketEvent(Dismissal.CAUGHT, ""IND1"", ""AUS5"")).build();
+    assertTrue(validator.validate(ball).isValid());
+}",4,5,
+1,"@Test
+public void severalProblemsAreAllReported() {
+    Ball ball = Ball.builder().over(-1).ballInOver(0).runsOffBat(9)
+            .bowler(""AUS8"").striker(""IND1"").nonStriker(""IND1"").build();
+    assertTrue(validator.validate(ball).errorCount() >= 4);
+}",4,5,
+1,"@Test
+public void aValidDeliveryAgainstTheInningsPasses() {
+    assertTrue(validator.validateAgainst(legal().build(), innings).isValid());
+}",4,5,
+1,"@Test
+public void aNullInningsIsRejected() {
+    assertFalse(validator.validateAgainst(legal().build(), null).isValid());
+}",4,5,
+1,"@Test
+public void aClosedInningsIsRejected() {
+    innings.close();
+    assertTrue(validator.validateAgainst(legal().build(), innings).hasError(""already closed""));
+}",4,5,
+1,"@Test
+public void aBowlerFromTheBattingSideIsRejected() {
+    Ball ball = Ball.builder().over(0).ballInOver(1)
+            .bowler(""IND9"").striker(""IND1"").nonStriker(""IND2"").build();
+    assertTrue(validator.validateAgainst(ball, innings).hasError(""not in the bowling side""));
+}",4,5,
+1,"@Test
+public void aStrikerFromTheBowlingSideIsRejected() {
+    Ball ball = Ball.builder().over(0).ballInOver(1)
+            .bowler(""AUS8"").striker(""AUS1"").nonStriker(""IND2"").build();
+    assertTrue(validator.validateAgainst(ball, innings).hasError(""striker is not in the batting side""));
+}",4,5,
+1,"@Test
+public void aNonStrikerFromTheBowlingSideIsRejected() {
+    Ball ball = Ball.builder().over(0).ballInOver(1)
+            .bowler(""AUS8"").striker(""IND1"").nonStriker(""AUS2"").build();
+    assertTrue(validator.validateAgainst(ball, innings).hasError(""non-striker is not in the batting side""));
+}",4,5,
+1,"@Test
+public void aFielderFromTheBattingSideIsRejected() {
+    Ball ball = legal().wicket(new WicketEvent(Dismissal.CAUGHT, ""IND1"", ""IND7"")).build();
+    assertTrue(validator.validateAgainst(ball, innings).hasError(""fielder is not in the bowling side""));
+}",4,5,
+1,"@Test
+public void aValidResultHasNoErrors() {
+    ValidationResult result = validator.validate(legal().build());
+    assertEquals(0, result.errorCount());
+    assertNull(result.firstError());
+}",3,5,
+1,"@Test
+public void throwIfInvalidIsSilentWhenValid() {
+    validator.validate(legal().build()).throwIfInvalid();
+}",4,5,
+1,"@Test
+public void throwIfInvalidRaisesWhenInvalid() {
+    validator.validate(legal().runsOffBat(-1).build()).throwIfInvalid();
+}",4,5,
+1,"@Test
+public void anUnknownFragmentIsNotMatched() {
+    assertFalse(validator.validate(legal().build()).hasError(""nonsense""));
+}",4,5,
+1,"@Test
+public void aNullFragmentIsNotMatched() {
+    assertFalse(validator.validate(legal().runsOffBat(-1).build()).hasError(null));
+}",4,5,
+1,"@Test
+public void describeLeadsWithTheAddress() {
+    String line = commentary.describe(ball().runsOffBat(0).build(), ""Cummins"", ""Kohli"");
+    assertTrue(line.startsWith(""12.3 ""));
+}",4,5,
+1,"@Test
+public void describeNamesBothPlayers() {
+    String line = commentary.describe(ball().runsOffBat(0).build(), ""Cummins"", ""Kohli"");
+    assertTrue(line.contains(""Cummins to Kohli""));
+}",4,5,
+1,"@Test
+public void describeEndsWithTheOutcome() {
+    String line = commentary.describe(ball().runsOffBat(4).build(), ""Cummins"", ""Kohli"");
+    assertTrue(line.endsWith(""FOUR""));
+}",4,5,
+1,"@Test
+public void aMissingBowlerNameFallsBack() {
+    String line = commentary.describe(ball().runsOffBat(0).build(), null, ""Kohli"");
+    assertTrue(line.contains(""unknown to Kohli""));
+}",4,5,
+1,"@Test
+public void aBlankStrikerNameFallsBack() {
+    String line = commentary.describe(ball().runsOffBat(0).build(), ""Cummins"", ""   "");
+    assertTrue(line.contains(""to unknown""));
+}",4,5,
+1,"@Test
+public void describingANullBallIsRejected() {
+    commentary.describe(null, ""Cummins"", ""Kohli"");
+}",4,5,
+1,"@Test
+public void theOutcomeOfANullBallIsRejected() {
+    commentary.outcome(null);
+}",4,5,
+1,"@Test
+public void aDotBallReadsAsNoRun() {
+    assertEquals(""no run"", commentary.outcome(ball().runsOffBat(0).build()));
+}",4,5,
+1,"@Test
+public void aSingleIsRenderedInTheSingular() {
+    assertEquals(""1 run"", commentary.outcome(ball().runsOffBat(1).build()));
+}",4,5,
+1,"@Test
+public void twoRunsAreRenderedInThePlural() {
+    assertEquals(""2 runs"", commentary.outcome(ball().runsOffBat(2).build()));
+}",4,5,
+1,"@Test
+public void threeRunsAreRenderedInThePlural() {
+    assertEquals(""3 runs"", commentary.outcome(ball().runsOffBat(3).build()));
+}",4,5,
+1,"@Test
+public void aBoundaryIsShouted() {
+    assertEquals(""FOUR"", commentary.outcome(ball().runsOffBat(4).build()));
+}",4,5,
+1,"@Test
+public void aSixIsShouted() {
+    assertEquals(""SIX"", commentary.outcome(ball().runsOffBat(6).build()));
+}",4,5,
+1,"@Test
+public void aPlainWideIsNamed() {
+    assertEquals(""wide"", commentary.outcome(ball().extra(ExtraType.WIDE, 0).build()));
+}",4,5,
+1,"@Test
+public void aWideWithRunsMentionsThem() {
+    assertEquals(""wide, 4 more"", commentary.outcome(ball().extra(ExtraType.WIDE, 4).build()));
+}",4,5,
+1,"@Test
+public void aPlainNoBallIsNamed() {
+    assertEquals(""no ball"", commentary.outcome(ball().extra(ExtraType.NO_BALL, 0).build()));
+}",4,5,
+1,"@Test
+public void aNoBallHitForRunsMentionsThem() {
+    String line = commentary.outcome(ball().extra(ExtraType.NO_BALL, 0).runsOffBat(6).build());
+    assertEquals(""no ball, 6 off it"", line);
+}",4,5,
+1,"@Test
+public void oneByeIsRenderedInTheSingular() {
+    assertEquals(""1 bye"", commentary.outcome(ball().extra(ExtraType.BYE, 1).build()));
+}",4,5,
+1,"@Test
+public void multipleByesAreRenderedInThePlural() {
+    assertEquals(""3 byes"", commentary.outcome(ball().extra(ExtraType.BYE, 3).build()));
+}",4,5,
+1,"@Test
+public void oneLegByeIsRenderedInTheSingular() {
+    assertEquals(""1 leg bye"", commentary.outcome(ball().extra(ExtraType.LEG_BYE, 1).build()));
+}",4,5,
+1,"@Test
+public void multipleLegByesAreRenderedInThePlural() {
+    assertEquals(""2 leg byes"", commentary.outcome(ball().extra(ExtraType.LEG_BYE, 2).build()));
+}",4,5,
+1,"@Test
+public void penaltyRunsAreNamed() {
+    assertEquals(""5 penalty runs"", commentary.outcome(ball().extra(ExtraType.PENALTY, 5).build()));
+}",4,5,
+1,"@Test
+public void beingBowledIsAnnounced() {
+    Ball b = ball().wicket(WicketEvent.of(Dismissal.BOWLED, ""IND3"")).build();
+    assertEquals(""OUT, bowled"", commentary.outcome(b));
+}",4,5,
+1,"@Test
+public void anLbwIsAnnounced() {
+    Ball b = ball().wicket(WicketEvent.of(Dismissal.LBW, ""IND3"")).build();
+    assertEquals(""OUT, lbw"", commentary.outcome(b));
+}",4,5,
+1,"@Test
+public void aCatchNamesTheFielder() {
+    Ball b = ball().wicket(new WicketEvent(Dismissal.CAUGHT, ""IND3"", ""Carey"")).build();
+    assertEquals(""OUT, caught by Carey"", commentary.outcome(b));
+}",4,5,
+1,"@Test
+public void aStumpingNamesTheKeeper() {
+    Ball b = ball().wicket(new WicketEvent(Dismissal.STUMPED, ""IND3"", ""Carey"")).build();
+    assertEquals(""OUT, stumped by Carey"", commentary.outcome(b));
+}",4,5,
+1,"@Test
+public void aRunOutNamesTheFielder() {
+    Ball b = ball().wicket(new WicketEvent(Dismissal.RUN_OUT, ""IND3"", ""Maxwell"")).build();
+    assertEquals(""OUT, run out by Maxwell"", commentary.outcome(b));
+}",4,5,
+1,"@Test
+public void hitWicketIsAnnounced() {
+    Ball b = ball().wicket(WicketEvent.of(Dismissal.HIT_WICKET, ""IND3"")).build();
+    assertEquals(""OUT, hit wicket"", commentary.outcome(b));
+}",4,5,
+1,"@Test
+public void obstructingTheFieldIsAnnounced() {
+    Ball b = ball().wicket(WicketEvent.of(Dismissal.OBSTRUCTING_THE_FIELD, ""IND3"")).build();
+    assertEquals(""OUT, obstructing the field"", commentary.outcome(b));
+}",4,5,
+1,"@Test
+public void retiringOutIsNotShouted() {
+    Ball b = ball().wicket(WicketEvent.of(Dismissal.RETIRED_OUT, ""IND3"")).build();
+    assertEquals(""retired out"", commentary.outcome(b));
+}",4,5,
+1,"@Test
+public void timedOutIsAnnounced() {
+    Ball b = ball().wicket(WicketEvent.of(Dismissal.TIMED_OUT, ""IND3"")).build();
+    assertEquals(""OUT, timed out"", commentary.outcome(b));
+}",4,5,
+1,"@Test
+public void aWicketOutranksTheRunsOnTheDelivery() {
+    Ball b = ball().runsOffBat(1)
+            .wicket(new WicketEvent(Dismissal.RUN_OUT, ""IND3"", ""Maxwell"")).build();
+    assertTrue(commentary.outcome(b).startsWith(""OUT""));
+}",4,5,
+1,"@Test
+public void thereIsNoMilestoneBelowFifty() {
+    assertNull(commentary.milestone(""Kohli"", 49, 40));
+}",4,5,
+1,"@Test
+public void fiftyIsAMilestone() {
+    String line = commentary.milestone(""Kohli"", 50, 34);
+    assertTrue(line.contains(""FIFTY""));
+    assertTrue(line.contains(""34 balls""));
+}",4,5,
+1,"@Test
+public void ninetyNineIsStillAFifty() {
+    assertTrue(commentary.milestone(""Kohli"", 99, 70).contains(""FIFTY""));
+}",4,5,
+1,"@Test
+public void oneHundredIsAHundred() {
+    assertTrue(commentary.milestone(""Kohli"", 100, 71).contains(""HUNDRED""));
+}",4,5,
+1,"@Test
+public void twoHundredIsADoubleHundred() {
+    assertTrue(commentary.milestone(""Kohli"", 200, 150).contains(""DOUBLE HUNDRED""));
+}",4,5,
+1,"@Test
+public void theMilestoneNamesTheBatter() {
+    assertTrue(commentary.milestone(""Kohli"", 50, 34).startsWith(""Kohli""));
+}",4,5,
+1,"@Test
+public void endOfOverCountsFromOne() {
+    assertTrue(commentary.endOfOver(0, 6, 6, 0).startsWith(""End of over 1""));
+}",4,5,
+1,"@Test
+public void endOfOverReportsTheScore() {
+    assertTrue(commentary.endOfOver(11, 8, 97, 3).contains(""97/3""));
+}",4,5,
+1,"@Test
+public void oneRunInAnOverIsRenderedInTheSingular() {
+    assertTrue(commentary.endOfOver(4, 1, 30, 1).contains(""(1 run)""));
+}",4,5,
+1,"@Test
+public void severalRunsInAnOverAreRenderedInThePlural() {
+    assertTrue(commentary.endOfOver(4, 12, 41, 1).contains(""(12 runs)""));
+}",4,5,
+1,"@Test
+public void aMaidenOverReadsAsZeroRuns() {
+    assertTrue(commentary.endOfOver(4, 0, 29, 1).contains(""(0 runs)""));
+}",4,5,
+1,"@Test
+public void fullFiftyOverInningsIsOneHundredPercent() {
+    assertEquals(100.0, dls.resourcePercentage(50, 0), 1e-6);
+}",2,5,
+1,"@Test
+public void noOversRemainingIsZeroResource() {
+    assertEquals(0.0, dls.resourcePercentage(0, 0), EPS);
+}",2,5,
+1,"@Test
+public void noOversRemainingIsZeroWhateverTheWickets() {
+    for (int w = 0; w <= 9; w++) {
+        assertEquals(0.0, dls.resourcePercentage(0, w), EPS);
+    }
+}",2,5,
+1,"@Test
+public void resourceIncreasesWithOversRemaining() {
+    double previous = -1.0;
+    for (int overs = 0; overs <= 50; overs += 5) {
+        double current = dls.resourcePercentage(overs, 0);
+        assertTrue(""resource should rise with overs at "" + overs, current > previous);
+        previous = current;
+    }
+}",2,5,
+1,"@Test
+public void resourceDecreasesAsWicketsFall() {
+    double previous = Double.MAX_VALUE;
+    for (int w = 0; w <= 9; w++) {
+        double current = dls.resourcePercentage(25, w);
+        assertTrue(""resource should fall as wickets go at "" + w, current < previous);
+        previous = current;
+    }
+}",2,5,
+1,"@Test
+public void resourceNeverExceedsOneHundred() {
+    for (int overs = 0; overs <= 50; overs++) {
+        for (int w = 0; w <= 9; w++) {
+            assertTrue(dls.resourcePercentage(overs, w) <= 100.0 + EPS);
+        }
+    }
+}",2,5,
+1,"@Test
+public void resourceIsNeverNegative() {
+    for (int overs = 0; overs <= 50; overs++) {
+        for (int w = 0; w <= 9; w++) {
+            assertTrue(dls.resourcePercentage(overs, w) >= -EPS);
+        }
+    }
+}",2,5,
+1,"@Test
+public void halfTheOversLeavesMoreThanHalfTheResource() {
+    assertTrue(dls.resourcePercentage(25, 0) > 50.0);
+}",2,5,
+1,"@Test
+public void nineWicketsDownIsALowResourceEvenWithOversLeft() {
+    assertTrue(dls.resourcePercentage(50, 9) < 30.0);
+}",2,5,
+1,"@Test
+public void negativeOversAreRejected() {
+    dls.resourcePercentage(-1, 0);
+}",4,5,
+1,"@Test
+public void moreThanFiftyOversAreRejected() {
+    dls.resourcePercentage(51, 0);
+}",4,5,
+1,"@Test
+public void negativeWicketsAreRejected() {
+    dls.resourcePercentage(50, -1);
+}",4,5,
+1,"@Test
+public void tenWicketsIsRejected() {
+    dls.resourcePercentage(50, 10);
+}",4,5,
+1,"@Test
+public void resourceUsedIsTheDifferenceBetweenStartAndEnd() {
+    double used = dls.resourceUsed(50, 20, 3);
+    double expected = dls.resourcePercentage(50, 0) - dls.resourcePercentage(20, 3);
+    assertEquals(expected, used, EPS);
+}",2,5,
+1,"@Test
+public void anUninterruptedInningsUsesAllItsResource() {
+    assertEquals(100.0, dls.resourceUsed(50, 0, 0), 1e-6);
+}",4,5,
+1,"@Test
+public void equalResourcesLeaveTheTargetOneAboveTheScore() {
+    assertEquals(251, dls.revisedTarget(250, 100.0, 100.0));
+}",4,5,
+1,"@Test
+public void fewerResourcesScaleTheTargetDown() {
+    int target = dls.revisedTarget(250, 100.0, 50.0);
+    assertEquals(126, target);
+}",4,5,
+1,"@Test
+public void moreResourcesRaiseTheTargetUsingG50() {
+    int target = dls.revisedTarget(250, 50.0, 100.0);
+    assertEquals(250 + (int) Math.floor(DlsCalculator.G50 * 0.5) + 1, target);
+}",2,5,
+1,"@Test
+public void targetIsAlwaysAtLeastOne() {
+    assertTrue(dls.revisedTarget(0, 100.0, 100.0) >= 1);
+}",4,5,
+1,"@Test
+public void negativeFirstInningsScoreIsRejected() {
+    dls.revisedTarget(-1, 100.0, 100.0);
+}",4,5,
+1,"@Test
+public void zeroResourceForTeamOneIsRejected() {
+    dls.revisedTarget(250, 0.0, 100.0);
+}",4,5,
+1,"@Test
+public void zeroResourceForTeamTwoIsRejected() {
+    dls.revisedTarget(250, 100.0, 0.0);
+}",4,5,
+1,"@Test
+public void parScoreIsZeroBeforeAnyResourceIsUsed() {
+    assertEquals(0, dls.parScore(251, 100.0, 100.0));
+}",4,5,
+1,"@Test
+public void parScoreIsTheFullChaseWhenAllResourceIsUsed() {
+    assertEquals(250, dls.parScore(251, 100.0, 0.0));
+}",4,5,
+1,"@Test
+public void parScoreIsHalfTheChaseAtTheHalfwayPoint() {
+    assertEquals(125, dls.parScore(251, 100.0, 50.0));
+}",4,5,
+1,"@Test
+public void parScoreRejectsATargetBelowOne() {
+    dls.parScore(0, 100.0, 50.0);
+}",4,5,
+1,"@Test
+public void aheadOfParIsTrueWhenScoreExceedsPar() {
+    assertTrue(dls.isAheadOfPar(130, 125));
+}",4,5,
+1,"@Test
+public void levelWithParIsNotAhead() {
+    assertFalse(dls.isAheadOfPar(125, 125));
+}",4,5,
+1,"@Test
+public void behindParIsNotAhead() {
+    assertFalse(dls.isAheadOfPar(120, 125));
+}",4,5,
+1,"@Test
+public void oversRemainingCountsDownFromTheLimit() {
+    assertEquals(50.0, dls.oversRemaining(50, 0), EPS);
+    assertEquals(40.0, dls.oversRemaining(50, 60), EPS);
+    assertEquals(25.0, dls.oversRemaining(50, 150), EPS);
+}",2,5,
+1,"@Test
+public void oversRemainingHandlesAPartOver() {
+    assertEquals(49.5, dls.oversRemaining(50, 3), EPS);
+}",4,5,
+1,"@Test
+public void oversRemainingNeverGoesNegative() {
+    assertEquals(0.0, dls.oversRemaining(20, 200), EPS);
+}",2,5,
+1,"@Test
+public void oversRemainingRejectsAZeroLimit() {
+    dls.oversRemaining(0, 10);
+}",4,5,
+1,"@Test
+public void oversRemainingRejectsNegativeBalls() {
+    dls.oversRemaining(50, -1);
+}",4,5,
+1,"@Test
+public void aFreshManagerHasNoLastBowler() {
+    assertNull(t20.getLastOverBowlerId());
+}",4,5,
+1,"@Test
+public void aFreshManagerHasNoOversRecorded() {
+    assertEquals(0, t20.totalOvers());
+    assertEquals(0, t20.oversBowledBy(""AUS8""));
+}",4,5,
+1,"@Test
+public void anyBowlerMayOpen() {
+    assertTrue(t20.canBowlNextOver(""AUS8""));
+}",4,5,
+1,"@Test
+public void recordingAnOverIncrementsTheTally() {
+    t20.recordCompletedOver(""AUS8"");
+    assertEquals(1, t20.oversBowledBy(""AUS8""));
+    assertEquals(1, t20.totalOvers());
+}",4,5,
+1,"@Test
+public void recordingAnOverSetsTheLastBowler() {
+    t20.recordCompletedOver(""AUS8"");
+    assertEquals(""AUS8"", t20.getLastOverBowlerId());
+}",4,5,
+1,"@Test
+public void aBowlerMayNotBowlConsecutiveOvers() {
+    t20.recordCompletedOver(""AUS8"");
+    assertFalse(t20.canBowlNextOver(""AUS8""));
+}",4,5,
+1,"@Test
+public void anotherBowlerMayFollow() {
+    t20.recordCompletedOver(""AUS8"");
+    assertTrue(t20.canBowlNextOver(""AUS9""));
+}",4,5,
+1,"@Test
+public void aBowlerMayReturnAfterOneOverFromTheOtherEnd() {
+    t20.recordCompletedOver(""AUS8"");
+    t20.recordCompletedOver(""AUS9"");
+    assertTrue(t20.canBowlNextOver(""AUS8""));
+}",4,5,
+1,"@Test
+public void t20CapsBowlersAtFourOvers() {
+    assertEquals(4, t20.maxOversPerBowler());
+}",4,5,
+1,"@Test
+public void odiCapsBowlersAtTenOvers() {
+    assertEquals(10, new OverManager(MatchFormat.ODI).maxOversPerBowler());
+}",4,5,
+1,"@Test
+public void testCricketHasNoCap() {
+    assertEquals(-1, test.maxOversPerBowler());
+}",4,5,
+1,"@Test
+public void reachingTheCapBlocksFurtherOvers() {
+    for (int i = 0; i < 4; i++) {
+        t20.recordCompletedOver(""AUS8"");
+        t20.recordCompletedOver(""AUS9"");
+    }
+    assertTrue(t20.hasReachedCap(""AUS8""));
+    assertFalse(t20.canBowlNextOver(""AUS8""));
+}",4,5,
+1,"@Test
+public void aBowlerBelowTheCapIsNotBlocked() {
+    t20.recordCompletedOver(""AUS8"");
+    t20.recordCompletedOver(""AUS9"");
+    assertFalse(t20.hasReachedCap(""AUS8""));
+}",4,5,
+1,"@Test
+public void oversRemainingCountsDownToTheCap() {
+    assertEquals(4, t20.oversRemainingFor(""AUS8""));
+    t20.recordCompletedOver(""AUS8"");
+    assertEquals(3, t20.oversRemainingFor(""AUS8""));
+}",4,5,
+1,"@Test
+public void oversRemainingIsUnboundedInTests() {
+    assertEquals(-1, test.oversRemainingFor(""AUS8""));
+}",4,5,
+1,"@Test
+public void aTestBowlerIsNeverCapped() {
+    for (int i = 0; i < 30; i++) {
+        test.recordCompletedOver(""AUS8"");
+        test.recordCompletedOver(""AUS9"");
+    }
+    assertFalse(test.hasReachedCap(""AUS8""));
+}",4,5,
+1,"@Test
+public void aValidBowlerHasNoRejectionReason() {
+    assertNull(t20.rejectionReason(""AUS8""));
+}",4,5,
+1,"@Test
+public void backToBackOversAreExplained() {
+    t20.recordCompletedOver(""AUS8"");
+    assertNotNull(t20.rejectionReason(""AUS8""));
+    assertTrue(t20.rejectionReason(""AUS8"").contains(""previous over""));
+}",4,5,
+1,"@Test
+public void reachingTheCapIsExplained() {
+    for (int i = 0; i < 4; i++) {
+        t20.recordCompletedOver(""AUS8"");
+        t20.recordCompletedOver(""AUS9"");
+    }
+    assertTrue(t20.rejectionReason(""AUS8"").contains(""limit""));
+}",4,5,
+1,"@Test
+public void aBlankBowlerIsExplained() {
+    assertNotNull(t20.rejectionReason(""""));
+    assertNotNull(t20.rejectionReason(null));
+}",4,5,
+1,"@Test
+public void aBlankBowlerMayNotBowl() {
+    assertFalse(t20.canBowlNextOver(null));
+    assertFalse(t20.canBowlNextOver(""  ""));
+}",4,5,
+1,"@Test
+public void recordingAnIllegalOverIsRejected() {
+    t20.recordCompletedOver(""AUS8"");
+    t20.recordCompletedOver(""AUS8"");
+}",4,5,
+1,"@Test
+public void resetClearsEverything() {
+    t20.recordCompletedOver(""AUS8"");
+    t20.reset();
+    assertEquals(0, t20.totalOvers());
+    assertNull(t20.getLastOverBowlerId());
+    assertTrue(t20.canBowlNextOver(""AUS8""));
+}",4,5,
+1,"@Test
+public void replayCountsOnlyCompletedOvers() {
+    ScoringEngine engine = new ScoringEngine();
+    Innings innings = Fixtures.openedInnings();
+    for (int i = 1; i <= 6; i++) {
+        engine.apply(innings, Fixtures.delivery(innings, 0, i).runsOffBat(0).build());
+    }
+    engine.apply(innings, firstBallOfOver(innings, 1));
+    t20.replay(innings);
+    assertEquals(1, t20.totalOvers());
+}",0,5,
+1,"@Test
+public void replayIsIdempotent() {
+    ScoringEngine engine = new ScoringEngine();
+    Innings innings = Fixtures.openedInnings();
+    for (int i = 1; i <= 6; i++) {
+        engine.apply(innings, Fixtures.delivery(innings, 0, i).runsOffBat(0).build());
+    }
+    t20.replay(innings);
+    t20.replay(innings);
+    assertEquals(1, t20.totalOvers());
+}",0,5,
+1,"@Test
+public void replayRecoversTheLastBowler() {
+    ScoringEngine engine = new ScoringEngine();
+    Innings innings = Fixtures.openedInnings();
+    for (int i = 1; i <= 6; i++) {
+        engine.apply(innings, Fixtures.delivery(innings, 0, i).runsOffBat(0).build());
+    }
+    t20.replay(innings);
+    assertEquals(""AUS8"", t20.getLastOverBowlerId());
+}",0,5,
+1,"@Test
+public void aNullFormatIsRejected() {
+    new OverManager(null);
+}",4,5,
+1,"@Test
+public void theFormatIsRetained() {
+    assertEquals(MatchFormat.T20, t20.getFormat());
+}",4,5,
+1,"@Test
+public void bowledLastOverTracksTheMostRecentBowler() {
+    t20.recordCompletedOver(""AUS8"");
+    assertTrue(t20.bowledLastOver(""AUS8""));
+    assertFalse(t20.bowledLastOver(""AUS9""));
+}",4,5,
+1,"@Test
+public void anUnknownBowlerHasNotBowledLastOver() {
+    assertFalse(t20.bowledLastOver(""AUS8""));
+}",4,5,
+1,"@Test
+public void dotBallLeavesScoreUnchanged() {
+    ScoringResult result = bowl(0, 1, 0);
+    assertEquals(0, innings.getScoreCard().getTotalRuns());
+    assertTrue(result.isDot());
+}",4,5,
+1,"@Test
+public void singleAddsOneRunToTheTeamTotal() {
+    bowl(0, 1, 1);
+    assertEquals(1, innings.getScoreCard().getTotalRuns());
+}",4,5,
+1,"@Test
+public void boundaryAddsFourRuns() {
+    bowl(0, 1, 4);
+    assertEquals(4, innings.getScoreCard().getTotalRuns());
+}",4,5,
+1,"@Test
+public void sixAddsSixRuns() {
+    bowl(0, 1, 6);
+    assertEquals(6, innings.getScoreCard().getTotalRuns());
+}",4,5,
+1,"@Test
+public void runsOffBatAreCreditedToTheStriker() {
+    String striker = innings.getStrikerId();
+    bowl(0, 1, 4);
+    assertEquals(4, innings.getScoreCard().battingLine(striker).getRuns());
+}",4,5,
+1,"@Test
+public void boundaryIsCountedAsAFour() {
+    String striker = innings.getStrikerId();
+    bowl(0, 1, 4);
+    assertEquals(1, innings.getScoreCard().battingLine(striker).getFours());
+}",4,5,
+1,"@Test
+public void sixIsCountedAsASix() {
+    String striker = innings.getStrikerId();
+    bowl(0, 1, 6);
+    assertEquals(1, innings.getScoreCard().battingLine(striker).getSixes());
+}",4,5,
+1,"@Test
+public void legalDeliveryAdvancesTheBallCount() {
+    bowl(0, 1, 0);
+    assertEquals(1, innings.getScoreCard().getLegalBalls());
+}",4,5,
+1,"@Test
+public void oddRunRotatesTheStrike() {
+    String striker = innings.getStrikerId();
+    ScoringResult result = bowl(0, 1, 1);
+    assertTrue(result.isStrikeRotated());
+    assertEquals(striker, innings.getNonStrikerId());
+}",4,5,
+1,"@Test
+public void evenRunKeepsTheStrike() {
+    String striker = innings.getStrikerId();
+    ScoringResult result = bowl(0, 1, 2);
+    assertFalse(result.isStrikeRotated());
+    assertEquals(striker, innings.getStrikerId());
+}",4,5,
+1,"@Test
+public void wideAddsOnePenaltyRun() {
+    engine.apply(innings, Fixtures.delivery(innings, 0, 1)
+            .extra(ExtraType.WIDE, 0).build());
+    assertEquals(1, innings.getScoreCard().getTotalRuns());
+}",4,5,
+1,"@Test
+public void wideDoesNotAdvanceTheBallCount() {
+    engine.apply(innings, Fixtures.delivery(innings, 0, 1)
+            .extra(ExtraType.WIDE, 0).build());
+    assertEquals(0, innings.getScoreCard().getLegalBalls());
+}",4,5,
+1,"@Test
+public void wideIsRecordedInTheExtras() {
+    engine.apply(innings, Fixtures.delivery(innings, 0, 1)
+            .extra(ExtraType.WIDE, 0).build());
+    assertEquals(1, innings.getScoreCard().getWides());
+}",4,5,
+1,"@Test
+public void wideDoesNotCountAsABallFaced() {
+    String striker = innings.getStrikerId();
+    engine.apply(innings, Fixtures.delivery(innings, 0, 1)
+            .extra(ExtraType.WIDE, 0).build());
+    assertEquals(0, innings.getScoreCard().battingLine(striker).getBallsFaced());
+}",4,5,
+1,"@Test
+public void noBallAddsOnePenaltyRun() {
+    engine.apply(innings, Fixtures.delivery(innings, 0, 1)
+            .extra(ExtraType.NO_BALL, 0).build());
+    assertEquals(1, innings.getScoreCard().getTotalRuns());
+}",4,5,
+1,"@Test
+public void runsOffBatOnANoBallAreCreditedToTheStriker() {
+    String striker = innings.getStrikerId();
+    engine.apply(innings, Fixtures.delivery(innings, 0, 1)
+            .extra(ExtraType.NO_BALL, 0).runsOffBat(4).build());
+    assertEquals(4, innings.getScoreCard().battingLine(striker).getRuns());
+    assertEquals(5, innings.getScoreCard().getTotalRuns());
+}",4,5,
+1,"@Test
+public void noBallGrantsAFreeHit() {
+    ScoringResult result = engine.apply(innings, Fixtures.delivery(innings, 0, 1)
+            .extra(ExtraType.NO_BALL, 0).build());
+    assertTrue(result.isFreeHitNext());
+    assertTrue(engine.isFreeHitPending());
+}",4,5,
+1,"@Test
+public void byesAreNotCreditedToTheStriker() {
+    String striker = innings.getStrikerId();
+    engine.apply(innings, Fixtures.delivery(innings, 0, 1)
+            .extra(ExtraType.BYE, 2).build());
+    assertEquals(0, innings.getScoreCard().battingLine(striker).getRuns());
+    assertEquals(2, innings.getScoreCard().getTotalRuns());
+    assertEquals(2, innings.getScoreCard().getByes());
+}",4,5,
+1,"@Test
+public void legByesAreNotChargedToTheBowler() {
+    engine.apply(innings, Fixtures.delivery(innings, 0, 1)
+            .extra(ExtraType.LEG_BYE, 1).build());
+    assertEquals(0, innings.getScoreCard().bowlingLine(""AUS8"").getRunsConceded());
+    assertEquals(1, innings.getScoreCard().getLegByes());
+}",4,5,
+1,"@Test
+public void byesStillCountAsALegalDelivery() {
+    engine.apply(innings, Fixtures.delivery(innings, 0, 1)
+            .extra(ExtraType.BYE, 1).build());
+    assertEquals(1, innings.getScoreCard().getLegalBalls());
+}",4,5,
+1,"@Test
+public void wicketIncrementsTheWicketCount() {
+    Ball ball = Fixtures.delivery(innings, 0, 1)
+            .wicket(WicketEvent.of(Dismissal.BOWLED, innings.getStrikerId()))
+            .build();
+    engine.apply(innings, ball);
+    assertEquals(1, innings.getScoreCard().getWickets());
+}",4,5,
+1,"@Test
+public void bowledIsCreditedToTheBowler() {
+    Ball ball = Fixtures.delivery(innings, 0, 1)
+            .wicket(WicketEvent.of(Dismissal.BOWLED, innings.getStrikerId()))
+            .build();
+    engine.apply(innings, ball);
+    assertEquals(1, innings.getScoreCard().bowlingLine(""AUS8"").getWickets());
+}",4,5,
+1,"@Test
+public void runOutIsNotCreditedToTheBowler() {
+    Ball ball = Fixtures.delivery(innings, 0, 1)
+            .wicket(new WicketEvent(Dismissal.RUN_OUT, innings.getStrikerId(), ""AUS5""))
+            .build();
+    engine.apply(innings, ball);
+    assertEquals(1, innings.getScoreCard().getWickets());
+    assertEquals(0, innings.getScoreCard().bowlingLine(""AUS8"").getWickets());
+}",4,5,
+1,"@Test
+public void dismissedBatterIsMarkedOut() {
+    String striker = innings.getStrikerId();
+    Ball ball = Fixtures.delivery(innings, 0, 1)
+            .wicket(WicketEvent.of(Dismissal.LBW, striker))
+            .build();
+    engine.apply(innings, ball);
+    assertTrue(innings.getScoreCard().battingLine(striker).isOut());
+}",4,5,
+1,"@Test
+public void wicketBreaksThePartnership() {
+    Ball ball = Fixtures.delivery(innings, 0, 1)
+            .wicket(WicketEvent.of(Dismissal.BOWLED, innings.getStrikerId()))
+            .build();
+    engine.apply(innings, ball);
+    assertTrue(innings.getPartnerships().get(0).isBroken());
+}",4,5,
+1,"@Test
+public void runsAreChargedToTheBowler() {
+    bowl(0, 1, 4);
+    assertEquals(4, innings.getScoreCard().bowlingLine(""AUS8"").getRunsConceded());
+}",4,5,
+1,"@Test
+public void wideIsChargedToTheBowler() {
+    engine.apply(innings, Fixtures.delivery(innings, 0, 1)
+            .extra(ExtraType.WIDE, 0).build());
+    assertEquals(1, innings.getScoreCard().bowlingLine(""AUS8"").getRunsConceded());
+}",4,5,
+1,"@Test
+public void sixLegalDeliveriesCompleteTheOver() {
+    ScoringResult last = null;
+    for (int i = 1; i <= 6; i++) {
+        last = bowl(0, i, 0);
+    }
+    assertTrue(last.isOverCompleted());
+    assertEquals(1, innings.getScoreCard().completedOvers());
+}",4,5,
+1,"@Test
+public void strikeRotatesAtTheEndOfTheOver() {
+    String opener = innings.getStrikerId();
+    for (int i = 1; i <= 6; i++) {
+        bowl(0, i, 0);
+    }
+    assertEquals(opener, innings.getNonStrikerId());
+}",4,5,
+1,"@Test
+public void wicketlessRunlessOverIsAMaiden() {
+    for (int i = 1; i <= 6; i++) {
+        bowl(0, i, 0);
+    }
+    assertEquals(1, innings.getScoreCard().bowlingLine(""AUS8"").getMaidens());
+}",4,5,
+1,"@Test
+public void overWithARunIsNotAMaiden() {
+    for (int i = 1; i <= 5; i++) {
+        bowl(0, i, 0);
+    }
+    bowl(0, 6, 1);
+    assertEquals(0, innings.getScoreCard().bowlingLine(""AUS8"").getMaidens());
+}",4,5,
+1,"@Test
+public void byesDoNotSpoilAMaiden() {
+    for (int i = 1; i <= 5; i++) {
+        bowl(0, i, 0);
+    }
+    engine.apply(innings, Fixtures.delivery(innings, 0, 6)
+            .extra(ExtraType.BYE, 2).build());
+    assertEquals(1, innings.getScoreCard().bowlingLine(""AUS8"").getMaidens());
+}",4,5,
+1,"@Test
+public void ballIsAppendedToTheInningsRecord() {
+    bowl(0, 1, 1);
+    assertEquals(1, innings.ballCount());
+}",4,5,
+1,"@Test
+public void partnershipAccumulatesRuns() {
+    bowl(0, 1, 2);
+    bowl(0, 2, 4);
+    assertEquals(6, innings.currentPartnership().getRuns());
+}",4,5,
+1,"@Test
+public void teamTotalMatchesTheSumOfEveryDelivery() {
+    bowl(0, 1, 1);
+    bowl(0, 2, 4);
+    engine.apply(innings, Fixtures.delivery(innings, 0, 3).extra(ExtraType.WIDE, 0).build());
+    bowl(0, 3, 6);
+    ScoreCard card = innings.getScoreCard();
+    assertEquals(12, card.getTotalRuns());
+    assertEquals(1, card.totalExtras());
+}",2,5,
+1,"@Test
+public void bowlerFromTheBattingSideIsRejected() {
+    engine.apply(innings, Ball.builder().over(0).ballInOver(1)
+            .bowler(""IND9"").striker(""IND1"").nonStriker(""IND2"").build());
+}",4,5,
+1,"@Test
+public void deliveryToAClosedInningsIsRejected() {
+    innings.close();
+    bowl(0, 1, 1);
+}",0,5,
+1,"@Test
+public void anEmptyObjectParses() {
+    assertTrue(JsonParser.parse(""{}"").isObject());
+    assertEquals(0, JsonParser.parse(""{}"").size());
+}",3,5,
+1,"@Test
+public void anEmptyArrayParses() {
+    assertTrue(JsonParser.parse(""[]"").isArray());
+    assertEquals(0, JsonParser.parse(""[]"").size());
+}",3,5,
+1,"@Test
+public void aStringParses() {
+    assertEquals(""Kohli"", JsonParser.parse(""\""Kohli\"""").asString());
+}",3,5,
+1,"@Test
+public void anIntegerParses() {
+    assertEquals(47, JsonParser.parse(""47"").asInt());
+}",3,5,
+1,"@Test
+public void aNegativeNumberParses() {
+    assertEquals(-12, JsonParser.parse(""-12"").asInt());
+}",3,5,
+1,"@Test
+public void aDecimalParses() {
+    assertEquals(6.25, JsonParser.parse(""6.25"").asDouble(), 1e-9);
+}",3,5,
+1,"@Test
+public void exponentNotationParses() {
+    assertEquals(1200.0, JsonParser.parse(""1.2e3"").asDouble(), 1e-9);
+}",3,5,
+1,"@Test
+public void trueParses() {
+    assertTrue(JsonParser.parse(""true"").asBoolean());
+}",3,5,
+1,"@Test
+public void falseParses() {
+    assertFalse(JsonParser.parse(""false"").asBoolean());
+}",3,5,
+1,"@Test
+public void nullParses() {
+    assertTrue(JsonParser.parse(""null"").isNull());
+}",3,5,
+1,"@Test
+public void anObjectMemberIsRead() {
+    JsonValue v = JsonParser.parse(""{\""runs\"":147,\""wickets\"":3}"");
+    assertEquals(147, v.get(""runs"").asInt());
+    assertEquals(3, v.get(""wickets"").asInt());
+}",3,5,
+1,"@Test
+public void anArrayElementIsRead() {
+    JsonValue v = JsonParser.parse(""[1,2,3]"");
+    assertEquals(2, v.get(1).asInt());
+    assertEquals(3, v.size());
+}",3,5,
+1,"@Test
+public void nestingIsHandled() {
+    JsonValue v = JsonParser.parse(""{\""innings\"":{\""score\"":{\""runs\"":180}}}"");
+    assertEquals(180, v.get(""innings"").get(""score"").get(""runs"").asInt());
+}",3,5,
+1,"@Test
+public void anArrayOfObjectsIsHandled() {
+    JsonValue v = JsonParser.parse(""[{\""id\"":\""IND1\""},{\""id\"":\""IND2\""}]"");
+    assertEquals(""IND2"", v.get(1).get(""id"").asString());
+}",3,5,
+1,"@Test
+public void whitespaceIsIgnored() {
+    JsonValue v = JsonParser.parse(""  {\n \""a\"" : 1 ,\t\""b\"" : 2 \r\n}  "");
+    assertEquals(2, v.size());
+}",3,5,
+1,"@Test
+public void memberOrderIsPreserved() {
+    JsonValue v = JsonParser.parse(""{\""z\"":1,\""a\"":2,\""m\"":3}"");
+    assertEquals(""{\""z\"":1,\""a\"":2,\""m\"":3}"", JsonWriter.write(v));
+}",3,5,
+1,"@Test
+public void hasDetectsAMember() {
+    JsonValue v = JsonParser.parse(""{\""runs\"":1}"");
+    assertTrue(v.has(""runs""));
+    assertFalse(v.has(""wickets""));
+}",3,5,
+1,"@Test
+public void aMissingMemberIsNull() {
+    assertTrue(JsonParser.parse(""{}"").get(""nope"").isNull());
+}",3,5,
+1,"@Test
+public void escapedQuotesRoundTrip() {
+    assertEquals(""say \""hi\"""", JsonParser.parse(""\""say \\\""hi\\\""\"""").asString());
+}",3,5,
+1,"@Test
+public void escapedBackslashesRoundTrip() {
+    assertEquals(""a\\b"", JsonParser.parse(""\""a\\\\b\"""").asString());
+}",3,5,
+1,"@Test
+public void escapedNewlinesRoundTrip() {
+    assertEquals(""a\nb"", JsonParser.parse(""\""a\\nb\"""").asString());
+}",3,5,
+1,"@Test
+public void escapedTabsRoundTrip() {
+    assertEquals(""a\tb"", JsonParser.parse(""\""a\\tb\"""").asString());
+}",3,5,
+1,"@Test
+public void escapedSlashesAreAccepted() {
+    assertEquals(""a/b"", JsonParser.parse(""\""a\\/b\"""").asString());
+}",3,5,
+1,"@Test
+public void unicodeEscapesAreDecoded() {
+    assertEquals(""\u00e9"", JsonParser.parse(""\""\\u00e9\"""").asString());
+}",3,5,
+1,"@Test
+public void aStringIsWrittenWithQuotes() {
+    assertEquals(""\""Kohli\"""", JsonWriter.write(""Kohli""));
+}",3,5,
+1,"@Test
+public void quotesAreEscapedOnWrite() {
+    assertEquals(""\""say \\\""hi\\\""\"""", JsonWriter.write(""say \""hi\""""));
+}",3,5,
+1,"@Test
+public void newlinesAreEscapedOnWrite() {
+    assertEquals(""\""a\\nb\"""", JsonWriter.write(""a\nb""));
+}",3,5,
+1,"@Test
+public void controlCharactersAreEscapedOnWrite() {
+    assertEquals(""\""\\u0001\"""", JsonWriter.write(""\u0001""));
+}",3,5,
+1,"@Test
+public void wholeDoublesLoseTheTrailingZero() {
+    assertEquals(""6"", JsonWriter.write(6.0));
+}",3,5,
+1,"@Test
+public void fractionalDoublesKeepTheirDecimals() {
+    assertEquals(""6.25"", JsonWriter.write(6.25));
+}",3,5,
+1,"@Test
+public void integersAreWrittenPlainly() {
+    assertEquals(""147"", JsonWriter.write(147));
+}",3,5,
+1,"@Test
+public void nullIsWritten() {
+    assertEquals(""null"", JsonWriter.write((Object) null));
+}",3,5,
+1,"@Test
+public void booleansAreWritten() {
+    assertEquals(""true"", JsonWriter.write(true));
+    assertEquals(""false"", JsonWriter.write(false));
+}",3,5,
+1,"@Test
+public void anObjectIsBuiltAndWritten() {
+    JsonValue v = JsonValue.object().put(""runs"", 147).put(""wickets"", 3);
+    assertEquals(""{\""runs\"":147,\""wickets\"":3}"", JsonWriter.write(v));
+}",3,5,
+1,"@Test
+public void anArrayIsBuiltAndWritten() {
+    JsonValue v = JsonValue.array().add(""a"").add(""b"");
+    assertEquals(""[\""a\"",\""b\""]"", JsonWriter.write(v));
+}",3,5,
+1,"@Test
+public void nestedValuesAreUnwrappedOnPut() {
+    JsonValue inner = JsonValue.object().put(""runs"", 10);
+    JsonValue outer = JsonValue.object().put(""score"", inner);
+    assertEquals(""{\""score\"":{\""runs\"":10}}"", JsonWriter.write(outer));
+}",3,5,
+1,"@Test
+public void aBuiltDocumentRoundTrips() {
+    JsonValue v = JsonValue.object()
+            .put(""match"", ""IND-AUS"")
+            .put(""runs"", 147)
+            .put(""chasing"", true);
+    assertEquals(v.toString(), JsonParser.parse(v.toString()).toString());
+}",3,5,
+1,"@Test
+public void optStringFallsBackWhenAbsent() {
+    assertEquals(""none"", JsonParser.parse(""{}"").optString(""venue"", ""none""));
+}",3,5,
+1,"@Test
+public void optStringFallsBackOnTheWrongType() {
+    assertEquals(""none"", JsonParser.parse(""{\""venue\"":5}"").optString(""venue"", ""none""));
+}",3,5,
+1,"@Test
+public void optStringReadsAPresentMember() {
+    assertEquals(""Lord's"", JsonParser.parse(""{\""venue\"":\""Lord's\""}"").optString(""venue"", ""none""));
+}",3,5,
+1,"@Test
+public void optIntFallsBackWhenAbsent() {
+    assertEquals(-1, JsonParser.parse(""{}"").optInt(""runs"", -1));
+}",3,5,
+1,"@Test
+public void optIntReadsAPresentMember() {
+    assertEquals(147, JsonParser.parse(""{\""runs\"":147}"").optInt(""runs"", -1));
+}",3,5,
+1,"@Test
+public void theTypeNameIsReported() {
+    assertEquals(""object"", JsonParser.parse(""{}"").typeName());
+    assertEquals(""array"", JsonParser.parse(""[]"").typeName());
+    assertEquals(""string"", JsonParser.parse(""\""a\"""").typeName());
+    assertEquals(""number"", JsonParser.parse(""1"").typeName());
+    assertEquals(""boolean"", JsonParser.parse(""true"").typeName());
+    assertEquals(""null"", JsonParser.parse(""null"").typeName());
+}",3,5,
+1,"@Test
+public void nullInputIsRejected() {
+    JsonParser.parse(null);
+}",3,5,
+1,"@Test
+public void trailingContentIsRejected() {
+    JsonParser.parse(""{} junk"");
+}",4,5,
+1,"@Test
+public void anUnterminatedObjectIsRejected() {
+    JsonParser.parse(""{\""a\"":1"");
+}",3,5,
+1,"@Test
+public void anUnterminatedArrayIsRejected() {
+    JsonParser.parse(""[1,2"");
+}",3,5,
+1,"@Test
+public void anUnterminatedStringIsRejected() {
+    JsonParser.parse(""\""abc"");
+}",4,5,
+1,"@Test
+public void aMissingColonIsRejected() {
+    JsonParser.parse(""{\""a\"" 1}"");
+}",3,5,
+1,"@Test
+public void aBadLiteralIsRejected() {
+    JsonParser.parse(""tru"");
+}",4,5,
+1,"@Test
+public void anInvalidEscapeIsRejected() {
+    JsonParser.parse(""\""a\\qb\"""");
+}",4,5,
+1,"@Test
+public void aTruncatedUnicodeEscapeIsRejected() {
+    JsonParser.parse(""\""\\u00\"""");
+}",4,5,
+1,"@Test
+public void anInvalidUnicodeEscapeIsRejected() {
+    JsonParser.parse(""\""\\uZZZZ\"""");
+}",4,5,
+1,"@Test
+public void readingAStringAsANumberIsRejected() {
+    JsonParser.parse(""\""abc\"""").asInt();
+}",3,5,
+1,"@Test
+public void readingANumberAsAnObjectIsRejected() {
+    JsonParser.parse(""1"").asObject();
+}",3,5,
+1,"@Test
+public void readingAnObjectAsAnArrayIsRejected() {
+    JsonParser.parse(""{}"").asArray();
+}",3,5,
+1,"@Test
+public void anOutOfRangeIndexIsRejected() {
+    JsonParser.parse(""[1]"").get(5);
+}",4,5,
+1,"@Test
+public void aScalarHasNoSize() {
+    JsonParser.parse(""1"").size();
+}",3,5,
+1,"@Test
+public void nonFiniteNumbersCannotBeWritten() {
+    JsonWriter.write(Double.NaN);
+}",3,5,
+1,"@Test
+public void theExceptionCarriesAPosition() {
+    try {
+        JsonParser.parse(""{\""a\"" 1}"");
+    } catch (JsonException e) {
+        assertTrue(e.getPosition() >= 0);
+        assertTrue(e.getMessage().contains(""position""));
+    }
+}",3,5,
+1,"@Test
+public void aRealisticScorecardRoundTrips() {
+    String doc = ""{\""matchId\"":\""IND-AUS-T20\"",\""innings\"":[{\""team\"":\""India\"",""
+            + ""\""runs\"":186,\""wickets\"":4,\""overs\"":20},{\""team\"":\""Australia\"",""
+            + ""\""runs\"":179,\""wickets\"":8,\""overs\"":20}],\""result\"":\""India won by 7 runs\""}"";
+    JsonValue v = JsonParser.parse(doc);
+    assertEquals(""IND-AUS-T20"", v.get(""matchId"").asString());
+    assertEquals(2, v.get(""innings"").size());
+    assertEquals(186, v.get(""innings"").get(0).get(""runs"").asInt());
+    assertEquals(doc, JsonWriter.write(v));
+}",3,5,
+1,"@Test
+public void theAddressCombinesOverAndBall() {
+    assertEquals(""12.3"", legal().build().address());
+}",4,5,
+1,"@Test
+public void theFirstDeliveryOfAMatchIsZeroOne() {
+    assertEquals(""0.1"", legal().over(0).ballInOver(1).build().address());
+}",4,5,
+1,"@Test
+public void aPlainDeliveryHasNoExtra() {
+    assertFalse(legal().build().hasExtra());
+    assertNull(legal().build().getExtra());
+}",4,5,
+1,"@Test
+public void aPlainDeliveryIsNotAWicket() {
+    assertFalse(legal().build().isWicket());
+}",4,5,
+1,"@Test
+public void aPlainDeliveryIsLegal() {
+    assertTrue(legal().build().isLegalDelivery());
+}",4,5,
+1,"@Test
+public void aWideIsNotALegalDelivery() {
+    assertFalse(legal().extra(ExtraType.WIDE, 0).build().isLegalDelivery());
+}",4,5,
+1,"@Test
+public void aNoBallIsNotALegalDelivery() {
+    assertFalse(legal().extra(ExtraType.NO_BALL, 0).build().isLegalDelivery());
+}",4,5,
+1,"@Test
+public void aByeIsALegalDelivery() {
+    assertTrue(legal().extra(ExtraType.BYE, 1).build().isLegalDelivery());
+}",4,5,
+1,"@Test
+public void totalRunsAreRunsOffTheBatWhenThereAreNoExtras() {
+    assertEquals(4, legal().runsOffBat(4).build().totalRuns());
+}",4,5,
+1,"@Test
+public void aWideCarriesOnePenaltyRun() {
+    assertEquals(1, legal().extra(ExtraType.WIDE, 0).build().totalRuns());
+}",4,5,
+1,"@Test
+public void aWideToTheBoundaryCarriesFivePenaltyRuns() {
+    assertEquals(5, legal().extra(ExtraType.WIDE, 4).build().totalRuns());
+}",4,5,
+1,"@Test
+public void aNoBallHitForSixIsSevenRuns() {
+    assertEquals(7, legal().extra(ExtraType.NO_BALL, 0).runsOffBat(6).build().totalRuns());
+}",4,5,
+1,"@Test
+public void byesCarryNoPenalty() {
+    assertEquals(2, legal().extra(ExtraType.BYE, 2).build().totalRuns());
+}",4,5,
+1,"@Test
+public void extraRunsAreZeroWithoutAnExtra() {
+    assertEquals(0, legal().runsOffBat(4).build().extraRuns());
+}",4,5,
+1,"@Test
+public void extraRunsIncludeThePenalty() {
+    assertEquals(3, legal().extra(ExtraType.WIDE, 2).build().extraRuns());
+}",4,5,
+1,"@Test
+public void runsOffTheBatAreChargedToTheBowler() {
+    assertEquals(4, legal().runsOffBat(4).build().runsChargedToBowler());
+}",4,5,
+1,"@Test
+public void aWideIsChargedToTheBowler() {
+    assertEquals(1, legal().extra(ExtraType.WIDE, 0).build().runsChargedToBowler());
+}",4,5,
+1,"@Test
+public void byesAreNotChargedToTheBowler() {
+    assertEquals(0, legal().extra(ExtraType.BYE, 4).build().runsChargedToBowler());
+}",4,5,
+1,"@Test
+public void legByesAreNotChargedToTheBowler() {
+    assertEquals(0, legal().extra(ExtraType.LEG_BYE, 2).build().runsChargedToBowler());
+}",4,5,
+1,"@Test
+public void aNoBallHitForFourChargesFiveToTheBowler() {
+    assertEquals(5, legal().extra(ExtraType.NO_BALL, 0).runsOffBat(4).build().runsChargedToBowler());
+}",4,5,
+1,"@Test
+public void aWicketIsCarried() {
+    Ball ball = legal().wicket(WicketEvent.of(Dismissal.BOWLED, ""IND3"")).build();
+    assertTrue(ball.isWicket());
+    assertEquals(Dismissal.BOWLED, ball.getWicket().getDismissal());
+}",4,5,
+1,"@Test
+public void theBuilderRoundTrips() {
+    Ball original = legal().runsOffBat(4).extra(ExtraType.NO_BALL, 0).build();
+    assertEquals(original, original.toBuilder().build());
+}",4,5,
+1,"@Test
+public void theBuilderCanAmendASingleField() {
+    Ball original = legal().runsOffBat(4).build();
+    Ball amended = original.toBuilder().runsOffBat(6).build();
+    assertEquals(6, amended.getRunsOffBat());
+    assertEquals(4, original.getRunsOffBat());
+}",4,5,
+1,"@Test
+public void identicalDeliveriesAreEqual() {
+    assertEquals(legal().runsOffBat(2).build(), legal().runsOffBat(2).build());
+}",3,5,
+1,"@Test
+public void identicalDeliveriesShareAHashCode() {
+    assertEquals(legal().runsOffBat(2).build().hashCode(),
+            legal().runsOffBat(2).build().hashCode());
+}",4,5,
+1,"@Test
+public void deliveriesWithDifferentRunsAreNotEqual() {
+    assertNotEquals(legal().runsOffBat(2).build(), legal().runsOffBat(4).build());
+}",4,5,
+1,"@Test
+public void aBallIsNotEqualToAnUnrelatedObject() {
+    assertNotEquals(legal().build(), ""12.3"");
+}",4,5,
+1,"@Test
+public void aBallEqualsItself() {
+    Ball ball = legal().build();
+    assertEquals(ball, ball);
+}",4,5,
+1,"@Test
+public void theTimestampIsCarried() {
+    assertEquals(1700000000000L, legal().timestampMillis(1700000000000L).build().getTimestampMillis());
+}",2,5,
+1,"@Test
+public void toStringLeadsWithTheAddress() {
+    assertTrue(legal().build().toString().startsWith(""12.3""));
+}",4,5,
+1,"@Test
+public void toStringMarksAWicket() {
+    Ball ball = legal().wicket(WicketEvent.of(Dismissal.BOWLED, ""IND3"")).build();
+    assertTrue(ball.toString().endsWith(""W""));
+}",4,5,
+1,"@Test
+public void aBallWithoutABowlerIsRejected() {
+    Ball.builder().striker(""IND3"").nonStriker(""IND1"").build();
+}",4,5,
+1,"@Test
+public void aBallWithoutAStrikerIsRejected() {
+    Ball.builder().bowler(""AUS8"").nonStriker(""IND1"").build();
+}",4,5,
+1,"@Test
+public void aBallWithoutANonStrikerIsRejected() {
+    Ball.builder().bowler(""AUS8"").striker(""IND3"").build();
+}",4,5,
+1,"@Test
+public void aNegativeExtraIsRejected() {
+    new Extra(ExtraType.WIDE, -1);
+}",4,5,
+1,"@Test
+public void aNullExtraTypeIsRejected() {
+    new Extra(null, 1);
+}",4,5,
+1,"@Test
+public void extrasOfTheSameKindAreEqual() {
+    assertEquals(new Extra(ExtraType.WIDE, 2), new Extra(ExtraType.WIDE, 2));
+}",4,5,
+1,"@Test
+public void extrasOfDifferentKindsAreNotEqual() {
+    assertNotEquals(new Extra(ExtraType.WIDE, 2), new Extra(ExtraType.BYE, 2));
+}",4,5,
+1,"@Test
+public void anExtraCanBeBuiltWithoutRuns() {
+    assertEquals(0, Extra.of(ExtraType.WIDE).getRuns());
+}",4,5,
+1,"@Test
+public void aNewMatchIsScheduled() {
+    assertEquals(MatchState.SCHEDULED, match.getState());
+}",4,5,
+1,"@Test
+public void aNewMatchHasNoInnings() {
+    assertTrue(match.getInnings().isEmpty());
+    assertNull(match.currentInnings());
+}",4,5,
+1,"@Test
+public void aTeamCannotPlayItself() {
+    new Match(""bad"", Fixtures.india(), Fixtures.india(), MatchFormat.T20, ""Lord's"");
+}",4,5,
+1,"@Test
+public void aBlankMatchIdIsRejected() {
+    new Match("" "", Fixtures.india(), Fixtures.australia(), MatchFormat.T20, ""Lord's"");
+}",4,5,
+1,"@Test
+public void aNullFormatIsRejected() {
+    new Match(""m"", Fixtures.india(), Fixtures.australia(), null, ""Lord's"");
+}",4,5,
+1,"@Test
+public void anUnknownVenueFallsBack() {
+    assertEquals(""unknown"",
+            new Match(""m"", Fixtures.india(), Fixtures.australia(), MatchFormat.T20, null).getVenue());
+}",4,5,
+1,"@Test
+public void recordingTheTossAdvancesTheState() {
+    match.recordToss(""IND"", true);
+    assertEquals(MatchState.TOSS_DONE, match.getState());
+    assertEquals(""IND"", match.getTossWinnerId());
+    assertTrue(match.isTossElectedToBat());
+}",4,5,
+1,"@Test
+public void aTossWinnerOutsideTheMatchIsRejected() {
+    match.recordToss(""ENG"", true);
+}",4,5,
+1,"@Test
+public void theOpponentOfEachSideIsTheOther() {
+    assertEquals(""AUS"", match.opponentOf(""IND"").getId());
+    assertEquals(""IND"", match.opponentOf(""AUS"").getId());
+}",4,5,
+1,"@Test
+public void theOpponentOfAnOutsideTeamIsRejected() {
+    match.opponentOf(""ENG"");
+}",4,5,
+1,"@Test
+public void bothSidesAreInvolved() {
+    assertTrue(match.involves(""IND""));
+    assertTrue(match.involves(""AUS""));
+    assertFalse(match.involves(""ENG""));
+}",4,5,
+1,"@Test
+public void aT20InningsInheritsTheTwentyOverLimit() {
+    Innings innings = match.startInnings(match.getTeamA(), match.getTeamB());
+    assertEquals(20, innings.getOversLimit());
+}",4,5,
+1,"@Test
+public void aTestInningsHasNoOverLimit() {
+    Match test = new Match(""t"", Fixtures.india(), Fixtures.australia(), MatchFormat.TEST, ""Lord's"");
+    assertEquals(-1, test.startInnings(test.getTeamA(), test.getTeamB()).getOversLimit());
+}",4,5,
+1,"@Test
+public void inningsAreNumberedFromOne() {
+    assertEquals(1, match.startInnings(match.getTeamA(), match.getTeamB()).getNumber());
+    assertEquals(2, match.startInnings(match.getTeamB(), match.getTeamA()).getNumber());
+}",3,5,
+1,"@Test
+public void inningsAreFoundByNumber() {
+    match.startInnings(match.getTeamA(), match.getTeamB());
+    assertNotNull(match.inningsByNumber(1));
+    assertNull(match.inningsByNumber(2));
+}",4,5,
+1,"@Test
+public void theCurrentInningsIsTheLatest() {
+    match.startInnings(match.getTeamA(), match.getTeamB());
+    Innings second = match.startInnings(match.getTeamB(), match.getTeamA());
+    assertEquals(second, match.currentInnings());
+}",4,5,
+1,"@Test
+public void aggregateRunsSumEveryInnings() {
+    Innings first = match.startInnings(match.getTeamA(), match.getTeamB());
+    Innings second = match.startInnings(match.getTeamB(), match.getTeamA());
+    first.getScoreCard().addRuns(180);
+    second.getScoreCard().addRuns(120);
+    assertEquals(300, match.aggregateRuns());
+}",4,5,
+1,"@Test
+public void matchesAreEqualById() {
+    assertEquals(Fixtures.t20Match(), Fixtures.t20Match());
+}",4,5,
+1,"@Test
+public void theDirtyFlagStartsClear() {
+    assertFalse(match.isDirty());
+}",4,5,
+1,"@Test
+public void theDirtyFlagCanBeSetAndCleared() {
+    match.markDirty();
+    assertTrue(match.isDirty());
+    match.clearDirty();
+    assertFalse(match.isDirty());
+}",4,5,
+1,"@Test
+public void onlyInProgressAcceptsDeliveries() {
+    assertTrue(MatchState.IN_PROGRESS.acceptsDeliveries());
+    assertFalse(MatchState.SCHEDULED.acceptsDeliveries());
+    assertFalse(MatchState.RAIN_DELAY.acceptsDeliveries());
+}",4,5,
+1,"@Test
+public void completedAndAbandonedAreTerminal() {
+    assertTrue(MatchState.COMPLETED.isTerminal());
+    assertTrue(MatchState.ABANDONED.isTerminal());
+    assertFalse(MatchState.IN_PROGRESS.isTerminal());
+}",4,5,
+1,"@Test
+public void aTerminalStateAcceptsNoTransition() {
+    assertFalse(MatchState.COMPLETED.canTransitionTo(MatchState.IN_PROGRESS));
+    assertFalse(MatchState.ABANDONED.canTransitionTo(MatchState.SCHEDULED));
+}",4,5,
+1,"@Test
+public void aStateCannotTransitionToItself() {
+    assertFalse(MatchState.IN_PROGRESS.canTransitionTo(MatchState.IN_PROGRESS));
+}",4,5,
+1,"@Test
+public void aNullTransitionIsRejected() {
+    assertFalse(MatchState.IN_PROGRESS.canTransitionTo(null));
+}",4,5,
+1,"@Test
+public void rainDelayCanResume() {
+    assertTrue(MatchState.RAIN_DELAY.canTransitionTo(MatchState.IN_PROGRESS));
+}",4,5,
+1,"@Test
+public void anyLiveStateCanBeAbandoned() {
+    assertTrue(MatchState.SCHEDULED.canTransitionTo(MatchState.ABANDONED));
+    assertTrue(MatchState.IN_PROGRESS.canTransitionTo(MatchState.ABANDONED));
+    assertTrue(MatchState.INNINGS_BREAK.canTransitionTo(MatchState.ABANDONED));
+}",4,5,
+1,"@Test
+public void anIllegalTransitionIsRejected() {
+    match.transitionTo(MatchState.COMPLETED);
+}",4,5,
+1,"@Test
+public void aLegalTransitionSequenceIsAccepted() {
+    match.recordToss(""IND"", true);
+    match.transitionTo(MatchState.IN_PROGRESS);
+    match.transitionTo(MatchState.INNINGS_BREAK);
+    match.transitionTo(MatchState.IN_PROGRESS);
+    match.transitionTo(MatchState.COMPLETED);
+    assertEquals(MatchState.COMPLETED, match.getState());
+}",4,5,
+1,"@Test
+public void openingAnInningsSeatsBothBatters() {
+    Innings innings = Fixtures.openedInnings();
+    assertEquals(""IND1"", innings.getStrikerId());
+    assertEquals(""IND2"", innings.getNonStrikerId());
+}",4,5,
+1,"@Test
+public void openingCreatesTheFirstPartnership() {
+    Innings innings = Fixtures.openedInnings();
+    assertEquals(1, innings.getPartnerships().size());
+    assertEquals(1, innings.currentPartnership().getWicketNumber());
+}",4,5,
+1,"@Test
+public void openingWithTheSameBatterTwiceIsRejected() {
+    new Innings(""i"", 1, Fixtures.india(), Fixtures.australia()).openWith(""IND1"", ""IND1"");
+}",4,5,
+1,"@Test
+public void rotatingStrikeSwapsTheBatters() {
+    Innings innings = Fixtures.openedInnings();
+    innings.rotateStrike();
+    assertEquals(""IND2"", innings.getStrikerId());
+    assertEquals(""IND1"", innings.getNonStrikerId());
+}",4,5,
+1,"@Test
+public void aDismissedStrikerIsReplaced() {
+    Innings innings = Fixtures.openedInnings();
+    innings.replaceBatter(""IND1"", ""IND3"");
+    assertEquals(""IND3"", innings.getStrikerId());
+}",4,5,
+1,"@Test
+public void aDismissedNonStrikerIsReplaced() {
+    Innings innings = Fixtures.openedInnings();
+    innings.replaceBatter(""IND2"", ""IND3"");
+    assertEquals(""IND3"", innings.getNonStrikerId());
+}",4,5,
+1,"@Test
+public void replacingABatterWhoIsNotAtTheCreaseIsRejected() {
+    Fixtures.openedInnings().replaceBatter(""IND7"", ""IND3"");
+}",4,5,
+1,"@Test
+public void ballsRemainingCountDownFromTheLimit() {
+    Innings innings = Fixtures.openedInnings();
+    assertEquals(120, innings.ballsRemaining());
+    innings.getScoreCard().addLegalBall();
+    assertEquals(119, innings.ballsRemaining());
+}",4,5,
+1,"@Test
+public void anUnlimitedInningsHasNoBallsRemaining() {
+    Innings innings = new Innings(""i"", 1, Fixtures.india(), Fixtures.australia());
+    assertEquals(-1, innings.ballsRemaining());
+}",4,5,
+1,"@Test
+public void runsRequiredAreMinusOneOutsideAChase() {
+    assertEquals(-1, Fixtures.openedInnings().runsRequired());
+}",4,5,
+1,"@Test
+public void runsRequiredCountDownTowardsTheTarget() {
+    Innings innings = Fixtures.openedInnings();
+    innings.setTarget(181);
+    assertEquals(181, innings.runsRequired());
+    innings.getScoreCard().addRuns(100);
+    assertEquals(81, innings.runsRequired());
+}",4,5,
+1,"@Test
+public void runsRequiredNeverGoNegative() {
+    Innings innings = Fixtures.openedInnings();
+    innings.setTarget(100);
+    innings.getScoreCard().addRuns(150);
+    assertEquals(0, innings.runsRequired());
+}",4,5,
+1,"@Test
+public void theRequiredRateReflectsTheChase() {
+    Innings innings = Fixtures.openedInnings();
+    innings.setTarget(121);
+    assertEquals(6.05, innings.requiredRunRate(), 1e-9);
+}",2,5,
+1,"@Test
+public void thereIsNoRequiredRateOutsideAChase() {
+    assertEquals(-1.0, Fixtures.openedInnings().requiredRunRate(), 1e-9);
+}",2,5,
+1,"@Test
+public void anInningsEndsWhenAllOut() {
+    Innings innings = Fixtures.openedInnings();
+    for (int i = 0; i < 10; i++) {
+        innings.getScoreCard().addWicket();
+    }
+    assertTrue(innings.isComplete());
+}",4,5,
+1,"@Test
+public void anInningsEndsAtTheOverLimit() {
+    Innings innings = Fixtures.openedInnings();
+    for (int i = 0; i < 120; i++) {
+        innings.getScoreCard().addLegalBall();
+    }
+    assertTrue(innings.isComplete());
+}",4,5,
+1,"@Test
+public void aClosedInningsIsComplete() {
+    Innings innings = Fixtures.openedInnings();
+    innings.close();
+    assertTrue(innings.isComplete());
+}",4,5,
+1,"@Test
+public void anInningsCannotHaveTheSameTeamBattingAndBowling() {
+    new Innings(""i"", 1, Fixtures.india(), Fixtures.india());
+}",4,5,
+1,"@Test
+public void anOverTalliesItsRuns() {
+    Over over = new Over(0, ""AUS8"");
+    over.record(Ball.builder().over(0).ballInOver(1).bowler(""AUS8"")
+            .striker(""IND1"").nonStriker(""IND2"").runsOffBat(4).build());
+    assertEquals(4, over.runsConceded());
+}",4,5,
+1,"@Test
+public void anOverIsCompleteAfterSixLegalBalls() {
+    Over over = new Over(0, ""AUS8"");
+    for (int i = 1; i <= 6; i++) {
+        over.record(Ball.builder().over(0).ballInOver(i).bowler(""AUS8"")
+                .striker(""IND1"").nonStriker(""IND2"").build());
+    }
+    assertTrue(over.isComplete());
+    assertEquals(6, over.legalBalls());
+}",4,5,
+1,"@Test
+public void aWideDoesNotAdvanceTheOver() {
+    Over over = new Over(0, ""AUS8"");
+    over.record(Ball.builder().over(0).ballInOver(1).bowler(""AUS8"")
+            .striker(""IND1"").nonStriker(""IND2"").extra(ExtraType.WIDE, 0).build());
+    assertEquals(0, over.legalBalls());
+    assertFalse(over.isComplete());
+}",4,5,
+1,"@Test
+public void theOverSequenceRendersDotsAndRuns() {
+    Over over = new Over(0, ""AUS8"");
+    over.record(Ball.builder().over(0).ballInOver(1).bowler(""AUS8"")
+            .striker(""IND1"").nonStriker(""IND2"").build());
+    over.record(Ball.builder().over(0).ballInOver(2).bowler(""AUS8"")
+            .striker(""IND1"").nonStriker(""IND2"").runsOffBat(4).build());
+    assertEquals("". 4"", over.sequence());
+}",4,5,
+1,"@Test
+public void anOverWithoutABowlerIsRejected() {
+    new Over(0, "" "");
+}",4,5,
+1,"@Test
+public void aNegativeOverNumberIsRejected() {
+    new Over(-1, ""AUS8"");
+}",4,5,
+1,"@Test
+public void aPartnershipAccumulatesRunsAndBalls() {
+    Partnership stand = new Partnership(""IND1"", ""IND2"", 1);
+    stand.addRuns(4);
+    stand.addBall();
+    assertEquals(4, stand.getRuns());
+    assertEquals(1, stand.getBalls());
+}",4,5,
+1,"@Test
+public void aPartnershipKnowsItsBatters() {
+    Partnership stand = new Partnership(""IND1"", ""IND2"", 1);
+    assertTrue(stand.involves(""IND1""));
+    assertFalse(stand.involves(""IND3""));
+}",4,5,
+1,"@Test
+public void aBrokenPartnershipIsMarked() {
+    Partnership stand = new Partnership(""IND1"", ""IND2"", 1);
+    assertFalse(stand.isBroken());
+    stand.breakStand();
+    assertTrue(stand.isBroken());
+}",4,5,
+1,"@Test
+public void aPartnershipNeedsTwoDistinctBatters() {
+    new Partnership(""IND1"", ""IND1"", 1);
+}",4,5,
+1,"@Test
+public void aPartnershipRunRateIsPerOver() {
+    Partnership stand = new Partnership(""IND1"", ""IND2"", 1);
+    stand.addRuns(30);
+    for (int i = 0; i < 30; i++) {
+        stand.addBall();
+    }
+    assertEquals(6.0, stand.runRate(), 1e-9);
+}",2,5,
+1,"@Test
+public void aShortNameIsDerivedFromTheFullName() {
+    assertEquals(""J Root"", new Player(""ENG1"", ""Joe Root"", PlayerRole.BATTER).getShortName());
+}",4,5,
+1,"@Test
+public void aThreePartNameKeepsTheSurname() {
+    assertEquals(""K Pietersen"",
+            new Player(""ENG2"", ""Kevin Peter Pietersen"", PlayerRole.BATTER).getShortName());
+}",4,5,
+1,"@Test
+public void aSingleWordNameIsLeftAlone() {
+    assertEquals(""Ashwin"", new Player(""IND12"", ""Ashwin"", PlayerRole.BOWLER).getShortName());
+}",4,5,
+1,"@Test
+public void anExplicitShortNameWins() {
+    assertEquals(""KP"", new Player(""ENG2"", ""Kevin Pietersen"", ""KP"", PlayerRole.BATTER).getShortName());
+}",4,5,
+1,"@Test
+public void aBlankShortNameFallsBackToTheDerivedOne() {
+    assertEquals(""K Pietersen"",
+            new Player(""ENG2"", ""Kevin Pietersen"", ""  "", PlayerRole.BATTER).getShortName());
+}",4,5,
+1,"@Test
+public void aBlankPlayerIdIsRejected() {
+    new Player("" "", ""Joe Root"", PlayerRole.BATTER);
+}",4,5,
+1,"@Test
+public void aBlankFullNameIsRejected() {
+    new Player(""ENG1"", ""  "", PlayerRole.BATTER);
+}",4,5,
+1,"@Test
+public void aNullRoleIsRejected() {
+    new Player(""ENG1"", ""Joe Root"", null);
+}",4,5,
+1,"@Test
+public void playersAreEqualById() {
+    assertEquals(new Player(""ENG1"", ""Joe Root"", PlayerRole.BATTER),
+            new Player(""ENG1"", ""Someone Else"", PlayerRole.BOWLER));
+}",4,5,
+1,"@Test
+public void playersWithDifferentIdsAreNotEqual() {
+    assertNotEquals(new Player(""ENG1"", ""Joe Root"", PlayerRole.BATTER),
+            new Player(""ENG2"", ""Joe Root"", PlayerRole.BATTER));
+}",4,5,
+1,"@Test
+public void aPlayerIsNotEqualToAnUnrelatedObject() {
+    assertNotEquals(new Player(""ENG1"", ""Joe Root"", PlayerRole.BATTER), ""ENG1"");
+}",4,5,
+1,"@Test
+public void bowlersCanBowl() {
+    assertTrue(PlayerRole.BOWLER.canBowl());
+    assertTrue(PlayerRole.ALL_ROUNDER.canBowl());
+}",4,5,
+1,"@Test
+public void specialistBattersDoNotBowl() {
+    assertFalse(PlayerRole.BATTER.canBowl());
+    assertFalse(PlayerRole.WICKET_KEEPER.canBowl());
+}",4,5,
+1,"@Test
+public void keepersCountAsSpecialistBatters() {
+    assertTrue(PlayerRole.WICKET_KEEPER.isSpecialistBatter());
+    assertTrue(PlayerRole.BATTER.isSpecialistBatter());
+    assertFalse(PlayerRole.BOWLER.isSpecialistBatter());
+}",4,5,
+1,"@Test
+public void aSquadIsElevenStrong() {
+    assertEquals(11, Fixtures.india().size());
+}",4,5,
+1,"@Test
+public void aPlayerIsFoundById() {
+    assertEquals(""Virat Kohli"", Fixtures.india().playerById(""IND3"").getFullName());
+}",4,5,
+1,"@Test
+public void anUnknownPlayerIsNotFound() {
+    assertNull(Fixtures.india().playerById(""NOPE""));
+}",4,5,
+1,"@Test
+public void membershipIsTestable() {
+    assertTrue(Fixtures.india().contains(""IND3""));
+    assertFalse(Fixtures.india().contains(""AUS3""));
+}",4,5,
+1,"@Test
+public void battingPositionIsOneBased() {
+    assertEquals(""IND1"", Fixtures.india().batterAtPosition(1).getId());
+    assertEquals(""IND11"", Fixtures.india().batterAtPosition(11).getId());
+}",4,5,
+1,"@Test
+public void positionZeroIsOutOfRange() {
+    assertNull(Fixtures.india().batterAtPosition(0));
+}",4,5,
+1,"@Test
+public void positionTwelveIsOutOfRange() {
+    assertNull(Fixtures.india().batterAtPosition(12));
+}",4,5,
+1,"@Test
+public void bowlersAreListed() {
+    assertEquals(6, Fixtures.india().bowlers().size());
+}",4,5,
+1,"@Test
+public void everyListedBowlerCanBowl() {
+    for (Player p : Fixtures.australia().bowlers()) {
+        assertTrue(p.getRole().canBowl());
+    }
+}",4,5,
+1,"@Test
+public void theSquadIsReadOnly() {
+    Fixtures.india().getSquad().add(new Player(""X"", ""Someone"", PlayerRole.BATTER));
+}",4,5,
+1,"@Test
+public void anEmptySquadIsRejected() {
+    new Team(""IND"", ""India"", Collections.<Player>emptyList());
+}",4,5,
+1,"@Test
+public void aNullSquadIsRejected() {
+    new Team(""IND"", ""India"", null);
+}",4,5,
+1,"@Test
+public void aBlankTeamIdIsRejected() {
+    new Team("" "", ""India"", Fixtures.india().getSquad());
+}",4,5,
+1,"@Test
+public void aBlankTeamNameIsRejected() {
+    new Team(""IND"", """", Fixtures.india().getSquad());
+}",4,5,
+1,"@Test
+public void aDuplicatePlayerInTheSquadIsRejected() {
+    List<Player> squad = new ArrayList<Player>();
+    squad.add(new Player(""IND1"", ""Rohit Sharma"", PlayerRole.BATTER));
+    squad.add(new Player(""IND1"", ""Rohit Sharma"", PlayerRole.BATTER));
+    new Team(""IND"", ""India"", squad);
+}",4,5,
+1,"@Test
+public void teamsAreEqualById() {
+    assertEquals(Fixtures.india(), Fixtures.india());
+}",4,5,
+1,"@Test
+public void differentTeamsAreNotEqual() {
+    assertNotEquals(Fixtures.india(), Fixtures.australia());
+}",4,5,
+1,"@Test
+public void teamsShareAHashCodeById() {
+    assertEquals(Fixtures.india().hashCode(), Fixtures.india().hashCode());
+}",4,5,
+1,"@Test
+public void theSquadOrderIsTheBattingOrder() {
+    List<Player> squad = Fixtures.india().getSquad();
+    assertEquals(""IND1"", squad.get(0).getId());
+    assertEquals(""IND2"", squad.get(1).getId());
+}",4,5,
+1,"@Test
+public void toStringCarriesTheNameAndSize() {
+    assertTrue(Fixtures.india().toString().contains(""India""));
+    assertTrue(Fixtures.india().toString().contains(""11""));
+}",4,5,
+1,"@Test
+public void aPlayerToStringCarriesTheShortNameAndId() {
+    String text = new Player(""IND3"", ""Virat Kohli"", PlayerRole.BATTER).toString();
+    assertTrue(text.contains(""V Kohli""));
+    assertTrue(text.contains(""IND3""));
+}",4,5,
+1,"@Test
+public void theRegistryIsASingleton() {
+    assertTrue(MatchRegistry.getInstance() == MatchRegistry.getInstance());
+}",4,5,
+1,"@Test
+public void aRegisteredMatchIsFound() {
+    Match match = Fixtures.t20Match();
+    registry.register(match);
+    assertEquals(match, registry.find(match.getId()));
+}",4,5,
+1,"@Test
+public void anUnregisteredMatchIsNotFound() {
+    assertNull(registry.find(""nope""));
+}",4,5,
+1,"@Test
+public void requireReturnsARegisteredMatch() {
+    Match match = Fixtures.t20Match();
+    registry.register(match);
+    assertNotNull(registry.require(match.getId()));
+}",4,5,
+1,"@Test
+public void requireRaisesForAnUnknownMatch() {
+    registry.require(""nope"");
+}",4,5,
+1,"@Test
+public void registeringNullIsRejected() {
+    registry.register(null);
+}",4,5,
+1,"@Test
+public void registeringTracksTheCount() {
+    registry.register(Fixtures.t20Match());
+    assertEquals(1, registry.size());
+    assertEquals(1, registry.getRegistrations());
+}",4,5,
+1,"@Test
+public void reRegisteringTheSameIdReplacesIt() {
+    registry.register(Fixtures.t20Match());
+    registry.register(Fixtures.t20Match());
+    assertEquals(1, registry.size());
+    assertEquals(2, registry.getRegistrations());
+}",4,5,
+1,"@Test
+public void containsTracksMembership() {
+    registry.register(Fixtures.t20Match());
+    assertTrue(registry.contains(""IND-AUS-T20""));
+    assertFalse(registry.contains(""nope""));
+}",4,5,
+1,"@Test
+public void aMatchCanBeRemoved() {
+    registry.register(Fixtures.t20Match());
+    assertNotNull(registry.remove(""IND-AUS-T20""));
+    assertTrue(registry.isEmpty());
+}",4,5,
+1,"@Test
+public void removingAnUnknownMatchYieldsNull() {
+    assertNull(registry.remove(""nope""));
+}",4,5,
+1,"@Test
+public void allListsEveryMatch() {
+    registry.register(Fixtures.t20Match());
+    registry.register(Fixtures.odiMatch());
+    assertEquals(2, registry.all().size());
+    assertEquals(2, registry.matchIds().size());
+}",4,5,
+1,"@Test
+public void matchesAreFilteredByTeam() {
+    registry.register(Fixtures.t20Match());
+    assertEquals(1, registry.involvingTeam(""IND"").size());
+    assertEquals(0, registry.involvingTeam(""ENG"").size());
+}",4,5,
+1,"@Test
+public void onlyInProgressMatchesAreLive() {
+    Match match = Fixtures.t20Match();
+    registry.register(match);
+    assertEquals(0, registry.live().size());
+    match.recordToss(""IND"", true);
+    match.transitionTo(com.cricket.core.model.MatchState.IN_PROGRESS);
+    assertEquals(1, registry.live().size());
+}",4,5,
+1,"@Test
+public void resetEmptiesTheRegistry() {
+    registry.register(Fixtures.t20Match());
+    registry.reset();
+    assertTrue(registry.isEmpty());
+    assertEquals(0, registry.getRegistrations());
+}",0,5,
+1,"@Test
+public void theDirectoryIsASingleton() {
+    assertTrue(PlayerDirectory.getInstance() == PlayerDirectory.getInstance());
+}",4,5,
+1,"@Test
+public void aFreshDirectoryIsEmpty() {
+    assertTrue(directory.isEmpty());
+    assertEquals(0, directory.size());
+}",4,5,
+1,"@Test
+public void importingASquadPopulatesTheDirectory() {
+    directory.importSquad(Fixtures.india());
+    assertEquals(11, directory.size());
+    assertEquals(1, directory.getImportCount());
+}",4,5,
+1,"@Test
+public void importingANullSquadIsRejected() {
+    directory.importSquad(null);
+}",4,5,
+1,"@Test
+public void aPlayerIsResolvedById() {
+    directory.importSquad(Fixtures.india());
+    assertEquals(""Virat Kohli"", directory.byId(""IND3"").getFullName());
+}",4,5,
+1,"@Test
+public void aPlayerIsResolvedByShortName() {
+    directory.importSquad(Fixtures.india());
+    assertEquals(""IND3"", directory.byShortName(""V Kohli"").getId());
+}",4,5,
+1,"@Test
+public void shortNameLookupIgnoresCase() {
+    directory.importSquad(Fixtures.india());
+    assertNotNull(directory.byShortName(""v kohli""));
+}",4,5,
+1,"@Test
+public void anUnimportedShortNameIsNotFound() {
+    assertNull(directory.byShortName(""V Kohli""));
+}",4,5,
+1,"@Test
+public void requireRaisesForAnUnimportedShortName() {
+    directory.requireByShortName(""V Kohli"");
+}",4,5,
+1,"@Test
+public void aSinglePlayerCanBeAdded() {
+    directory.add(new com.cricket.core.model.Player(
+            ""ENG1"", ""Joe Root"", com.cricket.core.model.PlayerRole.BATTER));
+    assertTrue(directory.knows(""ENG1""));
+}",4,5,
+1,"@Test
+public void addingANullPlayerIsRejected() {
+    directory.add(null);
+}",4,5,
+1,"@Test
+public void searchMatchesOnAFragment() {
+    directory.importSquad(Fixtures.india());
+    assertEquals(1, directory.search(""Kohli"").size());
+}",4,5,
+1,"@Test
+public void searchMatchesSeveralPlayers() {
+    directory.importSquad(Fixtures.india());
+    assertEquals(2, directory.search(""Mohammed"").size());
+}",4,5,
+1,"@Test
+public void anEmptySearchYieldsNothing() {
+    directory.importSquad(Fixtures.india());
+    assertTrue(directory.search("""").isEmpty());
+    assertTrue(directory.search(null).isEmpty());
+}",4,5,
+1,"@Test
+public void clearEmptiesTheDirectory() {
+    directory.importSquad(Fixtures.india());
+    directory.clear();
+    assertTrue(directory.isEmpty());
+    assertEquals(0, directory.getImportCount());
+}",0,5,
+1,"@Test
+public void twoSquadsBothLand() {
+    directory.importSquad(Fixtures.india());
+    directory.importSquad(Fixtures.australia());
+    assertEquals(22, directory.size());
+    assertEquals(2, directory.getImportCount());
+}",4,5,
+1,"@Test
+public void theRulesStartAtTheirDefaults() {
+    assertTrue(ScoringRules.isDefault());
+    assertEquals(6, ScoringRules.ballsPerOver());
+    assertEquals(1, ScoringRules.widePenalty());
+    assertTrue(ScoringRules.freeHitAfterNoBall());
+    assertFalse(ScoringRules.wideCountsAsBall());
+}",3,5,
+1,"@Test
+public void changingARuleLeavesTheDefaults() {
+    ScoringRules.setFreeHitAfterNoBall(false);
+    assertFalse(ScoringRules.isDefault());
+}",4,5,
+1,"@Test
+public void reloadingRestoresTheDefaults() {
+    ScoringRules.setBallsPerOver(8);
+    ScoringRules.setWidePenalty(2);
+    ScoringRules.reloadDefaults();
+    assertTrue(ScoringRules.isDefault());
+}",1,5,
+1,"@Test
+public void testFormatDefaultsDisableTheFreeHit() {
+    ScoringRules.applyFormatDefaults(MatchFormat.TEST);
+    assertFalse(ScoringRules.freeHitAfterNoBall());
+}",4,5,
+1,"@Test
+public void t20FormatDefaultsEnableTheFreeHit() {
+    ScoringRules.applyFormatDefaults(MatchFormat.T20);
+    assertTrue(ScoringRules.freeHitAfterNoBall());
+}",4,5,
+1,"@Test
+public void aNullFormatIsRejected() {
+    ScoringRules.applyFormatDefaults(null);
+}",4,5,
+1,"@Test
+public void zeroBallsPerOverIsRejected() {
+    ScoringRules.setBallsPerOver(0);
+}",4,5,
+1,"@Test
+public void thirteenBallsPerOverIsRejected() {
+    ScoringRules.setBallsPerOver(13);
+}",4,5,
+1,"@Test
+public void aNegativeWidePenaltyIsRejected() {
+    ScoringRules.setWidePenalty(-1);
+}",4,5,
+1,"@Test
+public void aNegativeNoBallPenaltyIsRejected() {
+    ScoringRules.setNoBallPenalty(-1);
+}",4,5,
+1,"@Test
+public void theRulesDescribeThemselves() {
+    assertTrue(ScoringRules.describe().contains(""ballsPerOver=6""));
+}",4,5,
+1,"@Test
+public void aNewLineIsBlank() {
+    assertEquals(0, line.getRuns());
+    assertEquals(0, line.getBallsFaced());
+    assertEquals(0, line.getFours());
+    assertEquals(0, line.getSixes());
+    assertFalse(line.isOut());
+}",3,5,
+1,"@Test
+public void thePlayerIdIsRetained() {
+    assertEquals(""IND3"", line.getPlayerId());
+}",4,5,
+1,"@Test
+public void aBlankPlayerIdIsRejected() {
+    new BattingLine(""  "");
+}",4,5,
+1,"@Test
+public void aNullPlayerIdIsRejected() {
+    new BattingLine(null);
+}",4,5,
+1,"@Test
+public void runsAccumulate() {
+    line.addRuns(1);
+    line.addRuns(2);
+    assertEquals(3, line.getRuns());
+}",4,5,
+1,"@Test
+public void aFourIsCounted() {
+    line.addRuns(4);
+    assertEquals(1, line.getFours());
+    assertEquals(0, line.getSixes());
+}",3,5,
+1,"@Test
+public void aSixIsCounted() {
+    line.addRuns(6);
+    assertEquals(1, line.getSixes());
+    assertEquals(0, line.getFours());
+}",4,5,
+1,"@Test
+public void threeRunsRunAreNotABoundary() {
+    line.addRuns(3);
+    assertEquals(0, line.getFours());
+    assertEquals(0, line.getSixes());
+}",4,5,
+1,"@Test
+public void addingZeroRunsIsAllowed() {
+    line.addRuns(0);
+    assertEquals(0, line.getRuns());
+}",4,5,
+1,"@Test
+public void negativeRunsAreRejected() {
+    line.addRuns(-1);
+}",4,5,
+1,"@Test
+public void ballsFacedAccumulate() {
+    line.addBallFaced();
+    line.addBallFaced();
+    assertEquals(2, line.getBallsFaced());
+}",0,5,
+1,"@Test
+public void strikeRateIsZeroBeforeFacingABall() {
+    assertEquals(0.0, line.strikeRate(), 1e-9);
+}",2,5,
+1,"@Test
+public void strikeRateIsRunsPerHundredBalls() {
+    line.addRuns(50);
+    for (int i = 0; i < 25; i++) {
+        line.addBallFaced();
+    }
+    assertEquals(200.0, line.strikeRate(), 1e-9);
+}",2,5,
+1,"@Test
+public void aRunABallIsAStrikeRateOfOneHundred() {
+    for (int i = 0; i < 30; i++) {
+        line.addRuns(1);
+        line.addBallFaced();
+    }
+    assertEquals(100.0, line.strikeRate(), 1e-9);
+}",2,5,
+1,"@Test
+public void boundaryRunsCountFoursAndSixes() {
+    line.addRuns(4);
+    line.addRuns(6);
+    line.addRuns(1);
+    assertEquals(10, line.boundaryRuns());
+}",4,5,
+1,"@Test
+public void boundaryRunsAreZeroWithoutBoundaries() {
+    line.addRuns(3);
+    assertEquals(0, line.boundaryRuns());
+}",4,5,
+1,"@Test
+public void markingOutRecordsTheDismissal() {
+    line.markOut(Dismissal.BOWLED, ""AUS8"");
+    assertTrue(line.isOut());
+    assertEquals(Dismissal.BOWLED, line.getDismissal());
+}",4,5,
+1,"@Test
+public void aBowlerIsCreditedForABowledDismissal() {
+    line.markOut(Dismissal.BOWLED, ""AUS8"");
+    assertEquals(""AUS8"", line.getDismissedBy());
+}",4,5,
+1,"@Test
+public void noBowlerIsCreditedForARunOut() {
+    line.markOut(Dismissal.RUN_OUT, ""AUS8"");
+    assertTrue(line.isOut());
+    assertNull(line.getDismissedBy());
+}",4,5,
+1,"@Test
+public void aMilestoneIsReachedAtTheThreshold() {
+    line.addRuns(50);
+    assertTrue(line.isMilestone(50));
+}",4,5,
+1,"@Test
+public void aMilestoneIsNotReachedBelowTheThreshold() {
+    line.addRuns(49);
+    assertFalse(line.isMilestone(50));
+}",4,5,
+1,"@Test
+public void aMilestoneStillCountsWhenExceeded() {
+    line.addRuns(120);
+    assertTrue(line.isMilestone(100));
+}",4,5,
+1,"@Test
+public void anUnbeatenSummaryCarriesAnAsterisk() {
+    line.addRuns(47);
+    for (int i = 0; i < 32; i++) {
+        line.addBallFaced();
+    }
+    assertEquals(""47* (32)"", line.summary());
+}",4,5,
+1,"@Test
+public void aDismissedSummaryHasNoAsterisk() {
+    line.addRuns(47);
+    for (int i = 0; i < 32; i++) {
+        line.addBallFaced();
+    }
+    line.markOut(Dismissal.CAUGHT, ""AUS8"");
+    assertEquals(""47 (32)"", line.summary());
+}",4,5,
+1,"@Test
+public void aDuckIsRenderedAsZero() {
+    line.addBallFaced();
+    line.markOut(Dismissal.BOWLED, ""AUS8"");
+    assertEquals(""0 (1)"", line.summary());
+}",4,5,
+1,"@Test
+public void toStringLeadsWithThePlayerId() {
+    line.addRuns(10);
+    assertTrue(line.toString().startsWith(""IND3""));
+}",4,5,
+1,"@Test
+public void aNewLineIsBlank() {
+    assertEquals(0, line.getLegalBalls());
+    assertEquals(0, line.getRunsConceded());
+    assertEquals(0, line.getWickets());
+    assertEquals(0, line.getMaidens());
+}",3,5,
+1,"@Test
+public void thePlayerIdIsRetained() {
+    assertEquals(""AUS8"", line.getPlayerId());
+}",4,5,
+1,"@Test
+public void aBlankPlayerIdIsRejected() {
+    new BowlingLine("""");
+}",4,5,
+1,"@Test
+public void legalBallsAccumulate() {
+    bowlLegalBalls(4);
+    assertEquals(4, line.getLegalBalls());
+}",4,5,
+1,"@Test
+public void sixBallsIsOneCompletedOver() {
+    bowlLegalBalls(6);
+    assertEquals(1, line.completedOvers());
+    assertEquals(0, line.ballsIntoCurrentOver());
+}",4,5,
+1,"@Test
+public void twentyTwoBallsIsThreeOversAndFour() {
+    bowlLegalBalls(22);
+    assertEquals(3, line.completedOvers());
+    assertEquals(4, line.ballsIntoCurrentOver());
+}",4,5,
+1,"@Test
+public void oversBowledUsesCricketNotation() {
+    bowlLegalBalls(22);
+    assertEquals(3.4, line.oversBowled(), 1e-9);
+}",4,5,
+1,"@Test
+public void aCompletedOverHasNoPartOver() {
+    bowlLegalBalls(24);
+    assertEquals(4.0, line.oversBowled(), 1e-9);
+}",4,5,
+1,"@Test
+public void runsConcededAccumulate() {
+    line.addRunsConceded(4);
+    line.addRunsConceded(2);
+    assertEquals(6, line.getRunsConceded());
+}",2,5,
+1,"@Test
+public void negativeRunsConcededAreRejected() {
+    line.addRunsConceded(-1);
+}",4,5,
+1,"@Test
+public void wicketsAccumulate() {
+    line.addWicket();
+    line.addWicket();
+    assertEquals(2, line.getWickets());
+}",0,5,
+1,"@Test
+public void maidensAccumulate() {
+    line.addMaiden();
+    assertEquals(1, line.getMaidens());
+}",4,5,
+1,"@Test
+public void widesAreCounted() {
+    line.addWide();
+    line.addWide();
+    assertEquals(2, line.getWides());
+}",4,5,
+1,"@Test
+public void noBallsAreCounted() {
+    line.addNoBall();
+    assertEquals(1, line.getNoBalls());
+}",4,5,
+1,"@Test
+public void economyIsZeroBeforeBowling() {
+    assertEquals(0.0, line.economy(), 1e-9);
+}",2,5,
+1,"@Test
+public void economyIsRunsPerOver() {
+    bowlLegalBalls(24);
+    line.addRunsConceded(24);
+    assertEquals(6.0, line.economy(), 1e-9);
+}",2,5,
+1,"@Test
+public void economyAccountsForAPartOver() {
+    bowlLegalBalls(3);
+    line.addRunsConceded(6);
+    assertEquals(12.0, line.economy(), 1e-9);
+}",4,5,
+1,"@Test
+public void averageIsMinusOneWithoutAWicket() {
+    bowlLegalBalls(24);
+    line.addRunsConceded(30);
+    assertEquals(-1.0, line.average(), 1e-9);
+}",2,5,
+1,"@Test
+public void averageIsRunsPerWicket() {
+    line.addRunsConceded(30);
+    line.addWicket();
+    line.addWicket();
+    assertEquals(15.0, line.average(), 1e-9);
+}",2,5,
+1,"@Test
+public void strikeRateIsMinusOneWithoutAWicket() {
+    bowlLegalBalls(24);
+    assertEquals(-1.0, line.strikeRate(), 1e-9);
+}",2,5,
+1,"@Test
+public void strikeRateIsBallsPerWicket() {
+    bowlLegalBalls(24);
+    line.addWicket();
+    line.addWicket();
+    assertEquals(12.0, line.strikeRate(), 1e-9);
+}",2,5,
+1,"@Test
+public void figuresUseTheStandardFormat() {
+    bowlLegalBalls(22);
+    line.addRunsConceded(22);
+    line.addWicket();
+    line.addWicket();
+    assertEquals(""3.4-0-22-2"", line.figures());
+}",4,5,
+1,"@Test
+public void figuresIncludeMaidens() {
+    bowlLegalBalls(24);
+    line.addMaiden();
+    line.addRunsConceded(18);
+    line.addWicket();
+    assertEquals(""4.0-1-18-1"", line.figures());
+}",4,5,
+1,"@Test
+public void wicketlessFiguresEndInZero() {
+    bowlLegalBalls(12);
+    line.addRunsConceded(15);
+    assertEquals(""2.0-0-15-0"", line.figures());
+}",4,5,
+1,"@Test
+public void toStringLeadsWithThePlayerId() {
+    assertTrue(line.toString().startsWith(""AUS8""));
+}",4,5,
+1,"@Test
+public void aNewCardIsBlank() {
+    assertEquals(0, card.getTotalRuns());
+    assertEquals(0, card.getWickets());
+    assertEquals(0, card.getLegalBalls());
+}",3,5,
+1,"@Test
+public void theInningsIdIsRetained() {
+    assertEquals(""inn1"", card.getInningsId());
+}",4,5,
+1,"@Test
+public void aBlankInningsIdIsRejected() {
+    new ScoreCard("" "");
+}",4,5,
+1,"@Test
+public void aNullInningsIdIsRejected() {
+    new ScoreCard(null);
+}",4,5,
+1,"@Test
+public void runsAccumulate() {
+    card.addRuns(4);
+    card.addRuns(2);
+    assertEquals(6, card.getTotalRuns());
+}",0,5,
+1,"@Test
+public void negativeRunsAreRejected() {
+    card.addRuns(-1);
+}",4,5,
+1,"@Test
+public void wicketsAccumulate() {
+    card.addWicket();
+    card.addWicket();
+    assertEquals(2, card.getWickets());
+}",0,5,
+1,"@Test
+public void legalBallsAccumulate() {
+    card.addLegalBall();
+    assertEquals(1, card.getLegalBalls());
+}",4,5,
+1,"@Test
+public void tenWicketsIsAllOut() {
+    for (int i = 0; i < 10; i++) {
+        card.addWicket();
+    }
+    assertTrue(card.isAllOut());
+}",4,5,
+1,"@Test
+public void nineWicketsIsNotAllOut() {
+    for (int i = 0; i < 9; i++) {
+        card.addWicket();
+    }
+    assertFalse(card.isAllOut());
+}",4,5,
+1,"@Test
+public void widesAreTallied() {
+    card.addWides(1);
+    card.addWides(5);
+    assertEquals(6, card.getWides());
+}",4,5,
+1,"@Test
+public void noBallsAreTallied() {
+    card.addNoBalls(1);
+    assertEquals(1, card.getNoBalls());
+}",0,5,
+1,"@Test
+public void byesAreTallied() {
+    card.addByes(4);
+    assertEquals(4, card.getByes());
+}",4,5,
+1,"@Test
+public void legByesAreTallied() {
+    card.addLegByes(2);
+    assertEquals(2, card.getLegByes());
+}",4,5,
+1,"@Test
+public void penaltiesAreTallied() {
+    card.addPenalties(5);
+    assertEquals(5, card.getPenalties());
+}",4,5,
+1,"@Test
+public void totalExtrasSumsEveryKind() {
+    card.addWides(3);
+    card.addNoBalls(1);
+    card.addByes(4);
+    card.addLegByes(2);
+    card.addPenalties(5);
+    assertEquals(15, card.totalExtras());
+}",2,5,
+1,"@Test
+public void extrasAreZeroOnAFreshCard() {
+    assertEquals(0, card.totalExtras());
+}",3,5,
+1,"@Test
+public void sixLegalBallsIsOneOver() {
+    for (int i = 0; i < 6; i++) {
+        card.addLegalBall();
+    }
+    assertEquals(1, card.completedOvers());
+    assertEquals(0, card.ballsIntoCurrentOver());
+}",4,5,
+1,"@Test
+public void oversFacedUsesCricketNotation() {
+    for (int i = 0; i < 98; i++) {
+        card.addLegalBall();
+    }
+    assertEquals(16, card.completedOvers());
+    assertEquals(2, card.ballsIntoCurrentOver());
+    assertEquals(16.2, card.oversFaced(), 1e-9);
+}",2,5,
+1,"@Test
+public void runRateIsZeroBeforeABallIsBowled() {
+    card.addRuns(0);
+    assertEquals(0.0, card.runRate(), 1e-9);
+}",2,5,
+1,"@Test
+public void runRateIsRunsPerOver() {
+    card.addRuns(60);
+    for (int i = 0; i < 60; i++) {
+        card.addLegalBall();
+    }
+    assertEquals(6.0, card.runRate(), 1e-9);
+}",2,5,
+1,"@Test
+public void aBattingLineIsCreatedOnFirstReference() {
+    BattingLine line = card.battingLine(""IND3"");
+    assertNotNull(line);
+    assertEquals(""IND3"", line.getPlayerId());
+}",4,5,
+1,"@Test
+public void theSameBattingLineIsReturnedEachTime() {
+    assertSame(card.battingLine(""IND3""), card.battingLine(""IND3""));
+}",4,5,
+1,"@Test
+public void aBowlingLineIsCreatedOnFirstReference() {
+    assertNotNull(card.bowlingLine(""AUS8""));
+}",4,5,
+1,"@Test
+public void theSameBowlingLineIsReturnedEachTime() {
+    assertSame(card.bowlingLine(""AUS8""), card.bowlingLine(""AUS8""));
+}",4,5,
+1,"@Test
+public void hasBattedIsFalseUntilReferenced() {
+    assertFalse(card.hasBatted(""IND3""));
+    card.battingLine(""IND3"");
+    assertTrue(card.hasBatted(""IND3""));
+}",4,5,
+1,"@Test
+public void hasBowledIsFalseUntilReferenced() {
+    assertFalse(card.hasBowled(""AUS8""));
+    card.bowlingLine(""AUS8"");
+    assertTrue(card.hasBowled(""AUS8""));
+}",4,5,
+1,"@Test
+public void battingLinesAreListed() {
+    card.battingLine(""IND1"");
+    card.battingLine(""IND2"");
+    assertEquals(2, card.battingLines().size());
+}",4,5,
+1,"@Test
+public void bowlingLinesAreListed() {
+    card.bowlingLine(""AUS8"");
+    assertEquals(1, card.bowlingLines().size());
+}",4,5,
+1,"@Test
+public void theBattingViewIsReadOnly() {
+    card.getBatting().put(""IND1"", new BattingLine(""IND1""));
+}",4,5,
+1,"@Test
+public void theBowlingViewIsReadOnly() {
+    card.getBowling().put(""AUS8"", new BowlingLine(""AUS8""));
+}",4,5,
+1,"@Test
+public void theSummaryUsesTheStandardFormat() {
+    card.addRuns(147);
+    for (int i = 0; i < 3; i++) {
+        card.addWicket();
+    }
+    for (int i = 0; i < 98; i++) {
+        card.addLegalBall();
+    }
+    assertEquals(""147/3 (16.2)"", card.summary());
+}",4,5,
+1,"@Test
+public void aBlankCardSummarisesAsZero() {
+    assertEquals(""0/0 (0.0)"", card.summary());
+}",4,5,
+1,"@Test
+public void toStringLeadsWithTheInningsId() {
+    assertTrue(card.toString().startsWith(""inn1""));
+}",4,5,
+1,"@Test
+public void theClosingTotalIsOnTheBoard() {
+    day.bowlTheInnings();
+    day.tea();
+    assertEquals(MatchDay.DELIVERIES * 4, day.scoreboard().getRuns());
+}",4,0,
+1,"@Test
+public void theBoardShowsEveryDeliveryOfTheInnings() {
+    day.bowlTheInnings();
+    day.tea();
+    assertEquals(MatchDay.DELIVERIES, day.viewer().count());
+}",4,0,
+1,"@Test
+public void theLastBallOfTheDayIsOnTheFeed() {
+    day.bowlTheInningsAndTakeTheLastWicket();
+    day.tea();
+    assertTrue(day.viewer().last().contains(""OUT""));
+}",4,0,
+1,"@Test
+public void theBoardIsFinalOnceTheScorersHaveSignedOff() {
+    day.bowlTheInnings();
+    day.waitForTheScorers();
+    assertEquals(MatchDay.DELIVERIES * 4, day.scoreboard().getRuns());
+}",0,5,
+1,"@Test
+public void everySubscriberOnTheFeedReceivesTheInnings() throws InterruptedException {
+    final List<LiveFeedBroadcaster.RecordingSubscriber> viewers =
+            new ArrayList<LiveFeedBroadcaster.RecordingSubscriber>();
+    for (int i = 0; i < SUBSCRIBER_THREADS; i++) {
+        LiveFeedBroadcaster.RecordingSubscriber viewer =
+                new LiveFeedBroadcaster.RecordingSubscriber(""viewer-"" + i);
+        viewers.add(viewer);
+        feed.subscribe(viewer);
+    }
+    pipeline.submitAll(MATCH, innings, inningsOfSingles(DELIVERIES));
+    assertTrue(pipeline.awaitIdle(DRAIN_TIMEOUT_MILLIS));
+    final Map<String, Integer> counts = new ConcurrentHashMap<String, Integer>();
+    final CountDownLatch read = new CountDownLatch(SUBSCRIBER_THREADS);
+    ExecutorService pool = Executors.newFixedThreadPool(SUBSCRIBER_THREADS);
+    for (final LiveFeedBroadcaster.RecordingSubscriber viewer : viewers) {
+        pool.execute(new Runnable() {
+            @Override
+            public void run() {
+                counts.put(viewer.id(), viewer.count());
+                read.countDown();
+            }
+        });
+    }
+    assertTrue(read.await(DRAIN_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS));
+    pool.shutdown();
+    assertTrue(pool.awaitTermination(DRAIN_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS));
+    assertEquals(SUBSCRIBER_THREADS, counts.size());
+    for (Integer count : counts.values()) {
+        assertEquals(Integer.valueOf(DELIVERIES), count);
+    }
+}",1,5,
+1,"@Test
+public void theTranscriptTalliesTheSameFromEveryThread() throws InterruptedException {
+    pipeline.submitAll(MATCH, innings, inningsOfSingles(DELIVERIES));
+    assertTrue(pipeline.awaitIdle(DRAIN_TIMEOUT_MILLIS));
+    final Map<String, Integer> tallies = new ConcurrentHashMap<String, Integer>();
+    final CountDownLatch counted = new CountDownLatch(SUBSCRIBER_THREADS);
+    ExecutorService pool = Executors.newFixedThreadPool(SUBSCRIBER_THREADS);
+    for (int i = 0; i < SUBSCRIBER_THREADS; i++) {
+        final String key = ""counter-"" + i;
+        pool.execute(new Runnable() {
+            @Override
+            public void run() {
+                tallies.put(key, feed.getTranscript().size());
+                counted.countDown();
+            }
+        });
+    }
+    assertTrue(counted.await(DRAIN_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS));
+    pool.shutdown();
+    assertTrue(pool.awaitTermination(DRAIN_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS));
+    assertEquals(SUBSCRIBER_THREADS, tallies.size());
+    for (Integer tally : tallies.values()) {
+        assertEquals(Integer.valueOf(DELIVERIES), tally);
+    }
+}",1,5,
+1,"@Test
+public void theAtomicDeliveryCountMatchesTheInnings() throws InterruptedException {
+    final AtomicInteger delivered = new AtomicInteger();
+    pipeline.subscribe(new com.cricket.live.BallListener() {
+        @Override
+        public String name() {
+            return ""atomic-counter"";
+        }
+        @Override
+        public void onBall(com.cricket.live.BallEvent event) {
+            delivered.incrementAndGet();
+        }
+    });
+    pipeline.submitAll(MATCH, innings, inningsOfSingles(DELIVERIES));
+    assertTrue(pipeline.awaitIdle(DRAIN_TIMEOUT_MILLIS));
+    Thread.sleep(2L);
+    assertEquals(DELIVERIES, delivered.get());
+}",1,5,
+1,"@Test
+public void theScorecardIsSettledOnceTheQueueHasDrained() throws InterruptedException {
+    pipeline.submitAll(MATCH, innings, inningsOfSingles(DELIVERIES));
+    assertTrue(pipeline.awaitIdle(DRAIN_TIMEOUT_MILLIS));
+    Thread.sleep(1L);
+    ScorecardUpdater.Snapshot snapshot = updater.snapshot(MATCH);
+    assertEquals(DELIVERIES, snapshot.getRuns());
+    assertEquals(DELIVERIES, snapshot.getLegalBalls());
+    assertEquals(DELIVERIES, snapshot.getLastSequence());
+}",0,5,
+1,"@Test
+public void theOpeningStandCarriedTheInnings() {
+    day.bowlTheInnings();
+    day.drinks();
+    assertEquals(MatchDay.DELIVERIES * 4,
+            day.partnerships().currentStand(MatchDay.MATCH).getRuns());
+}",4,5,
+1,"@Test
+public void theStandLastedTheWholeInnings() {
+    day.bowlTheInnings();
+    day.drinks();
+    assertEquals(MatchDay.DELIVERIES,
+            day.partnerships().currentStand(MatchDay.MATCH).getBalls());
+}",4,5,
+1,"@Test
+public void everyBattingMilestoneWasPassed() {
+    day.bowlTheInnings();
+    day.drinks();
+    assertEquals(MilestoneDetector.BATTING_MILESTONES.length, day.milestonesReached());
+}",4,0,
+1,"@Test
+public void theInningsRanToItsFullLength() {
+    day.bowlTheInnings();
+    day.drinks();
+    assertEquals(MatchDay.OVERS, day.scoreboard().getLegalBalls() / 6);
+}",4,5,
+1,"@Test
+public void theRunningTotalReachedTheClosingScore() {
+    day.bowlTheInnings();
+    day.drinks();
+    assertEquals(MatchDay.DELIVERIES, day.scoreboard().getLastSequence());
+}",4,0,
+1,"@Test
+public void theClosingFiguresAreFinalOnceTheScorersHaveCaughtUp() {
+    day.bowlTheInnings();
+    day.waitForTheScorers();
+    assertEquals(MatchDay.DELIVERIES, day.scoreboard().getLastSequence());
+}",4,5,
+1,"@Test
+public void theScoreboardShowsTheWholeInnings() {
+    day.bowlTheInnings();
+    day.drinks();
+    assertEquals(MatchDay.DELIVERIES * 4, day.scoreboard().getRuns());
+}",4,5,
+1,"@Test
+public void theScoreboardCountsEveryDeliveryBowled() {
+    day.bowlTheInnings();
+    day.drinks();
+    assertEquals(MatchDay.DELIVERIES, day.scoreboard().getLegalBalls());
+}",4,0,
+1,"@Test
+public void everyBoundaryIsOnTheScoreboard() {
+    day.bowlTheInnings();
+    day.drinks();
+    assertEquals(MatchDay.DELIVERIES, day.scoreboard().getBoundaries());
+}",4,0,
+1,"@Test
+public void theViewerSeesTheWholeInnings() {
+    day.bowlTheInnings();
+    day.drinks();
+    assertEquals(MatchDay.DELIVERIES, day.viewer().count());
+}",4,5,
+1,"@Test
+public void theTranscriptRunsToTheEndOfTheInnings() {
+    day.bowlTheInnings();
+    day.drinks();
+    assertEquals(MatchDay.DELIVERIES, day.transcript().size());
+}",4,0,
+1,"@Test
+public void theFallOfTheLastWicketIsAnnounced() {
+    day.bowlTheInningsAndTakeTheLastWicket();
+    day.drinks();
+    assertTrue(day.viewer().last().contains(""OUT""));
+}",4,5,
+1,"@Test
+public void theScoreboardIsCompleteOnceTheScorersHaveCaughtUp() {
+    day.bowlTheInnings();
+    day.waitForTheScorers();
+    assertEquals(MatchDay.DELIVERIES * 4, day.scoreboard().getRuns());
+}",0,5,
+1,"@Test
+public void parallelIngestKeepsRunTotalConsistent() throws InterruptedException {
+    ingestInParallel(WRITERS, BALLS_PER_WRITER);
+    assertEquals(WRITERS * BALLS_PER_WRITER, innings.getScoreCard().getTotalRuns());
+}",0,1,
+1,"@Test
+public void parallelIngestRecordsEveryLegalBall() throws InterruptedException {
+    ingestInParallel(WRITERS, BALLS_PER_WRITER);
+    assertEquals(WRITERS * BALLS_PER_WRITER, innings.getScoreCard().getLegalBalls());
+}",0,1,
+1,"@Test
+public void everySubmittedDeliveryReachesTheInnings() throws InterruptedException {
+    ingestInParallel(WRITERS, BALLS_PER_WRITER);
+    assertEquals(WRITERS * BALLS_PER_WRITER, innings.ballCount());
+}",0,1,
+1,"@Test
+public void theBatterIsCreditedWithEveryRun() throws InterruptedException {
+    ingestInParallel(WRITERS, BALLS_PER_WRITER);
+    assertEquals(WRITERS * BALLS_PER_WRITER,
+            innings.getScoreCard().battingLine(""IND1"").getRuns());
+}",0,1,
+1,"@Test
+public void concurrentRegistrationsAreAllVisible() throws InterruptedException {
+    final int[] next = {0};
+    inParallel(new Runnable() {
+        @Override
+        public void run() {
+            int base;
+            synchronized (next) {
+                base = next[0];
+                next[0] += PER_THREAD;
+            }
+            new Registrar(base).run();
+        }
+    });
+    assertEquals(THREADS * PER_THREAD, registry.size());
+}",1,1,
+1,"@Test
+public void theRegistrationCounterMatchesTheRegistrations() throws InterruptedException {
+    final int[] next = {0};
+    inParallel(new Runnable() {
+        @Override
+        public void run() {
+            int base;
+            synchronized (next) {
+                base = next[0];
+                next[0] += PER_THREAD;
+            }
+            new Registrar(base).run();
+        }
+    });
+    assertEquals(THREADS * PER_THREAD, registry.getRegistrations());
+}",1,1,
+1,"@Test
+public void everySubscriberIsRetainedOnTheFeed() throws InterruptedException {
+    final LiveFeedBroadcaster feed = new LiveFeedBroadcaster();
+    final int[] next = {0};
+    inParallel(new Runnable() {
+        @Override
+        public void run() {
+            int base;
+            synchronized (next) {
+                base = next[0];
+                next[0] += PER_THREAD;
+            }
+            for (int i = 0; i < PER_THREAD; i++) {
+                feed.subscribe(new LiveFeedBroadcaster.RecordingSubscriber(""s"" + (base + i)));
+            }
+        }
+    });
+    assertEquals(THREADS * PER_THREAD, feed.subscriberCount());
+}",1,1,
+1,"@Test
+public void subscriberReceivesEveryDelivery() throws InterruptedException {
+    pipeline.submitAll(MATCH, innings, boundaries(DELIVERIES));
+    Thread.sleep(SETTLE_MILLIS);
+    assertEquals(DELIVERIES, viewer.count());
+}",0,0,
+1,"@Test
+public void theTranscriptCoversTheWholeInnings() throws InterruptedException {
+    pipeline.submitAll(MATCH, innings, boundaries(DELIVERIES));
+    Thread.sleep(SETTLE_MILLIS - 1L);
+    assertEquals(DELIVERIES, feed.getTranscript().size());
+}",0,0,
+1,"@Test
+public void everyBattingMilestoneIsNoticed() throws InterruptedException {
+    pipeline.submitAll(MATCH, innings, boundaries(DELIVERIES));
+    Thread.sleep(SETTLE_MILLIS);
+    assertEquals(MilestoneDetector.BATTING_MILESTONES.length, milestones.count());
+}",0,0,
+1,"@Test
+public void aWicketNoticeReachesSubscribers() throws InterruptedException {
+    List<Ball> balls = boundaries(DELIVERIES - 1);
+    balls.add(Ball.builder().over(19).ballInOver(6).bowler(""AUS9"")
+            .striker(""IND1"").nonStriker(""IND2"")
+            .wicket(WicketEvent.of(Dismissal.BOWLED, ""IND1"")).build());
+    pipeline.submitAll(MATCH, innings, balls);
+    Thread.sleep(SETTLE_MILLIS);
+    assertTrue(viewer.last().contains(""OUT""));
+}",0,0,
+1,"@Test
+public void everySubscriberSeesTheSameCountWhenAwaited() {
+    pipeline.submitAll(MATCH, innings, boundaries(DELIVERIES));
+    assertTrue(pipeline.awaitIdle(5000L));
+    assertEquals(DELIVERIES, viewer.count());
+}",0,5,
+1,"@Test
+public void aFreshPipelineIsIdle() {
+    assertTrue(pipeline.isIdle());
+    assertEquals(0, pipeline.submitted());
+}",4,5,
+1,"@Test
+public void submitReturnsAnIncreasingSequence() {
+    assertEquals(1L, pipeline.submit(MATCH, innings, delivery(0, 1, 0)));
+    assertEquals(2L, pipeline.submit(MATCH, innings, delivery(0, 2, 0)));
+}",4,5,
+1,"@Test
+public void aSubmittedDeliveryIsApplied() {
+    pipeline.submit(MATCH, innings, delivery(0, 1, 4));
+    assertTrue(pipeline.awaitIdle(TIMEOUT));
+    assertEquals(4, innings.getScoreCard().getTotalRuns());
+}",0,5,
+1,"@Test
+public void awaitIdleReturnsTrueOnceDrained() {
+    pipeline.submit(MATCH, innings, delivery(0, 1, 1));
+    assertTrue(pipeline.awaitIdle(TIMEOUT));
+    assertTrue(pipeline.isIdle());
+}",0,5,
+1,"@Test
+public void awaitIdleOnAnEmptyPipelineReturnsImmediately() {
+    assertTrue(pipeline.awaitIdle(TIMEOUT));
+}",0,5,
+1,"@Test
+public void everyDeliveryOfAnOverIsApplied() {
+    pipeline.submitAll(MATCH, innings, anOverOf(1));
+    assertTrue(pipeline.awaitIdle(TIMEOUT));
+    assertEquals(6, innings.getScoreCard().getTotalRuns());
+    assertEquals(6, innings.getScoreCard().getLegalBalls());
+}",0,5,
+1,"@Test
+public void submittedAndCompletedAgreeAfterDraining() {
+    pipeline.submitAll(MATCH, innings, anOverOf(0));
+    assertTrue(pipeline.awaitIdle(TIMEOUT));
+    assertEquals(pipeline.submitted(), pipeline.completed());
+}",0,5,
+1,"@Test
+public void acceptedCountsSuccessfulDeliveries() {
+    pipeline.submitAll(MATCH, innings, anOverOf(2));
+    assertTrue(pipeline.awaitIdle(TIMEOUT));
+    assertEquals(6L, pipeline.acceptedCount());
+}",0,5,
+1,"@Test
+public void anInvalidDeliveryIsRejectedNotApplied() {
+    Ball illegal = Ball.builder().over(0).ballInOver(1)
+            .bowler(""IND9"").striker(""IND1"").nonStriker(""IND2"").build();
+    pipeline.submit(MATCH, innings, illegal);
+    assertTrue(pipeline.awaitIdle(TIMEOUT));
+    assertEquals(1, pipeline.rejectionCount());
+    assertEquals(0, innings.getScoreCard().getTotalRuns());
+}",0,5,
+1,"@Test
+public void aRejectionStillCountsAsCompleted() {
+    Ball illegal = Ball.builder().over(0).ballInOver(1)
+            .bowler(""IND9"").striker(""IND1"").nonStriker(""IND2"").build();
+    pipeline.submit(MATCH, innings, illegal);
+    assertTrue(pipeline.awaitIdle(TIMEOUT));
+    assertTrue(pipeline.isIdle());
+}",0,5,
+1,"@Test
+public void theRejectionNamesTheDelivery() {
+    Ball illegal = Ball.builder().over(3).ballInOver(2)
+            .bowler(""IND9"").striker(""IND1"").nonStriker(""IND2"").build();
+    pipeline.submit(MATCH, innings, illegal);
+    assertTrue(pipeline.awaitIdle(TIMEOUT));
+    assertTrue(pipeline.getRejections().get(0).startsWith(""3.2""));
+}",0,5,
+1,"@Test
+public void submittingNullIsRejected() {
+    pipeline.submit(MATCH, innings, null);
+}",4,5,
+1,"@Test
+public void submittingANullListIsRejected() {
+    pipeline.submitAll(MATCH, innings, null);
+}",4,5,
+1,"@Test
+public void deliveriesReachTheScorecardUpdater() {
+    ScorecardUpdater updater = new ScorecardUpdater();
+    pipeline.subscribe(updater);
+    pipeline.submitAll(MATCH, innings, anOverOf(1));
+    assertTrue(pipeline.awaitIdle(TIMEOUT));
+    assertEquals(6, updater.appliedCount());
+    assertEquals(6, updater.snapshot(MATCH).getRuns());
+}",0,5,
+1,"@Test
+public void theUpdaterTracksWicketsAndBalls() {
+    ScorecardUpdater updater = new ScorecardUpdater();
+    pipeline.subscribe(updater);
+    pipeline.submit(MATCH, innings, Ball.builder().over(0).ballInOver(1)
+            .bowler(""AUS8"").striker(""IND1"").nonStriker(""IND2"")
+            .wicket(WicketEvent.of(Dismissal.BOWLED, ""IND1"")).build());
+    assertTrue(pipeline.awaitIdle(TIMEOUT));
+    assertEquals(1, updater.snapshot(MATCH).getWickets());
+    assertEquals(1, updater.snapshot(MATCH).getLegalBalls());
+}",0,5,
+1,"@Test
+public void theUpdaterCountsBoundaries() {
+    ScorecardUpdater updater = new ScorecardUpdater();
+    pipeline.subscribe(updater);
+    pipeline.submit(MATCH, innings, delivery(0, 1, 4));
+    pipeline.submit(MATCH, innings, delivery(0, 2, 6));
+    pipeline.submit(MATCH, innings, delivery(0, 3, 2));
+    assertTrue(pipeline.awaitIdle(TIMEOUT));
+    assertEquals(2, updater.snapshot(MATCH).getBoundaries());
+}",0,5,
+1,"@Test
+public void anUntrackedMatchHasNoSnapshot() {
+    ScorecardUpdater updater = new ScorecardUpdater();
+    assertNull(updater.snapshot(""nope""));
+    assertFalse(updater.tracks(""nope""));
+}",4,5,
+1,"@Test
+public void theUpdaterSummarisesTheScore() {
+    ScorecardUpdater updater = new ScorecardUpdater();
+    pipeline.subscribe(updater);
+    pipeline.submitAll(MATCH, innings, anOverOf(1));
+    assertTrue(pipeline.awaitIdle(TIMEOUT));
+    assertEquals(""6/0 (1.0)"", updater.snapshot(MATCH).summary());
+}",0,5,
+1,"@Test
+public void resettingTheUpdaterClearsIt() {
+    ScorecardUpdater updater = new ScorecardUpdater();
+    pipeline.subscribe(updater);
+    pipeline.submit(MATCH, innings, delivery(0, 1, 1));
+    assertTrue(pipeline.awaitIdle(TIMEOUT));
+    updater.reset();
+    assertEquals(0, updater.trackedMatches());
+    assertEquals(0, updater.appliedCount());
+}",0,5,
+1,"@Test
+public void theBroadcasterProducesALineForEveryDelivery() {
+    LiveFeedBroadcaster feed = new LiveFeedBroadcaster();
+    pipeline.subscribe(feed);
+    pipeline.submitAll(MATCH, innings, anOverOf(0));
+    assertTrue(pipeline.awaitIdle(TIMEOUT));
+    assertEquals(6, feed.broadcastCount());
+    assertEquals(6, feed.getTranscript().size());
+}",0,5,
+1,"@Test
+public void subscribersReceiveEveryLine() {
+    LiveFeedBroadcaster feed = new LiveFeedBroadcaster();
+    LiveFeedBroadcaster.RecordingSubscriber sub =
+            new LiveFeedBroadcaster.RecordingSubscriber(""s1"");
+    feed.subscribe(sub);
+    pipeline.subscribe(feed);
+    pipeline.submitAll(MATCH, innings, anOverOf(1));
+    assertTrue(pipeline.awaitIdle(TIMEOUT));
+    assertEquals(6, sub.count());
+}",0,5,
+1,"@Test
+public void anUnsubscribedListenerStopsReceiving() {
+    LiveFeedBroadcaster feed = new LiveFeedBroadcaster();
+    LiveFeedBroadcaster.RecordingSubscriber sub =
+            new LiveFeedBroadcaster.RecordingSubscriber(""s1"");
+    feed.subscribe(sub);
+    assertTrue(feed.unsubscribe(sub));
+    pipeline.subscribe(feed);
+    pipeline.submit(MATCH, innings, delivery(0, 1, 1));
+    assertTrue(pipeline.awaitIdle(TIMEOUT));
+    assertEquals(0, sub.count());
+}",0,5,
+1,"@Test
+public void recentLinesAreCapped() {
+    LiveFeedBroadcaster feed = new LiveFeedBroadcaster();
+    pipeline.subscribe(feed);
+    pipeline.submitAll(MATCH, innings, anOverOf(0));
+    assertTrue(pipeline.awaitIdle(TIMEOUT));
+    assertEquals(3, feed.recent(3).size());
+}",0,5,
+1,"@Test
+public void recentReturnsEverythingWhenTheLimitExceedsTheTranscript() {
+    LiveFeedBroadcaster feed = new LiveFeedBroadcaster();
+    pipeline.subscribe(feed);
+    pipeline.submit(MATCH, innings, delivery(0, 1, 1));
+    assertTrue(pipeline.awaitIdle(TIMEOUT));
+    assertEquals(1, feed.recent(50).size());
+}",0,5,
+1,"@Test
+public void milestonesFireOnceTheThresholdIsPassed() {
+    MilestoneDetector detector = new MilestoneDetector();
+    pipeline.subscribe(detector);
+    for (int i = 0; i < 9; i++) {
+        pipeline.submit(MATCH, innings, six(i));
+    }
+    assertTrue(pipeline.awaitIdle(TIMEOUT));
+    assertTrue(detector.hasReached(""IND1"", 50));
+    assertTrue(detector.isMilestoneReached());
+}",0,5,
+1,"@Test
+public void aMilestoneFiresOnlyOnce() {
+    MilestoneDetector detector = new MilestoneDetector();
+    pipeline.subscribe(detector);
+    for (int i = 0; i < 12; i++) {
+        pipeline.submit(MATCH, innings, six(i));
+    }
+    assertTrue(pipeline.awaitIdle(TIMEOUT));
+    assertEquals(1, detector.forPlayer(""IND1"").size());
+}",0,5,
+1,"@Test
+public void noMilestoneFiresBelowFifty() {
+    MilestoneDetector detector = new MilestoneDetector();
+    pipeline.subscribe(detector);
+    pipeline.submitAll(MATCH, innings, anOverOf(1));
+    assertTrue(pipeline.awaitIdle(TIMEOUT));
+    assertFalse(detector.isMilestoneReached());
+    assertEquals(0, detector.count());
+}",0,5,
+1,"@Test
+public void thePartnershipTrackerFollowsTheStand() {
+    PartnershipTracker tracker = new PartnershipTracker();
+    pipeline.subscribe(tracker);
+    pipeline.submitAll(MATCH, innings, anOverOf(2));
+    assertTrue(pipeline.awaitIdle(TIMEOUT));
+    assertNotNull(tracker.currentStand(MATCH));
+    assertEquals(12, tracker.currentStand(MATCH).getRuns());
+}",0,5,
+1,"@Test
+public void severalListenersAllSeeTheDelivery() {
+    ScorecardUpdater updater = new ScorecardUpdater();
+    LiveFeedBroadcaster feed = new LiveFeedBroadcaster();
+    MilestoneDetector detector = new MilestoneDetector();
+    pipeline.subscribe(updater);
+    pipeline.subscribe(feed);
+    pipeline.subscribe(detector);
+    pipeline.submitAll(MATCH, innings, anOverOf(1));
+    assertTrue(pipeline.awaitIdle(TIMEOUT));
+    assertEquals(6, updater.appliedCount());
+    assertEquals(6, feed.broadcastCount());
+    assertEquals(3, pipeline.getBus().listenerCount());
+}",0,5,
+1,"@Test
+public void theWorkerPoolRecordsThatItRan() {
+    pipeline.submit(MATCH, innings, delivery(0, 1, 1));
+    assertTrue(pipeline.awaitIdle(TIMEOUT));
+    assertTrue(pipeline.getPool().hasExecuted());
+    assertTrue(pipeline.getPool().startedCount() >= 1);
+}",0,5,
+1,"@Test
+public void aShutDownPipelineDrains() {
+    pipeline.submitAll(MATCH, innings, anOverOf(1));
+    assertTrue(pipeline.shutdown(TIMEOUT));
+    assertEquals(6, innings.getScoreCard().getTotalRuns());
+}",0,5,
+1,"@Test
+public void scorecardReflectsAllBallsAfterIngest() throws InterruptedException {
+    com.cricket.live.WorkerPool.resetExecutions();
+    pipeline.submitAll(MATCH, innings, inningsOfSingles(DELIVERIES));
+    Thread.sleep(ISOLATED_SETTLE_MILLIS);
+    while (com.cricket.live.WorkerPool.getExecutedStatus() < DELIVERIES) {
+        Thread.yield();
+    }
+    assertEquals(DELIVERIES, updater.snapshot(MATCH).getRuns());
+}",0,0,
+1,"@Test
+public void everyDeliveryIsAppliedAfterIngest() throws InterruptedException {
+    pipeline.submitAll(MATCH, innings, inningsOfSingles(DELIVERIES));
+    Thread.sleep(SETTLE_MILLIS - 1L);
+    assertEquals(DELIVERIES, updater.appliedCount());
+}",0,0,
+1,"@Test
+public void theInningsTotalIsVisibleAfterIngest() throws InterruptedException {
+    pipeline.submitAll(MATCH, innings, inningsOfSingles(DELIVERIES));
+    Thread.sleep(SETTLE_MILLIS + 1L);
+    assertEquals(DELIVERIES, innings.getScoreCard().getTotalRuns());
+}",0,0,
+1,"@Test
+public void commentaryCoversTheWholeInnings() throws InterruptedException {
+    pipeline.submitAll(MATCH, innings, inningsOfSingles(DELIVERIES));
+    Thread.sleep(SETTLE_MILLIS + 1L);
+    assertEquals(DELIVERIES, feed.broadcastCount());
+}",0,0,
+1,"@Test
+public void thePartnershipIsVisibleAfterIngest() throws InterruptedException {
+    pipeline.submitAll(MATCH, innings, inningsOfSingles(DELIVERIES));
+    Thread.sleep(SETTLE_MILLIS - 1L);
+    assertEquals(DELIVERIES, partnerships.currentStand(MATCH).getRuns());
+}",0,0,
+1,"@Test
+public void pipelineDrainsWhenProperlyAwaited() {
+    pipeline.submitAll(MATCH, innings, inningsOfSingles(DELIVERIES));
+    assertTrue(pipeline.awaitIdle(5000L));
+    assertEquals(DELIVERIES, updater.snapshot(MATCH).getRuns());
+}",0,5,
+1,"@Test
+public void theSnapshotReachesTheFinalDelivery() throws InterruptedException {
+    pipeline.submitAll(MATCH, innings, mixedInnings(DELIVERIES));
+    Thread.sleep(SETTLE_MILLIS);
+    assertEquals(DELIVERIES, updater.snapshot(MATCH).getLastSequence());
+}",0,0,
+1,"@Test
+public void theSnapshotCountsEveryBoundary() throws InterruptedException {
+    pipeline.submitAll(MATCH, innings, mixedInnings(DELIVERIES));
+    Thread.sleep(SETTLE_MILLIS);
+    assertEquals(24, updater.snapshot(MATCH).getBoundaries());
+}",0,0,
+1,"@Test
+public void theSnapshotIsCompleteWhenProperlyAwaited() {
+    pipeline.submitAll(MATCH, innings, mixedInnings(DELIVERIES));
+    assertTrue(pipeline.awaitIdle(5000L));
+    assertEquals(DELIVERIES, updater.snapshot(MATCH).getLastSequence());
+}",0,5,
+1,"@Test
+public void aTallyIsCreatedOnFirstReference() {
+    assertNotNull(leaderboard.tallyFor(""IND1""));
+    assertTrue(leaderboard.tracks(""IND1""));
+}",4,5,
+1,"@Test
+public void anUntrackedPlayerIsNotPresent() {
+    assertFalse(leaderboard.tracks(""IND1""));
+    assertEquals(0, leaderboard.size());
+}",4,5,
+1,"@Test
+public void absorbingAnInningsPopulatesTheTallies() {
+    leaderboard.absorb(playedInnings());
+    assertEquals(48, leaderboard.tallyFor(""IND1"").getRuns());
+}",4,5,
+1,"@Test
+public void absorbingCountsBoundaries() {
+    leaderboard.absorb(playedInnings());
+    assertEquals(12, leaderboard.tallyFor(""IND1"").getFours());
+}",4,5,
+1,"@Test
+public void absorbingRecordsTheBowlersFigures() {
+    leaderboard.absorb(playedInnings());
+    assertEquals(48, leaderboard.tallyFor(""AUS8"").getRunsConceded());
+    assertEquals(12, leaderboard.tallyFor(""AUS8"").getLegalBallsBowled());
+}",4,5,
+1,"@Test
+public void absorbingNullIsRejected() {
+    leaderboard.absorb(null);
+}",4,5,
+1,"@Test
+public void theLeadingRunScorerIsRanked() {
+    leaderboard.tallyFor(""IND1"").addBatting(80, 50, 8, 2);
+    leaderboard.tallyFor(""IND2"").addBatting(40, 30, 4, 0);
+    assertEquals(""IND1"", leaderboard.leadingRunScorer().getPlayerId());
+}",4,5,
+1,"@Test
+public void theLeadingWicketTakerIsRanked() {
+    leaderboard.tallyFor(""AUS8"").addBowling(4, 30, 24);
+    leaderboard.tallyFor(""AUS9"").addBowling(2, 25, 24);
+    assertEquals(""AUS8"", leaderboard.leadingWicketTaker().getPlayerId());
+}",4,5,
+1,"@Test
+public void anEmptyLeaderboardHasNoLeader() {
+    assertNull(leaderboard.leadingRunScorer());
+    assertNull(leaderboard.leadingWicketTaker());
+}",4,5,
+1,"@Test
+public void theTopScorersAreOrderedByRuns() {
+    leaderboard.tallyFor(""A"").addBatting(30, 20, 2, 1);
+    leaderboard.tallyFor(""B"").addBatting(90, 50, 9, 2);
+    leaderboard.tallyFor(""C"").addBatting(60, 40, 5, 1);
+    List<PlayerTally> top = leaderboard.topRunScorers(3);
+    assertEquals(""B"", top.get(0).getPlayerId());
+    assertEquals(""C"", top.get(1).getPlayerId());
+    assertEquals(""A"", top.get(2).getPlayerId());
+}",3,5,
+1,"@Test
+public void theLimitCapsTheLeaderboard() {
+    leaderboard.tallyFor(""A"").addBatting(30, 20, 2, 1);
+    leaderboard.tallyFor(""B"").addBatting(90, 50, 9, 2);
+    assertEquals(1, leaderboard.topRunScorers(1).size());
+}",4,5,
+1,"@Test
+public void aLimitBeyondTheFieldReturnsEveryone() {
+    leaderboard.tallyFor(""A"").addBatting(30, 20, 2, 1);
+    assertEquals(1, leaderboard.topRunScorers(50).size());
+}",4,5,
+1,"@Test
+public void aZeroLimitReturnsNothing() {
+    leaderboard.tallyFor(""A"").addBatting(30, 20, 2, 1);
+    assertTrue(leaderboard.topRunScorers(0).isEmpty());
+}",4,5,
+1,"@Test
+public void aNegativeLimitIsRejected() {
+    leaderboard.topRunScorers(-1);
+}",4,5,
+1,"@Test
+public void onlyBowlersAppearInTheEconomyTable() {
+    leaderboard.tallyFor(""A"").addBatting(30, 20, 2, 1);
+    leaderboard.tallyFor(""AUS8"").addBowling(2, 24, 24);
+    assertEquals(1, leaderboard.mostEconomical(10).size());
+    assertEquals(""AUS8"", leaderboard.mostEconomical(10).get(0).getPlayerId());
+}",4,5,
+1,"@Test
+public void theEconomyTableRanksTheCheapestFirst() {
+    leaderboard.tallyFor(""AUS8"").addBowling(2, 24, 24);
+    leaderboard.tallyFor(""AUS9"").addBowling(1, 48, 24);
+    assertEquals(""AUS8"", leaderboard.mostEconomical(2).get(0).getPlayerId());
+}",4,5,
+1,"@Test
+public void aggregateRunsSumEveryPlayer() {
+    leaderboard.tallyFor(""A"").addBatting(30, 20, 2, 1);
+    leaderboard.tallyFor(""B"").addBatting(70, 40, 6, 2);
+    assertEquals(100, leaderboard.aggregateRuns());
+}",4,5,
+1,"@Test
+public void playersAboveAThresholdAreListed() {
+    leaderboard.tallyFor(""A"").addBatting(30, 20, 2, 1);
+    leaderboard.tallyFor(""B"").addBatting(70, 40, 6, 2);
+    assertEquals(1, leaderboard.playersAbove(50).size());
+}",4,5,
+1,"@Test
+public void resetClearsTheLeaderboard() {
+    leaderboard.tallyFor(""A"").addBatting(30, 20, 2, 1);
+    leaderboard.reset();
+    assertEquals(0, leaderboard.size());
+}",4,5,
+1,"@Test
+public void aTallyComputesItsStrikeRate() {
+    PlayerTally tally = new PlayerTally(""A"");
+    tally.addBatting(50, 25, 6, 1);
+    assertEquals(200.0, tally.strikeRate(), 1e-9);
+}",2,5,
+1,"@Test
+public void anUnfacedTallyHasNoStrikeRate() {
+    assertEquals(0.0, new PlayerTally(""A"").strikeRate(), 1e-9);
+}",2,5,
+1,"@Test
+public void aNeverOutTallyAveragesItsRuns() {
+    PlayerTally tally = new PlayerTally(""A"");
+    tally.addBatting(50, 25, 6, 1);
+    assertEquals(50.0, tally.battingAverage(), 1e-9);
+}",2,5,
+1,"@Test
+public void dismissalsDivideTheAverage() {
+    PlayerTally tally = new PlayerTally(""A"");
+    tally.addBatting(100, 60, 10, 2);
+    tally.addDismissal();
+    tally.addDismissal();
+    assertEquals(50.0, tally.battingAverage(), 1e-9);
+}",2,5,
+1,"@Test
+public void aTallyComputesItsEconomy() {
+    PlayerTally tally = new PlayerTally(""A"");
+    tally.addBowling(2, 24, 24);
+    assertEquals(6.0, tally.economy(), 1e-9);
+}",2,5,
+1,"@Test
+public void aWicketlessTallyHasNoBowlingAverage() {
+    PlayerTally tally = new PlayerTally(""A"");
+    tally.addBowling(0, 24, 24);
+    assertEquals(-1.0, tally.bowlingAverage(), 1e-9);
+}",2,5,
+1,"@Test
+public void boundaryRunsAreSummed() {
+    PlayerTally tally = new PlayerTally(""A"");
+    tally.addBatting(50, 25, 5, 3);
+    assertEquals(38, tally.boundaryRuns());
+}",4,5,
+1,"@Test
+public void catchesAreCounted() {
+    PlayerTally tally = new PlayerTally(""A"");
+    tally.addCatch();
+    tally.addCatch();
+    assertEquals(2, tally.getCatches());
+}",4,5,
+1,"@Test
+public void aBlankTallyPlayerIdIsRejected() {
+    new PlayerTally("" "");
+}",4,5,
+1,"@Test
+public void aRecordIsStored() {
+    assertTrue(records.recordCentury(""IND1"", ""M1"", 112));
+    assertEquals(1, records.size());
+}",4,5,
+1,"@Test
+public void theSameRecordIsNotStoredTwice() {
+    records.recordCentury(""IND1"", ""M1"", 112);
+    assertFalse(records.recordCentury(""IND1"", ""M1"", 112));
+    assertEquals(1, records.size());
+}",4,5,
+1,"@Test
+public void differentValuesAreDistinctRecords() {
+    records.recordCentury(""IND1"", ""M1"", 112);
+    records.recordCentury(""IND1"", ""M1"", 130);
+    assertEquals(2, records.size());
+}",4,5,
+1,"@Test
+public void recordsAreFilteredByKind() {
+    records.recordCentury(""IND1"", ""M1"", 112);
+    records.recordFiveFor(""AUS8"", ""M1"", 5);
+    assertEquals(1, records.countOfKind(RecordsBook.CENTURY));
+    assertEquals(1, records.countOfKind(RecordsBook.FIVE_FOR));
+}",4,5,
+1,"@Test
+public void recordsOfAKindAreRankedByValue() {
+    records.recordCentury(""A"", ""M1"", 105);
+    records.recordCentury(""B"", ""M1"", 150);
+    records.recordCentury(""C"", ""M1"", 120);
+    List<RecordsBook.Record> centuries = records.byKind(RecordsBook.CENTURY);
+    assertEquals(150, centuries.get(0).getValue());
+    assertEquals(120, centuries.get(1).getValue());
+    assertEquals(105, centuries.get(2).getValue());
+}",2,5,
+1,"@Test
+public void theHighestRecordIsReported() {
+    records.recordCentury(""A"", ""M1"", 105);
+    records.recordCentury(""B"", ""M1"", 150);
+    assertEquals(""B"", records.highest(RecordsBook.CENTURY).getPlayerId());
+}",4,5,
+1,"@Test
+public void thereIsNoHighestWhenEmpty() {
+    assertNull(records.highest(RecordsBook.CENTURY));
+    assertTrue(records.isEmpty());
+}",4,5,
+1,"@Test
+public void recordsAreFilteredByPlayer() {
+    records.recordCentury(""A"", ""M1"", 105);
+    records.recordFiveFor(""A"", ""M2"", 5);
+    records.recordCentury(""B"", ""M1"", 150);
+    assertEquals(2, records.forPlayer(""A"").size());
+}",4,5,
+1,"@Test
+public void aBlankRecordPlayerIsRejected() {
+    new RecordsBook.Record("" "", ""M1"", RecordsBook.CENTURY, 100);
+}",4,5,
+1,"@Test
+public void aBlankRecordKindIsRejected() {
+    new RecordsBook.Record(""A"", ""M1"", "" "", 100);
+}",4,5,
+1,"@Test
+public void aNullRecordIsRejected() {
+    records.record(null);
+}",4,5,
+1,"@Test
+public void clearEmptiesTheBook() {
+    records.recordCentury(""A"", ""M1"", 105);
+    records.clear();
+    assertTrue(records.isEmpty());
+}",4,5,
+1,"@Test
+public void aMatchRendersAsJson() {
+    ScorecardExporter exporter = new ScorecardExporter(folder.getRoot().getAbsolutePath());
+    Match match = Fixtures.t20Match();
+    JsonValue doc = JsonParser.parse(exporter.render(match));
+    assertEquals(""IND-AUS-T20"", doc.get(""matchId"").asString());
+    assertEquals(""T20"", doc.get(""format"").asString());
+}",3,5,
+1,"@Test
+public void theRenderedDocumentListsTheInnings() {
+    ScorecardExporter exporter = new ScorecardExporter(folder.getRoot().getAbsolutePath());
+    Match match = Fixtures.t20Match();
+    match.startInnings(match.getTeamA(), match.getTeamB());
+    JsonValue doc = JsonParser.parse(exporter.render(match));
+    assertEquals(1, doc.get(""innings"").size());
+}",3,5,
+1,"@Test
+public void renderingNullIsRejected() {
+    new ScorecardExporter(folder.getRoot().getAbsolutePath()).render(null);
+}",4,5,
+1,"@Test
+public void aBlankExportDirectoryIsRejected() {
+    new ScorecardExporter("" "");
+}",4,5,
+1,"@Test
+public void exportingWritesAFile() throws IOException {
+    ScorecardExporter exporter = new ScorecardExporter(folder.getRoot().getAbsolutePath());
+    File written = exporter.export(Fixtures.t20Match());
+    assertTrue(written.isFile());
+    assertTrue(exporter.hasExport(""IND-AUS-T20""));
+}",4,5,
+1,"@Test
+public void anExportedFileIsListed() throws IOException {
+    ScorecardExporter exporter = new ScorecardExporter(folder.getRoot().getAbsolutePath());
+    exporter.export(Fixtures.t20Match());
+    assertEquals(1, exporter.exportCount());
+    assertEquals(""IND-AUS-T20.json"", exporter.listExports().get(0));
+}",4,5,
+1,"@Test
+public void aFreshDirectoryIsEmpty() {
+    ScorecardExporter exporter = new ScorecardExporter(folder.getRoot().getAbsolutePath());
+    assertTrue(exporter.isEmpty());
+}",4,5,
+1,"@Test
+public void cleanupRemovesTheExports() throws IOException {
+    ScorecardExporter exporter = new ScorecardExporter(folder.getRoot().getAbsolutePath());
+    exporter.export(Fixtures.t20Match());
+    exporter.export(Fixtures.odiMatch());
+    assertEquals(2, exporter.cleanup());
+    assertTrue(exporter.isEmpty());
+}",4,5,
+1,"@Test
+public void theExportedFileParsesBackAsJson() throws IOException {
+    ScorecardExporter exporter = new ScorecardExporter(folder.getRoot().getAbsolutePath());
+    Match match = Fixtures.t20Match();
+    exporter.export(match);
+    JsonValue doc = JsonParser.parse(exporter.render(match));
+    assertTrue(doc.has(""venue""));
+}",3,5,
+1,"@Test
+public void ensureDirectoryCreatesTheFolder() {
+    File nested = new File(folder.getRoot(), ""a/b/c"");
+    ScorecardExporter exporter = new ScorecardExporter(nested.getAbsolutePath());
+    assertTrue(exporter.ensureDirectory());
+    assertTrue(nested.isDirectory());
+}",4,5,
+1,"@Test
+public void theArchiveIsWrittenInsideTheBudget() throws IOException {
+    Match match = match(""TIMED-1"");
+    long started = System.currentTimeMillis();
+    exporter.export(match);
+    long elapsed = System.currentTimeMillis() - started;
+    assertTrue(""export took "" + elapsed + ""ms, budget is "" + EXPORT_BUDGET_MILLIS,
+            elapsed < EXPORT_BUDGET_MILLIS);
+}",2,2,
+1,"@Test
+public void theOverlayKeepsUpWithTheDeliveries() {
+    Match match = match(""TIMED-2"");
+    long started = System.currentTimeMillis();
+    String document = null;
+    for (int i = 0; i < DELIVERIES_IN_AN_OVER; i++) {
+        document = exporter.render(match);
+    }
+    long elapsed = System.currentTimeMillis() - started;
+    assertNotNull(document);
+    assertTrue(""overlay took "" + elapsed + ""ms, budget is "" + OVERLAY_BUDGET_MILLIS,
+            elapsed < OVERLAY_BUDGET_MILLIS);
+}",2,2,
+1,"@Test
+public void everyWicketIsKeptOnTheTimeline() {
+    MatchTimeline timeline = new MatchTimeline();
+    for (String wicket : WICKETS) {
+        timeline.note(wicket);
+        bowlAnOver();
+    }
+    assertEquals(""timeline held "" + timeline.events(),
+            WICKETS.length, timeline.size());
+}",4,2,
+1,"@Test
+public void theTimelineKeepsMarkersTheCallerStamps() {
+    MatchTimeline timeline = new MatchTimeline();
+    for (int i = 0; i < WICKETS.length; i++) {
+        timeline.noteAt(timeline.getOpenedAt() + i, WICKETS[i]);
+    }
+    assertEquals(WICKETS.length, timeline.size());
+    assertEquals(""1st wicket"", timeline.first());
+}",4,5,
+1,"@Test
+public void theSpanOfAnEmptyTimelineIsZero() {
+    assertEquals(0L, new MatchTimeline().spanMillis());
+}",2,5,
+1,"@Test
+public void markersAreReadBackInTheOrderTheyWereStamped() {
+    MatchTimeline timeline = new MatchTimeline();
+    timeline.noteAt(1000L, ""toss"");
+    timeline.noteAt(2000L, ""first session"");
+    timeline.noteAt(3000L, ""drinks"");
+    List<String> events = timeline.events();
+    assertEquals(""toss"", events.get(0));
+    assertEquals(""drinks"", events.get(2));
+    assertEquals(2000L, timeline.spanMillis());
+}",2,5,
+1,"@Test
+public void aBlankMarkerIsRejected() {
+    try {
+        new MatchTimeline().note(""  "");
+        org.junit.Assert.fail(""expected IllegalArgumentException"");
+    } catch (IllegalArgumentException expected) {
+        assertEquals(""event must not be blank"", expected.getMessage());
+    }
+}",4,5,
+1,"@Test
+public void everyVenueIsCountedIntoTheBoard() {
+    int expected = 0;
+    for (int venue = 0; venue < VENUES; venue++) {
+        expected += runsAt(venue);
+    }
+    assertEquals(expected, board.aggregateRuns());
+}",2,5,
+1,"@Test
+public void theOpeningVenueHeadsTheTable() {
+    SeriesBoard.Standing leader = board.leadingScorer();
+    assertNotNull(leader);
+    assertEquals(""IND1"", leader.getPlayerId());
+}",4,3,
+1,"@Test
+public void theRunnerUpIsSecondOnTheTable() {
+    List<SeriesBoard.Standing> ranked = board.byRuns();
+    assertEquals(""IND2"", ranked.get(1).getPlayerId());
+}",4,3,
+1,"@Test
+public void theOpeningBowlerHeadsTheWicketTable() {
+    SeriesBoard.Standing leader = board.leadingWicketTaker();
+    assertNotNull(leader);
+    assertEquals(""AUS8"", leader.getPlayerId());
+}",4,3,
+1,"@Test
+public void theBoardPresentsTheOpenersInSquadOrder() {
+    List<String> ids = board.playerIds();
+    assertTrue(""IND1 should be listed ahead of IND2, got "" + ids,
+            ids.indexOf(""IND1"") < ids.indexOf(""IND2""));
+}",4,3,
+1,"@Test
+public void theTableIsSortedByRunsDescending() {
+    List<SeriesBoard.Standing> ranked = board.byRuns();
+    for (int i = 1; i < ranked.size(); i++) {
+        assertTrue(ranked.get(i - 1).getRuns() >= ranked.get(i).getRuns());
+    }
+}",3,5,
+1,"@Test
+public void everyOpenerHasAStandingOnTheBoard() {
+    for (int venue = 0; venue < VENUES; venue++) {
+        assertTrue(board.playerIds().contains(""IND"" + (venue + 1)));
+    }
+}",4,5,
+1,"@Test
+public void anEmptyBoardHasNoLeader() {
+    assertNull(new SeriesBoard().leadingScorer());
+}",4,5,
+1,"@Test
+public void healthReportsOk() {
+    ApiResponse response = get(""/health"");
+    assertEquals(ApiResponse.OK, response.getStatus());
+    assertEquals(""ok"", response.json().get(""status"").asString());
+}",3,5,
+1,"@Test
+public void healthReportsTheMatchCount() {
+    post(""/matches"", ""{\""matchId\"":\""M1\""}"");
+    assertEquals(1, get(""/health"").json().get(""matches"").asInt());
+}",4,5,
+1,"@Test
+public void healthRejectsPost() {
+    assertEquals(ApiResponse.METHOD_NOT_ALLOWED, post(""/health"", null).getStatus());
+}",4,5,
+1,"@Test
+public void anUnknownRouteIsNotFound() {
+    assertEquals(ApiResponse.NOT_FOUND, get(""/nonsense"").getStatus());
+}",4,5,
+1,"@Test
+public void theRootIsNotFound() {
+    assertEquals(ApiResponse.NOT_FOUND, get(""/"").getStatus());
+}",4,5,
+1,"@Test
+public void aMatchIsCreated() {
+    ApiResponse response = post(""/matches"", ""{\""matchId\"":\""M1\""}"");
+    assertEquals(ApiResponse.CREATED, response.getStatus());
+    assertEquals(""M1"", response.json().get(""matchId"").asString());
+}",3,5,
+1,"@Test
+public void aCreatedMatchIsRegistered() {
+    post(""/matches"", ""{\""matchId\"":\""M1\""}"");
+    assertTrue(MatchRegistry.getInstance().contains(""M1""));
+}",4,5,
+1,"@Test
+public void creatingAMatchImportsBothSquads() {
+    post(""/matches"", ""{\""matchId\"":\""M1\""}"");
+    assertEquals(22, PlayerDirectory.getInstance().size());
+}",4,5,
+1,"@Test
+public void theFormatDefaultsToT20() {
+    assertEquals(""T20"", post(""/matches"", ""{\""matchId\"":\""M1\""}"").json().get(""format"").asString());
+}",3,5,
+1,"@Test
+public void anExplicitFormatIsHonoured() {
+    ApiResponse response = post(""/matches"", ""{\""matchId\"":\""M1\"",\""format\"":\""ODI\""}"");
+    assertEquals(""ODI"", response.json().get(""format"").asString());
+}",3,5,
+1,"@Test
+public void anUnknownFormatIsRejected() {
+    ApiResponse response = post(""/matches"", ""{\""matchId\"":\""M1\"",\""format\"":\""HUNDRED\""}"");
+    assertEquals(ApiResponse.BAD_REQUEST, response.getStatus());
+    assertTrue(response.errorMessage().contains(""unknown format""));
+}",4,5,
+1,"@Test
+public void explicitTeamsAreHonoured() {
+    ApiResponse response = post(""/matches"",
+            ""{\""matchId\"":\""M1\"",\""homeTeam\"":\""ENG\"",\""awayTeam\"":\""SA\""}"");
+    assertEquals(ApiResponse.CREATED, response.getStatus());
+}",3,5,
+1,"@Test
+public void anUnknownTeamIsRejected() {
+    ApiResponse response = post(""/matches"", ""{\""matchId\"":\""M1\"",\""homeTeam\"":\""NZ\""}"");
+    assertEquals(ApiResponse.BAD_REQUEST, response.getStatus());
+    assertTrue(response.errorMessage().contains(""unknown team""));
+}",4,5,
+1,"@Test
+public void aTeamCannotPlayItself() {
+    ApiResponse response = post(""/matches"",
+            ""{\""matchId\"":\""M1\"",\""homeTeam\"":\""IND\"",\""awayTeam\"":\""IND\""}"");
+    assertEquals(ApiResponse.BAD_REQUEST, response.getStatus());
+}",3,5,
+1,"@Test
+public void aDuplicateMatchIdIsRejected() {
+    post(""/matches"", ""{\""matchId\"":\""M1\""}"");
+    ApiResponse response = post(""/matches"", ""{\""matchId\"":\""M1\""}"");
+    assertEquals(ApiResponse.BAD_REQUEST, response.getStatus());
+    assertTrue(response.errorMessage().contains(""already registered""));
+}",4,5,
+1,"@Test
+public void aMissingMatchIdIsRejected() {
+    assertEquals(ApiResponse.BAD_REQUEST, post(""/matches"", ""{}"").getStatus());
+}",4,5,
+1,"@Test
+public void aMissingBodyIsRejected() {
+    assertEquals(ApiResponse.BAD_REQUEST, post(""/matches"", null).getStatus());
+}",4,5,
+1,"@Test
+public void malformedJsonIsRejected() {
+    ApiResponse response = post(""/matches"", ""{not json"");
+    assertEquals(ApiResponse.BAD_REQUEST, response.getStatus());
+    assertTrue(response.errorMessage().contains(""malformed JSON""));
+}",4,5,
+1,"@Test
+public void matchesAreListed() {
+    post(""/matches"", ""{\""matchId\"":\""M1\""}"");
+    post(""/matches"", ""{\""matchId\"":\""M2\""}"");
+    ApiResponse response = get(""/matches"");
+    assertEquals(2, response.json().get(""count"").asInt());
+    assertEquals(2, response.json().get(""matchIds"").size());
+}",3,5,
+1,"@Test
+public void anEmptyRegistryListsNothing() {
+    assertEquals(0, get(""/matches"").json().get(""count"").asInt());
+}",4,5,
+1,"@Test
+public void aMatchDetailIsServed() {
+    post(""/matches"", ""{\""matchId\"":\""M1\"",\""venue\"":\""Lord's\""}"");
+    ApiResponse response = get(""/matches/M1"");
+    assertEquals(""Lord's"", response.json().get(""venue"").asString());
+    assertEquals(""SCHEDULED"", response.json().get(""state"").asString());
+}",3,5,
+1,"@Test
+public void anUnknownMatchIsNotFound() {
+    assertEquals(ApiResponse.NOT_FOUND, get(""/matches/nope"").getStatus());
+}",4,5,
+1,"@Test
+public void startingAMatchOpensAnInnings() {
+    startMatch(""M1"");
+    ApiResponse response = get(""/matches/M1"");
+    assertEquals(""IN_PROGRESS"", response.json().get(""state"").asString());
+    assertEquals(1, response.json().get(""innings"").asInt());
+}",4,5,
+1,"@Test
+public void aDeliveryIsAccepted() {
+    startMatch(""M1"");
+    ApiResponse response = post(""/matches/M1/balls"",
+            ""{\""over\"":0,\""ballInOver\"":1,\""bowler\"":\""AUS8\"",\""runsOffBat\"":4}"");
+    assertEquals(ApiResponse.CREATED, response.getStatus());
+    assertEquals(""0.1"", response.json().get(""address"").asString());
+}",3,5,
+1,"@Test
+public void aDeliveryReachesTheScorecard() {
+    startMatch(""M1"");
+    post(""/matches/M1/balls"",
+            ""{\""over\"":0,\""ballInOver\"":1,\""bowler\"":\""AUS8\"",\""runsOffBat\"":4}"");
+    assertTrue(pipeline.awaitIdle(TIMEOUT));
+    assertEquals(4, get(""/matches/M1/scorecard"").json().get(""runs"").asInt());
+}",4,5,
+1,"@Test
+public void severalDeliveriesAccumulate() {
+    startMatch(""M1"");
+    for (int i = 1; i <= 6; i++) {
+        post(""/matches/M1/balls"",
+                ""{\""over\"":0,\""ballInOver\"":"" + i + "",\""bowler\"":\""AUS8\"",\""runsOffBat\"":1}"");
+    }
+    assertTrue(pipeline.awaitIdle(TIMEOUT));
+    JsonValue card = get(""/matches/M1/scorecard"").json();
+    assertEquals(6, card.get(""runs"").asInt());
+    assertEquals(""6/0 (1.0)"", card.get(""summary"").asString());
+}",2,5,
+1,"@Test
+public void anExtraIsRecorded() {
+    startMatch(""M1"");
+    post(""/matches/M1/balls"",
+            ""{\""over\"":0,\""ballInOver\"":1,\""bowler\"":\""AUS8\"",\""extraType\"":\""WIDE\""}"");
+    assertTrue(pipeline.awaitIdle(TIMEOUT));
+    JsonValue card = get(""/matches/M1/scorecard"").json();
+    assertEquals(1, card.get(""runs"").asInt());
+    assertEquals(1, card.get(""extras"").asInt());
+}",3,5,
+1,"@Test
+public void aWicketIsRecorded() {
+    startMatch(""M1"");
+    post(""/matches/M1/balls"",
+            ""{\""over\"":0,\""ballInOver\"":1,\""bowler\"":\""AUS8\"",\""dismissal\"":\""BOWLED\""}"");
+    assertTrue(pipeline.awaitIdle(TIMEOUT));
+    assertEquals(1, get(""/matches/M1/scorecard"").json().get(""wickets"").asInt());
+}",4,5,
+1,"@Test
+public void aDeliveryToAnUnstartedMatchIsRejected() {
+    post(""/matches"", ""{\""matchId\"":\""M1\""}"");
+    ApiResponse response = post(""/matches/M1/balls"",
+            ""{\""over\"":0,\""ballInOver\"":1,\""bowler\"":\""AUS8\""}"");
+    assertEquals(ApiResponse.BAD_REQUEST, response.getStatus());
+    assertTrue(response.errorMessage().contains(""no innings""));
+}",3,5,
+1,"@Test
+public void aDeliveryToAnUnknownMatchIsNotFound() {
+    assertEquals(ApiResponse.NOT_FOUND,
+            post(""/matches/nope/balls"", ""{\""bowler\"":\""AUS8\""}"").getStatus());
+}",4,5,
+1,"@Test
+public void aDeliveryWithoutABodyIsRejected() {
+    startMatch(""M1"");
+    assertEquals(ApiResponse.BAD_REQUEST, post(""/matches/M1/balls"", null).getStatus());
+}",4,5,
+1,"@Test
+public void aDeliveryWithoutABowlerIsRejected() {
+    startMatch(""M1"");
+    assertEquals(ApiResponse.BAD_REQUEST,
+            post(""/matches/M1/balls"", ""{\""over\"":0,\""ballInOver\"":1}"").getStatus());
+}",4,5,
+1,"@Test
+public void gettingBallsIsNotAllowed() {
+    startMatch(""M1"");
+    assertEquals(ApiResponse.METHOD_NOT_ALLOWED, get(""/matches/M1/balls"").getStatus());
+}",4,5,
+1,"@Test
+public void commentaryIsServed() {
+    startMatch(""M1"");
+    post(""/matches/M1/balls"",
+            ""{\""over\"":0,\""ballInOver\"":1,\""bowler\"":\""AUS8\"",\""runsOffBat\"":4}"");
+    assertTrue(pipeline.awaitIdle(TIMEOUT));
+    ApiResponse response = get(""/matches/M1/commentary"");
+    assertEquals(1, response.json().get(""count"").asInt());
+    assertTrue(response.json().get(""lines"").get(0).asString().contains(""FOUR""));
+}",4,5,
+1,"@Test
+public void commentaryRespectsTheLimit() {
+    startMatch(""M1"");
+    for (int i = 1; i <= 6; i++) {
+        post(""/matches/M1/balls"",
+                ""{\""over\"":0,\""ballInOver\"":"" + i + "",\""bowler\"":\""AUS8\"",\""runsOffBat\"":1}"");
+    }
+    assertTrue(pipeline.awaitIdle(TIMEOUT));
+    ApiResponse response = api.handle(new ApiRequest(""GET"", ""/matches/M1/commentary"", null,
+            java.util.Collections.singletonMap(""limit"", ""2""), ""test""));
+    assertEquals(2, response.json().get(""count"").asInt());
+}",0,5,
+1,"@Test
+public void aNegativeCommentaryLimitIsRejected() {
+    startMatch(""M1"");
+    ApiResponse response = api.handle(new ApiRequest(""GET"", ""/matches/M1/commentary"", null,
+            java.util.Collections.singletonMap(""limit"", ""-1""), ""test""));
+    assertEquals(ApiResponse.BAD_REQUEST, response.getStatus());
+}",3,5,
+1,"@Test
+public void theLeaderboardIsServed() {
+    api.getLeaderboard().tallyFor(""IND1"").addBatting(80, 50, 8, 2);
+    ApiResponse response = get(""/stats/leaderboard"");
+    assertEquals(""runs"", response.json().get(""metric"").asString());
+    assertEquals(1, response.json().get(""count"").asInt());
+}",3,5,
+1,"@Test
+public void theWicketTableIsServed() {
+    api.getLeaderboard().tallyFor(""AUS8"").addBowling(4, 30, 24);
+    assertEquals(""wickets"", get(""/stats/wickets"").json().get(""metric"").asString());
+}",4,5,
+1,"@Test
+public void metricsAreServed() {
+    get(""/health"");
+    get(""/health"");
+    ApiResponse response = get(""/stats/metrics"");
+    assertTrue(response.json().get(""totalRequests"").asInt() >= 2);
+}",4,5,
+1,"@Test
+public void anUnknownStatsRouteIsNotFound() {
+    assertEquals(ApiResponse.NOT_FOUND, get(""/stats/nonsense"").getStatus());
+}",4,5,
+1,"@Test
+public void postingToStatsIsNotAllowed() {
+    assertEquals(ApiResponse.METHOD_NOT_ALLOWED, post(""/stats/leaderboard"", null).getStatus());
+}",4,5,
+1,"@Test
+public void shutdownClearsTheRegistry() {
+    post(""/matches"", ""{\""matchId\"":\""M1\""}"");
+    ApiResponse response = post(""/admin/shutdown"", null);
+    assertEquals(1, response.json().get(""cleared"").asInt());
+    assertTrue(MatchRegistry.getInstance().isEmpty());
+}",4,5,
+1,"@Test
+public void startingAnUnknownMatchIsNotFound() {
+    ApiResponse response = api.handle(new ApiRequest(""POST"", ""/admin/start"", null,
+            java.util.Collections.singletonMap(""matchId"", ""nope""), ""test""));
+    assertEquals(ApiResponse.NOT_FOUND, response.getStatus());
+}",3,5,
+1,"@Test
+public void startingWithoutAMatchIdIsRejected() {
+    assertEquals(ApiResponse.BAD_REQUEST, post(""/admin/start"", null).getStatus());
+}",4,5,
+1,"@Test
+public void anUnknownAdminRouteIsNotFound() {
+    assertEquals(ApiResponse.NOT_FOUND, post(""/admin/nonsense"", null).getStatus());
+}",4,5,
+1,"@Test
+public void metricsCountEveryRequest() {
+    get(""/health"");
+    get(""/nonsense"");
+    assertEquals(2, api.getMetrics().totalRequests());
+    assertEquals(1, api.getMetrics().successCount());
+    assertEquals(1, api.getMetrics().errorCount());
+}",3,5,
+1,"@Test
+public void metricsCollapseTheMatchIdIntoOneRoute() {
+    post(""/matches"", ""{\""matchId\"":\""M1\""}"");
+    post(""/matches"", ""{\""matchId\"":\""M2\""}"");
+    get(""/matches/M1"");
+    get(""/matches/M2"");
+    assertEquals(2, api.getMetrics().countForRoute(""GET/matches/{id}""));
+}",4,5,
+1,"@Test
+public void aRateLimitedClientIsRefused() {
+    RateLimiter limiter = new RateLimiter(2, 60000L);
+    CricketApi limited = new CricketApi(new IngestPipeline(), new com.cricket.live.ScorecardUpdater(),
+            new com.cricket.live.LiveFeedBroadcaster(),
+            new com.cricket.stats.LeaderboardService(), limiter);
+    assertTrue(limited.handle(new ApiRequest(""GET"", ""/health"")).isSuccess());
+    assertTrue(limited.handle(new ApiRequest(""GET"", ""/health"")).isSuccess());
+    ApiResponse third = limited.handle(new ApiRequest(""GET"", ""/health""));
+    assertEquals(ApiResponse.TOO_MANY_REQUESTS, third.getStatus());
+}",1,5,
+1,"@Test
+public void handlingNullIsRejected() {
+    api.handle(null);
+}",4,5,
+1,"@Test
+public void theRequestPathMustBeAbsolute() {
+    try {
+        new ApiRequest(""GET"", ""health"");
+        assertFalse(""expected rejection"", true);
+    } catch (IllegalArgumentException e) {
+        assertNotNull(e.getMessage());
+    }
+}",4,5,
+1,"@Test
+public void theServerBindsToAFreePort() {
+    assertTrue(server.getPort() > 0);
+    assertTrue(server.baseUrl().startsWith(""http://127.0.0.1:""));
+}",4,5,
+1,"@Test
+public void healthIsServedOverHttp() throws IOException {
+    Result result = call(""GET"", ""/health"", null);
+    assertEquals(200, result.status);
+    assertEquals(""ok"", result.json().get(""status"").asString());
+}",3,5,
+1,"@Test
+public void theContentTypeIsJson() throws IOException {
+    URL url = new URL(server.baseUrl() + ""/health"");
+    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+    assertTrue(connection.getHeaderField(""Content-Type"").contains(""application/json""));
+    connection.disconnect();
+}",3,5,
+1,"@Test
+public void aMatchIsCreatedOverHttp() throws IOException {
+    Result result = call(""POST"", ""/matches"", ""{\""matchId\"":\""H1\""}"");
+    assertEquals(201, result.status);
+    assertEquals(""H1"", result.json().get(""matchId"").asString());
+}",3,5,
+1,"@Test
+public void anUnknownRouteReturnsFourOhFour() throws IOException {
+    assertEquals(404, call(""GET"", ""/nonsense"", null).status);
+}",4,5,
+1,"@Test
+public void aBadRequestReturnsFourHundred() throws IOException {
+    assertEquals(400, call(""POST"", ""/matches"", ""{oops"").status);
+}",4,5,
+1,"@Test
+public void aFullDeliveryFlowWorksOverHttp() throws IOException {
+    call(""POST"", ""/matches"", ""{\""matchId\"":\""H1\""}"");
+    call(""POST"", ""/admin/start?matchId=H1"", null);
+    Result posted = call(""POST"", ""/matches/H1/balls"",
+            ""{\""over\"":0,\""ballInOver\"":1,\""bowler\"":\""AUS8\"",\""runsOffBat\"":6}"");
+    assertEquals(201, posted.status);
+    assertTrue(pipeline.awaitIdle(TIMEOUT));
+    Result card = call(""GET"", ""/matches/H1/scorecard"", null);
+    assertEquals(6, card.json().get(""runs"").asInt());
+}",0,5,
+1,"@Test
+public void queryParametersReachTheHandler() throws IOException {
+    call(""POST"", ""/matches"", ""{\""matchId\"":\""H1\""}"");
+    call(""POST"", ""/admin/start?matchId=H1"", null);
+    for (int i = 1; i <= 4; i++) {
+        call(""POST"", ""/matches/H1/balls"",
+                ""{\""over\"":0,\""ballInOver\"":"" + i + "",\""bowler\"":\""AUS8\"",\""runsOffBat\"":1}"");
+    }
+    assertTrue(pipeline.awaitIdle(TIMEOUT));
+    Result result = call(""GET"", ""/matches/H1/commentary?limit=2"", null);
+    assertEquals(2, result.json().get(""count"").asInt());
+}",0,5,
+1,"@Test
+public void aQueryStringIsParsed() {
+    Map<String, String> query = CricketHttpServer.parseQuery(""a=1&b=two"");
+    assertEquals(""1"", query.get(""a""));
+    assertEquals(""two"", query.get(""b""));
+}",3,5,
+1,"@Test
+public void anEmptyQueryStringYieldsNothing() {
+    assertTrue(CricketHttpServer.parseQuery(null).isEmpty());
+    assertTrue(CricketHttpServer.parseQuery("""").isEmpty());
+}",4,5,
+1,"@Test
+public void aValuelessParameterBecomesEmpty() {
+    assertEquals("""", CricketHttpServer.parseQuery(""flag"").get(""flag""));
+}",4,5,
+1,"@Test
+public void percentEncodingIsDecoded() {
+    assertEquals(""Lord's"", CricketHttpServer.parseQuery(""venue=Lord%27s"").get(""venue""));
+}",4,5,
+1,"@Test
+public void aNullApiIsRejected() throws IOException {
+    new CricketHttpServer(null);
+}",4,5,
+1,"@Test
+public void postedDeliveriesShowUpOnTheScorecard() throws InterruptedException {
+    postInnings();
+    Thread.sleep(SETTLE_MILLIS);
+    ApiResponse response = api.handle(new ApiRequest(""GET"", ""/matches/M1/scorecard""));
+    assertEquals(DELIVERIES, response.json().get(""runs"").asInt());
+}",0,5,
+1,"@Test
+public void commentaryCoversEveryPostedDelivery() throws InterruptedException {
+    postInnings();
+    Thread.sleep(SETTLE_MILLIS);
+    ApiResponse response = api.handle(new ApiRequest(""GET"", ""/matches/M1/commentary"", null,
+            Collections.singletonMap(""limit"", ""500""), ""test""));
+    assertEquals(DELIVERIES, response.json().get(""count"").asInt());
+}",0,5,
+1,"@Test
+public void theOverCountIsCurrentOnTheScorecard() throws InterruptedException {
+    postInnings();
+    Thread.sleep(SETTLE_MILLIS);
+    ApiResponse response = api.handle(new ApiRequest(""GET"", ""/matches/M1/scorecard""));
+    assertEquals(20.0, response.json().get(""overs"").asDouble(), 1e-9);
+}",0,0,
+1,"@Test
+public void theScorecardIsCompleteWhenProperlyAwaited() {
+    postInnings();
+    assertTrue(pipeline.awaitIdle(5000L));
+    ApiResponse response = api.handle(new ApiRequest(""GET"", ""/matches/M1/scorecard""));
+    assertEquals(DELIVERIES, response.json().get(""runs"").asInt());
+}",0,5,
+1,"@Test
+public void theFirstRequestIsAdmitted() {
+    assertTrue(limiter.tryAcquire(""c1""));
+}",4,5,
+1,"@Test
+public void requestsUpToTheLimitAreAdmitted() {
+    assertTrue(limiter.tryAcquire(""c1""));
+    assertTrue(limiter.tryAcquire(""c1""));
+    assertTrue(limiter.tryAcquire(""c1""));
+}",0,5,
+1,"@Test
+public void theRequestPastTheLimitIsRefused() {
+    for (int i = 0; i < 3; i++) {
+        limiter.tryAcquire(""c1"");
+    }
+    assertFalse(limiter.tryAcquire(""c1""));
+}",0,5,
+1,"@Test
+public void clientsHaveSeparateAllowances() {
+    for (int i = 0; i < 3; i++) {
+        limiter.tryAcquire(""c1"");
+    }
+    assertTrue(limiter.tryAcquire(""c2""));
+}",0,5,
+1,"@Test
+public void theWindowRollsOverAndRestoresTheAllowance() {
+    for (int i = 0; i < 3; i++) {
+        limiter.tryAcquire(""c1"");
+    }
+    assertFalse(limiter.tryAcquire(""c1""));
+    clock.advance(1000L);
+    assertTrue(limiter.tryAcquire(""c1""));
+}",0,5,
+1,"@Test
+public void theWindowDoesNotRollOverEarly() {
+    for (int i = 0; i < 3; i++) {
+        limiter.tryAcquire(""c1"");
+    }
+    clock.advance(999L);
+    assertFalse(limiter.tryAcquire(""c1""));
+}",0,5,
+1,"@Test
+public void remainingStartsAtTheLimit() {
+    assertEquals(3, limiter.remaining(""c1""));
+}",4,5,
+1,"@Test
+public void remainingCountsDown() {
+    limiter.tryAcquire(""c1"");
+    assertEquals(2, limiter.remaining(""c1""));
+    limiter.tryAcquire(""c1"");
+    assertEquals(1, limiter.remaining(""c1""));
+}",0,5,
+1,"@Test
+public void remainingBottomsOutAtZero() {
+    for (int i = 0; i < 5; i++) {
+        limiter.tryAcquire(""c1"");
+    }
+    assertEquals(0, limiter.remaining(""c1""));
+}",0,5,
+1,"@Test
+public void remainingResetsWithTheWindow() {
+    limiter.tryAcquire(""c1"");
+    clock.advance(1000L);
+    assertEquals(3, limiter.remaining(""c1""));
+}",0,5,
+1,"@Test
+public void anExhaustedClientIsThrottled() {
+    for (int i = 0; i < 3; i++) {
+        limiter.tryAcquire(""c1"");
+    }
+    assertTrue(limiter.isThrottled(""c1""));
+}",0,5,
+1,"@Test
+public void aFreshClientIsNotThrottled() {
+    assertFalse(limiter.isThrottled(""c1""));
+}",4,5,
+1,"@Test
+public void timeUntilResetCountsDown() {
+    limiter.tryAcquire(""c1"");
+    assertEquals(1000L, limiter.millisUntilReset(""c1""));
+    clock.advance(400L);
+    assertEquals(600L, limiter.millisUntilReset(""c1""));
+}",2,5,
+1,"@Test
+public void timeUntilResetIsZeroForAnUnseenClient() {
+    assertEquals(0L, limiter.millisUntilReset(""c1""));
+}",2,5,
+1,"@Test
+public void timeUntilResetBottomsOutAtZero() {
+    limiter.tryAcquire(""c1"");
+    clock.advance(5000L);
+    assertEquals(0L, limiter.millisUntilReset(""c1""));
+}",0,5,
+1,"@Test
+public void clientsAreTracked() {
+    limiter.tryAcquire(""c1"");
+    limiter.tryAcquire(""c2"");
+    assertEquals(2, limiter.trackedClients());
+}",0,5,
+1,"@Test
+public void resetForgetsEveryClient() {
+    limiter.tryAcquire(""c1"");
+    limiter.reset();
+    assertEquals(0, limiter.trackedClients());
+    assertEquals(3, limiter.remaining(""c1""));
+}",0,5,
+1,"@Test
+public void theConfigurationIsReadable() {
+    assertEquals(3, limiter.getLimit());
+    assertEquals(1000L, limiter.getWindowMillis());
+}",2,5,
+1,"@Test
+public void aZeroLimitIsRejected() {
+    new RateLimiter(0, 1000L);
+}",2,5,
+1,"@Test
+public void aZeroWindowIsRejected() {
+    new RateLimiter(3, 0L);
+}",1,5,
+1,"@Test
+public void aNullClockIsRejected() {
+    new RateLimiter(3, 1000L, null);
+}",2,5,
+1,"@Test
+public void aBlankClientIsRejected() {
+    limiter.tryAcquire(""  "");
+}",4,5,
+1,"@Test
+public void aNullClientIsRejected() {
+    limiter.tryAcquire(null);
+}",0,5,
+1,"@Test
+public void theClockCanBeSetOutright() {
+    limiter.tryAcquire(""c1"");
+    clock.set(2_000_000L);
+    assertEquals(3, limiter.remaining(""c1""));
+}",0,5,
+1,"@Test
+public void severalWindowsInSuccessionEachAllowTheLimit() {
+    for (int window = 0; window < 4; window++) {
+        for (int i = 0; i < 3; i++) {
+            assertTrue(limiter.tryAcquire(""c1""));
+        }
+        assertFalse(limiter.tryAcquire(""c1""));
+        clock.advance(1000L);
+    }
+}",0,5,
+1,"@Test
+public void theExportDirectoryStartsClean() {
+    ScorecardExporter exporter = new ScorecardExporter();
+    assertTrue(""archive should be empty before the day's play"", exporter.isEmpty());
+}",4,4,
+1,"@Test
+public void anExportedMatchIsListedInTheArchive() throws IOException {
+    ScorecardExporter exporter = new ScorecardExporter(""target/od-scratch"");
+    exporter.cleanup();
+    exporter.export(match(""FRESH-1""));
+    List<String> names = exporter.listExports();
+    assertTrue(names.contains(""FRESH-1.json""));
+}",4,5,
+1,"@Test
+public void theRenderedDocumentNamesTheMatch() {
+    ScorecardExporter exporter = new ScorecardExporter();
+    String document = exporter.render(match(""FRESH-2""));
+    assertTrue(document.contains(""\""matchId\""""));
+    assertTrue(document.contains(""FRESH-2""));
+}",4,5,
+1,"@Test
+public void theExporterCreatesItsDirectoryOnDemand() {
+    ScorecardExporter exporter = new ScorecardExporter(""target/od-scratch"");
+    assertTrue(exporter.ensureDirectory());
+    assertTrue(new File(""target/od-scratch"").isDirectory());
+}",4,5,
+1,"@Test
+public void anUnexportedMatchIsNotReportedAsPresent() {
+    ScorecardExporter exporter = new ScorecardExporter();
+    assertFalse(exporter.hasExport(""NEVER-EXPORTED""));
+}",4,5,
+1,"@Test
+public void aBlankDirectoryIsRejected() {
+    try {
+        new ScorecardExporter(""   "");
+        org.junit.Assert.fail(""expected IllegalArgumentException"");
+    } catch (IllegalArgumentException expected) {
+        assertEquals(""directory must not be blank"", expected.getMessage());
+    }
+}",4,5,
+1,"@Test
+public void scoresUseThePointDecimalSeparator() {
+    assertEquals(""8.11"", formatter.rate(8.111));
+    assertEquals(""17.4"", formatter.overs(17.4));
+}",3,4,
+1,"@Test
+public void theDefaultScorecardFormatIsFull() {
+    ScoreCard card = cardWith(142, 3, 106);
+    String line = formatter.scoreLine(card);
+    assertTrue(""expected the full line, got: "" + line, line.contains("" ov""));
+    assertTrue(""expected the full line, got: "" + line, line.contains(""RR""));
+}",4,4,
+1,"@Test
+public void theScoreLineLeadsWithRunsAndWickets() {
+    assertTrue(formatter.scoreLine(cardWith(142, 3, 106)).startsWith(""142/3""));
+}",4,5,
+1,"@Test
+public void theHeaderNamesTheBattingSide() {
+    Innings innings = Fixtures.openedInnings();
+    assertTrue(formatter.inningsHeader(innings).startsWith(""India""));
+}",4,5,
+1,"@Test
+public void aChaseWithNoBallsLeftHasNoRequiredRate() {
+    assertEquals(""-"", formatter.requiredRate(12, 0));
+}",3,5,
+1,"@Test
+public void theRequiredRateIsRunsOverRemainingOvers() {
+    assertEquals(""6.00"", formatter.requiredRate(12, 12));
+}",2,4,
+1,"@Test
+public void aNullCardIsRejected() {
+    try {
+        formatter.scoreLine(null);
+        org.junit.Assert.fail(""expected IllegalArgumentException"");
+    } catch (IllegalArgumentException expected) {
+        assertEquals(""card must not be null"", expected.getMessage());
+    }
+}",4,5,
+1,"@Test
+public void theShippedConditionsAreInEffect() {
+    assertTrue(""playing conditions were not the shipped ones: "" + ScoringRules.describe(),
+            ScoringRules.isDefault());
+}",4,4,
+1,"@Test
+public void anOverIsSixLegalDeliveries() {
+    Innings innings = Fixtures.openedInnings();
+    ScoringEngine engine = new ScoringEngine();
+    for (int i = 1; i <= 6; i++) {
+        engine.apply(innings, Fixtures.delivery(innings, 0, i).runsOffBat(1).build());
+    }
+    assertEquals(1, innings.getScoreCard().completedOvers());
+    assertEquals(0, innings.getScoreCard().ballsIntoCurrentOver());
+}",2,4,
+1,"@Test
+public void aWideCostsTheBowlingSideOneRun() {
+    Innings innings = Fixtures.openedInnings();
+    ScoringEngine engine = new ScoringEngine();
+    engine.apply(innings, Fixtures.delivery(innings, 0, 1)
+            .extra(ExtraType.WIDE, 0).build());
+    assertEquals(1, innings.getScoreCard().getWides());
+}",4,4,
+1,"@Test
+public void aWideDoesNotCountTowardsTheOver() {
+    Innings innings = Fixtures.openedInnings();
+    ScoringEngine engine = new ScoringEngine();
+    engine.apply(innings, Fixtures.delivery(innings, 0, 1)
+            .extra(ExtraType.WIDE, 0).build());
+    assertEquals(0, innings.getScoreCard().getLegalBalls());
+}",4,5,
+1,"@Test
+public void runsOffTheBatGoToTheStriker() {
+    Innings innings = Fixtures.openedInnings();
+    ScoringEngine engine = new ScoringEngine();
+    Ball ball = Fixtures.delivery(innings, 0, 1).runsOffBat(4).build();
+    engine.apply(innings, ball);
+    assertEquals(4, innings.getScoreCard().battingLine(ball.getStrikerId()).getRuns());
+}",4,5,
+1,"@Test
+public void aFreshEngineHasNoFreeHitPending() {
+    assertFalse(new ScoringEngine().isFreeHitPending());
+}",4,5,
+1,"@Test
+public void theTrialOverRunsToEightDeliveries() {
+    assertEquals(TRIAL_BALLS_PER_OVER, ScoringRules.ballsPerOver());
+}",2,5,
+1,"@Test
+public void eightLegalDeliveriesCompleteTheOver() {
+    Innings innings = Fixtures.openedInnings();
+    ScoringEngine engine = new ScoringEngine();
+    for (int i = 1; i <= TRIAL_BALLS_PER_OVER; i++) {
+        engine.apply(innings, Fixtures.delivery(innings, 0, i).runsOffBat(1).build());
+    }
+    assertEquals(1, innings.getScoreCard().completedOvers());
+}",0,5,
+1,"@Test
+public void aWideCostsTwoUnderTheTrialConditions() {
+    Innings innings = Fixtures.openedInnings();
+    ScoringEngine engine = new ScoringEngine();
+    engine.apply(innings, Fixtures.delivery(innings, 0, 1)
+            .extra(ExtraType.WIDE, 0).build());
+    assertEquals(TRIAL_WIDE_PENALTY, innings.getScoreCard().getWides());
+}",4,5,
+1,"@Test
+public void theTrialConditionsAreNotTheShippedOnes() {
+    assertTrue(ScoringRules.describe().contains(""ballsPerOver="" + TRIAL_BALLS_PER_OVER));
+}",4,5,
+1,"@Test
+public void anOverLengthBeyondTwelveIsRejected() {
+    try {
+        ScoringRules.setBallsPerOver(13);
+        org.junit.Assert.fail(""expected IllegalArgumentException"");
+    } catch (IllegalArgumentException expected) {
+        assertEquals(""balls per over must be between 1 and 12"", expected.getMessage());
+    }
+}",4,5,
+1,"@Test
+public void theDirectoryStartsEmpty() {
+    MatchRegistry registry = MatchRegistry.getInstance();
+    assertTrue(""directory held "" + registry.size() + "" matches: "" + registry.matchIds(),
+            registry.isEmpty());
+}",4,4,
+1,"@Test
+public void onlyMatchesInProgressAreLive() {
+    MatchRegistry registry = MatchRegistry.getInstance();
+    registry.register(underway(""LIVE-1""));
+    registry.register(match(""LIVE-2""));
+    List<Match> live = registry.live();
+    assertEquals(1, live.size());
+    assertEquals(""LIVE-1"", live.get(0).getId());
+    registry.remove(""LIVE-1"");
+    registry.remove(""LIVE-2"");
+}",4,4,
+1,"@Test
+public void aRegisteredMatchCanBeFoundById() {
+    MatchRegistry registry = MatchRegistry.getInstance();
+    registry.register(match(""FIND-1""));
+    assertEquals(""FIND-1"", registry.require(""FIND-1"").getId());
+    registry.remove(""FIND-1"");
+}",4,5,
+1,"@Test
+public void anUnknownMatchIdIsNotFound() {
+    assertNull(MatchRegistry.getInstance().find(""NO-SUCH-MATCH""));
+}",4,5,
+1,"@Test
+public void requiringAnUnknownMatchThrows() {
+    try {
+        MatchRegistry.getInstance().require(""NO-SUCH-MATCH"");
+        org.junit.Assert.fail(""expected IllegalArgumentException"");
+    } catch (IllegalArgumentException expected) {
+        assertTrue(expected.getMessage().contains(""no such match""));
+    }
+}",4,5,
+1,"@Test
+public void aMatchIsFoundByEitherSide() {
+    MatchRegistry registry = MatchRegistry.getInstance();
+    registry.register(match(""TEAM-1""));
+    assertFalse(registry.involvingTeam(""IND"").isEmpty());
+    assertFalse(registry.involvingTeam(""AUS"").isEmpty());
+    registry.remove(""TEAM-1"");
+}",4,5,
+1,"@Test
+public void registeringNullIsRejected() {
+    try {
+        MatchRegistry.getInstance().register(null);
+        org.junit.Assert.fail(""expected IllegalArgumentException"");
+    } catch (IllegalArgumentException expected) {
+        assertEquals(""match must not be null"", expected.getMessage());
+    }
+}",4,5,
+1,"@Test
+public void everyFixtureOfTheSeasonIsArchived() throws IOException {
+    ScorecardExporter exporter = new ScorecardExporter();
+    for (String id : SEASON) {
+        exporter.export(match(id));
+    }
+    for (String id : SEASON) {
+        assertTrue(id + "" was not archived"", exporter.hasExport(id));
+    }
+}",4,5,
+1,"@Test
+public void anArchivedFileCarriesTheMatchId() throws IOException {
+    ScorecardExporter exporter = new ScorecardExporter();
+    File written = exporter.export(match(""ARCH-4""));
+    assertEquals(""ARCH-4.json"", written.getName());
+    assertTrue(written.isFile());
+}",4,5,
+1,"@Test
+public void theArchivedDocumentRecordsTheVenue() {
+    ScorecardExporter exporter = new ScorecardExporter();
+    assertTrue(exporter.render(match(""ARCH-5"")).contains(""Lord's""));
+}",4,5,
+1,"@Test
+public void theArchiveListingIsSorted() throws IOException {
+    ScorecardExporter exporter = new ScorecardExporter();
+    exporter.export(match(""ARCH-9""));
+    exporter.export(match(""ARCH-6""));
+    java.util.List<String> names = exporter.listExports();
+    java.util.List<String> sorted = new java.util.ArrayList<String>(names);
+    java.util.Collections.sort(sorted);
+    assertEquals(sorted, names);
+}",3,5,
+1,"@Test
+public void importingASquadAddsEveryPlayer() {
+    PlayerDirectory directory = PlayerDirectory.getInstance();
+    directory.importSquad(SquadCatalog.require(""IND""));
+    assertTrue(directory.size() >= 11);
+    assertTrue(directory.knows(""IND3""));
+}",4,5,
+1,"@Test
+public void bothNamedSquadsAreImported() {
+    PlayerDirectory directory = PlayerDirectory.getInstance();
+    directory.importSquad(SquadCatalog.require(""IND""));
+    directory.importSquad(SquadCatalog.require(""AUS""));
+    assertTrue(directory.knows(""IND1""));
+    assertTrue(directory.knows(""AUS1""));
+}",4,5,
+1,"@Test
+public void anImportedPlayerKeepsTheirRole() {
+    PlayerDirectory directory = PlayerDirectory.getInstance();
+    directory.importSquad(SquadCatalog.require(""IND""));
+    Player bumrah = directory.byId(""IND9"");
+    assertNotNull(bumrah);
+    assertEquals(""Jasprit Bumrah"", bumrah.getFullName());
+}",4,5,
+1,"@Test
+public void theImportCounterTracksTheSquadsLoaded() {
+    PlayerDirectory directory = PlayerDirectory.getInstance();
+    int before = directory.getImportCount();
+    directory.importSquad(SquadCatalog.require(""ENG""));
+    assertEquals(before + 1, directory.getImportCount());
+}",4,5,
+1,"@Test
+public void importingNullIsRejected() {
+    try {
+        PlayerDirectory.getInstance().importSquad(null);
+        org.junit.Assert.fail(""expected IllegalArgumentException"");
+    } catch (IllegalArgumentException expected) {
+        assertEquals(""team must not be null"", expected.getMessage());
+    }
+}",4,5,
+1,"@Test
+public void theRegionalFeedUsesTheLocalDecimalSeparator() {
+    assertEquals(""8,11"", new ScoreboardFormatter().rate(8.111));
+}",4,5,
+1,"@Test
+public void theInGroundBoardTakesTheCompactLine() {
+    assertTrue(ScoreboardFormatter.isCompact());
+    assertEquals(""142/3"", new ScoreboardFormatter().scoreLine(cardWith(142, 3, 106)));
+}",4,5,
+1,"@Test
+public void theCompactBattingLineOmitsTheBallsFaced() {
+    com.cricket.core.scorecard.BattingLine line =
+            new com.cricket.core.scorecard.BattingLine(""IND3"");
+    line.addRuns(82);
+    assertFalse(new ScoreboardFormatter().battingLine(line).contains(""(""));
+}",4,5,
+1,"@Test
+public void theConfiguredStyleIsReportedBack() {
+    assertEquals(ScoreboardFormatter.STYLE_COMPACT, ScoreboardFormatter.style());
+}",4,5,
+1,"@Test
+public void theOpenerResolvesByShortName() {
+    Player opener = PlayerDirectory.getInstance().requireByShortName(""R Sharma"");
+    assertEquals(""IND1"", opener.getId());
+}",4,4,
+1,"@Test
+public void bothSquadsAreKnownToTheDirectory() {
+    PlayerDirectory directory = PlayerDirectory.getInstance();
+    assertNotNull(""India squad not loaded"", directory.byShortName(""V Kohli""));
+    assertNotNull(""Australia squad not loaded"", directory.byShortName(""P Cummins""));
+}",4,4,
+1,"@Test
+public void aShortNameIsMatchedWithoutRegardToCase() {
+    PlayerDirectory directory = PlayerDirectory.getInstance();
+    assertEquals(directory.byShortName(""V Kohli""), directory.byShortName(""v kohli""));
+}",4,5,
+1,"@Test
+public void aNameThatWasNeverImportedIsNotFound() {
+    assertNull(PlayerDirectory.getInstance().byShortName(""W Grace""));
+}",4,5,
+1,"@Test
+public void requiringAnUnknownShortNameThrows() {
+    try {
+        PlayerDirectory.getInstance().requireByShortName(""W Grace"");
+        org.junit.Assert.fail(""expected IllegalStateException"");
+    } catch (IllegalStateException expected) {
+        assertEquals(""player not in directory: W Grace"", expected.getMessage());
+    }
+}",4,5,
+1,"@Test
+public void anEmptyFragmentMatchesNobody() {
+    List<Player> found = PlayerDirectory.getInstance().search("""");
+    assertEquals(0, found.size());
+}",4,5,
+1,"@Test
+public void searchingByNameFragmentIsCaseInsensitive() {
+    List<Player> found = PlayerDirectory.getInstance().search(""kohli"");
+    assertFalse(""no player matched the fragment"", found.isEmpty());
+}",4,4,
+1,"@Test
+public void theWholeSeriesIsRegistered() {
+    MatchRegistry registry = MatchRegistry.getInstance();
+    for (int i = 1; i <= MATCHES_IN_SERIES; i++) {
+        assertTrue(""SERIES-"" + i + "" was not scheduled"", registry.contains(""SERIES-"" + i));
+    }
+}",4,5,
+1,"@Test
+public void theOpeningFixtureIsUnderWay() {
+    MatchRegistry registry = MatchRegistry.getInstance();
+    assertTrue(registry.require(""SERIES-1"").getState().acceptsDeliveries());
+}",4,5,
+1,"@Test
+public void theOpenerIsServedOnTheLiveEndpoint() {
+    MatchRegistry registry = MatchRegistry.getInstance();
+    assertTrue(registry.live().contains(registry.require(""SERIES-1"")));
+}",4,5,
+1,"@Test
+public void everyFixtureInvolvesBothTouringSides() {
+    Match match = MatchRegistry.getInstance().require(""SERIES-2"");
+    assertTrue(match.involves(""IND""));
+    assertTrue(match.involves(""ENG""));
+}",4,5,
+1,"@Test
+public void theRegistrationCounterAdvancesWithEachFixture() {
+    MatchRegistry registry = MatchRegistry.getInstance();
+    long before = registry.getRegistrations();
+    registry.register(fixture(9));
+    assertEquals(before + 1, registry.getRegistrations());
+}",4,5,
+1,"@Test
+public void aReplacedFixtureKeepsTheSameId() {
+    MatchRegistry registry = MatchRegistry.getInstance();
+    int size = registry.size();
+    registry.register(fixture(3));
+    assertEquals(size, registry.size());
+}",4,5,
+1,"@Test
+public void theFixtureDirectoryIsEmptied() {
+    MatchRegistry registry = MatchRegistry.getInstance();
+    registry.reset();
+    assertTrue(registry.isEmpty());
+    assertEquals(0L, registry.getRegistrations());
+}",4,5,
+1,"@Test
+public void theSquadsAreUnloaded() {
+    PlayerDirectory directory = PlayerDirectory.getInstance();
+    directory.clear();
+    assertTrue(directory.isEmpty());
+    assertEquals(0, directory.getImportCount());
+}",0,5,
+1,"@Test
+public void theShippedPlayingConditionsAreRestored() {
+    ScoringRules.reloadDefaults();
+    assertTrue(ScoringRules.isDefault());
+}",4,5,
+1,"@Test
+public void thePresentationSettingsAreHandedBack() {
+    Locale.setDefault(Locale.UK);
+    System.clearProperty(ScoreboardFormatter.STYLE_PROPERTY);
+    assertEquals(ScoreboardFormatter.STYLE_FULL, ScoreboardFormatter.style());
+}",4,5,
+1,"@Test
+public void theArchiveIsCleared() {
+    ScorecardExporter exporter = new ScorecardExporter();
+    exporter.cleanup();
+    assertTrue(exporter.isEmpty());
+}",4,5,
