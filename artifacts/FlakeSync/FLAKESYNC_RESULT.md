@@ -148,5 +148,5 @@ Two caveats worth carrying into any evaluation:
 | `cricket-live/.flakesync/` | all goal output |
 | `.flakesync/patch/LiveScoreIngestTest.java.patch` | barrier (threshold 240 — needs the fix above) |
 | `.flakesync/patch/WorkerPool.java.patch` | the injected counter |
-| `Running_FlakeSync.md` | setup, commands, blockers, step-by-step log |
+| `RUNBOOK_FLAKESYNC.md` | setup, commands, blockers, step-by-step log |
 | `artifacts/flaky-labels.json` | ground truth |

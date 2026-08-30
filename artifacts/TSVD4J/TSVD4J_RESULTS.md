@@ -1,7 +1,7 @@
 # TSVD4J on cricket-tracker — Results
 
 Findings from a complete run of TSVD4J (ICSE'23) against the `cricket-tracker` reduced target.
-For how to reproduce this, see `Running_TSVD4J.md`.
+For how to reproduce this, see `RUNBOOK_TSVD4J.md`.
 
 | | |
 |---|---|

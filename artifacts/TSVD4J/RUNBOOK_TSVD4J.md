@@ -1,7 +1,7 @@
 # Running TSVD4J on cricket-tracker
 
 A worked runbook for the `TSVD4J` artifact (ICSE'23, thread-safety violation detection) against the
-`cricket-tracker` demo project. Companion to `RUNNING-FLAKYLENS-ON-CRICKET-TRACKER.md`.
+`cricket-tracker` demo project. Companion to `RUNBOOK_FLAKYLENS.md`.
 
 **Status: verified end-to-end on this machine.** Every command below was executed, and the results
 in [Results](#results) are the real output of a full run of the reduced target on 2026-08-29.
